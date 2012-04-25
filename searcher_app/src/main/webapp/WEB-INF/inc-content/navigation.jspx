@@ -1,0 +1,24 @@
+<ice:form xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:ice="http://www.icesoft.com/icefaces/component">
+     <div class="navTree">
+        <ice:tree id="tree" value="#{tree.model}"
+                  var = "item"
+                  hideRootNode="false"
+                  hideNavigation="false"
+                  imageDir="./xmlhttp/css/xp/css-images/">
+                <ice:treeNode>
+                    <f:facet name="content">
+                        <ice:panelGroup style="display: inline">
+                            <ice:outputLink value="#{item.userObject.url}">
+                                <ice:outputText value="#{item.userObject.text}"/>
+                            </ice:outputLink>
+                        </ice:panelGroup>
+                    </f:facet>
+                </ice:treeNode>    
+                
+       </ice:tree>
+    </div>
+                      
+                      
+</ice:form>

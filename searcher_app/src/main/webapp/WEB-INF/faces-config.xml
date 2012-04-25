@@ -1,0 +1,90 @@
+<!DOCTYPE faces-config PUBLIC 
+	"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN" 
+	"http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<faces-config>
+	<lifecycle>
+<!--        <phase-listener>inform.dist.web.Utf8RequestListener</phase-listener>-->
+    </lifecycle>
+
+	<application>
+		<view-handler>com.icesoft.faces.facelets.D2DFaceletViewHandler</view-handler>
+	</application>
+
+	<managed-bean>
+		<managed-bean-name>ds</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.TermMatrixReadOnlyWrapper</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>termService</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.TermService</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+		<managed-property>
+			<property-name>datasource</property-name>
+			<value>#{ds}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>util</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.UtilServiceBean</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>term</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.TermBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>datasource</property-name>
+			<value>#{ds}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>term</property-name>
+			<value>#{param["term"]}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>termService</property-name>
+			<value>#{termService}</value>
+		</managed-property>
+
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>phrase</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.PhraseBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>datasource</property-name>
+			<value>#{ds}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>phrase</property-name>
+			<value>#{param["phrase"]}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>termService</property-name>
+			<value>#{termService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>console</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.ConsoleBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>matrix</property-name>
+			<value>#{ds}</value>
+		</managed-property>
+	</managed-bean>
+
+
+	<managed-bean>
+		<managed-bean-name>prefs</managed-bean-name>
+		<managed-bean-class>inform.dist.web.beans.Preferences</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+</faces-config>

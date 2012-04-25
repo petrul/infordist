@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="WEB-INF/templates/main-template.jspx"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+	<!-- params for page titles-->
+	<ui:param name="pageTitle" value="Semantic neighbourhood" />
+
+	<ui:define name="head">
+		<style>
+div.generic-statistics {
+	font-size: small;
+	color: gray;
+	border: 1px solid gray;
+	margin: 2px 2px 2px 2px;
+	background-color: #6699CC;
+	color: #fff;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div class="generic-statistics">
+			<a style="color:white;" href="phrase.iface?phrase=the+band+played+a+waltz">phrase meaning</a> |
+		total docs: #{termService.totalDocs}
+		</div>
+
+		<form method="get">Type a term in order to get its semantic
+		neighbours : <input type="text" name="term" value="#{term.term}" /> <input
+			type="submit" value="search" /></form>
+
+		<ice:form partialSubmit="true">
+
+			<h3>#{term.term} (G = <ice:outputText
+				value="#{termService.gcomplexity[term.term]}">
+				<f:convertNumber maxFractionDigits="2" />
+			</ice:outputText>)</h3>
+
+			<i>Click on the table cells in order to follow other terms.</i>
+			<ice:panelGrid columns="4">
+
+				<ice:panelGroup>
+					<h3 title="max{G(x|y),G(y|x)} / max{G(x),G(y)}">NGD</h3>
+
+					<ice:dataTable id="ngd" var="item" value="#{term.ngdNeighbours}"
+						columnClasses="columnsColumn" rows="#{prefs['term-rows']}" scrollable="yes">
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="text" />
+							</f:facet>
+							<ice:outputLink value="?term=#{util.urlEncode[item['text']]}">#{item['text']}</ice:outputLink>  
+						(<ice:outputText value="#{termService.gcomplexity[item['text']]}"
+								style="display:inline;">
+								<f:convertNumber maxFractionDigits="2" />
+							</ice:outputText>)
+					</ice:column>
+
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="distance" />
+							</f:facet>
+							<ice:outputText value="#{item['dist']}">
+								<f:convertNumber maxFractionDigits="3" />
+							</ice:outputText>
+						</ice:column>
+					</ice:dataTable>
+
+					<ice:dataPaginator id="ngd-paginator" for="ngd" fastStep="3" paginator="true"
+						paginatorMaxPages="3">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.firstpage']}" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.lastpage']}" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.previouspage']}" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.nextpage']}" />
+						</f:facet>
+					</ice:dataPaginator>
+
+				</ice:panelGroup>
+
+				<ice:panelGroup>
+					<h3  title="max{G(x|y),G(y|x)}">UnGD</h3>
+					<ice:dataTable id="u_n_g_d" var="item" value="#{term.ungdNeighbours}"
+						columnClasses="columnsColumn" rows="#{prefs['term-rows']}">
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="text" />
+							</f:facet>
+							<ice:outputLink value="?term=#{item['text']}">#{item['text']}</ice:outputLink>
+						(<ice:outputText value="#{termService.gcomplexity[item['text']]}"
+								style="display:inline;">
+								<f:convertNumber maxFractionDigits="2" />
+							</ice:outputText>)
+					</ice:column>
+
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="distance" />
+							</f:facet>
+							<ice:outputText value="#{item['dist']}">
+								<f:convertNumber maxFractionDigits="3" />
+							</ice:outputText>
+						</ice:column>
+					</ice:dataTable>
+
+					<ice:dataPaginator id="u_n_g_d-paginato_r" for="u_n_g_d" fastStep="3" paginator="true"
+						paginatorMaxPages="3">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.firstpage']}" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.lastpage']}" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.previouspage']}" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.nextpage']}" />
+						</f:facet>
+					</ice:dataPaginator>
+
+				</ice:panelGroup>
+
+				<ice:panelGroup>
+					<h3>G(x | '#{term.term}')</h3>
+					<ice:dataTable id="ncc-from-here" var="item"
+						value="#{term.nccFromHereNeighbours}"
+						columnClasses="columnsColumn" rows="#{prefs['term-rows']}">
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText  value="text" />
+							</f:facet>
+							<ice:outputLink value="?term=#{item['text']}">#{item['text']}</ice:outputLink>
+						(<ice:outputText value="#{termService.gcomplexity[item['text']]}"
+								style="display:inline;">
+								<f:convertNumber maxFractionDigits="2" />
+							</ice:outputText>)
+					</ice:column>
+
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText  value="distance" />
+							</f:facet>
+							<ice:outputText value="#{item['dist']}">
+								<f:convertNumber maxFractionDigits="3" />
+							</ice:outputText>
+						</ice:column>
+					</ice:dataTable>
+
+					<ice:dataPaginator 
+						for="ncc-from-here" 
+						fastStep="3"
+						paginator="true" 
+						paginatorMaxPages="3">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.firstpage']}" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.lastpage']}" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.previouspage']}" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;"
+								title="#{msgs['page.dataScrolling.nextpage']}" />
+						</f:facet>
+					</ice:dataPaginator>
+				</ice:panelGroup>
+
+				<ice:panelGroup>
+					<h3>G('#{term.term}' |...) <!-- / G('#{term.term}')  --></h3>
+					<ice:dataTable id="ncc-to-here" var="item"
+						value="#{term.nccToHereNeighbours}" columnClasses="columnsColumn"
+						rows="#{prefs['term-rows']}">
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText  value="text" />
+							</f:facet>
+							<ice:outputLink value="?term=#{item['text']}">#{item['text']}</ice:outputLink>
+						(<ice:outputText value="#{termService.gcomplexity[item['text']]}"
+								style="display:inline;">
+								<f:convertNumber maxFractionDigits="2" />
+							</ice:outputText>)
+					</ice:column>
+
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText  value="distance" />
+							</f:facet>
+							<ice:outputText value="#{item['dist']}">
+								<f:convertNumber maxFractionDigits="3" />
+							</ice:outputText>
+						</ice:column>
+					</ice:dataTable>
+					
+				<ice:dataPaginator 
+					for="ncc-to-here" 
+					fastStep="3" 
+					paginator="true"
+					paginatorMaxPages="3">
+					<f:facet name="first">
+						<ice:graphicImage 
+							url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+							style="border:none;"
+							title="#{msgs['page.dataScrolling.firstpage']}" />
+					</f:facet>
+					<f:facet name="last">
+						<ice:graphicImage 
+							url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+							style="border:none;"
+							title="#{msgs['page.dataScrolling.lastpage']}" />
+					</f:facet>
+					<f:facet name="previous">
+						<ice:graphicImage 
+							url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+							style="border:none;"
+							title="#{msgs['page.dataScrolling.previouspage']}" />
+					</f:facet>
+					<f:facet name="next">
+						<ice:graphicImage 
+							url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+							style="border:none;"
+							title="#{msgs['page.dataScrolling.nextpage']}" />
+					</f:facet>
+				</ice:dataPaginator>
+
+				</ice:panelGroup>
+				
+			</ice:panelGrid>
+
+		</ice:form>
+	</ui:define>
+
+
+</ui:composition>

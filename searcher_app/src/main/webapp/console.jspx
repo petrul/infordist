@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="WEB-INF/templates/main-template.jspx"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+	<!-- params for page titles-->
+	<ui:param name="pageTitle" value="Cobined complexities console" />
+
+	<ui:define name="head">
+		<style>
+div.generic-statistics {
+	font-size: small;
+	color: gray;
+	border: 1px solid gray;
+	margin: 2px 2px 2px 2px;
+	background-color: #6699CC;
+	color: #fff;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="content">
+	
+	<ice:form partialSubmit="true">
+	Script:<br/>
+	<ice:inputTextarea style="width:90%; height: 200px;" value="#{console.script}"></ice:inputTextarea>
+	<br/><ice:commandButton actionListener="#{console.run}" value="Run"></ice:commandButton>
+	<hr/>
+	
+	<ice:inputTextarea style="width:90%; height: 400px; background-color: #{console.resultsBackgroundColor }" value="#{console.results}"></ice:inputTextarea>
+	
+	</ice:form>
+
+	</ui:define>
+</ui:composition>

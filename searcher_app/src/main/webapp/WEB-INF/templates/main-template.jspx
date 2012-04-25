@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<ice:outputDeclaration doctypeRoot="HTML"
+                       doctypePublic="-//W3C//DTD XHTML 1.0 Strict//EN"
+                       doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+<head>
+    <!-- page title param passed in by param -->
+    <title>Infordist GUI - #{pageTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+    <meta http-equiv="Content-Language" content="en" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    
+    <ice:outputStyle href='./xmlhttp/css/rime/rime.css'/>
+    <link href="css/default.css" rel="stylesheet" type="text/css"/>
+    
+    <ui:insert name="head" />
+</head>
+<body>
+
+<f:view>
+<ice:messages showSummary="true"></ice:messages>
+<div class="page">
+    <div class="content">
+        <ui:insert name="content">
+            Default Content
+        </ui:insert>
+    </div>
+</div>
+
+</f:view>
+
+</body>
+</html>

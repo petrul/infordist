@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="WEB-INF/templates/main-template.jspx"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:c="http://java.sun.com/jstl/core" >
+	
+	<!-- params for page titles-->
+	<ui:param name="pageTitle" value="Predication, phrase comprehension, disambiguation, question answering, metaphor comprehension -- all in one !" />
+
+	<ui:define name="head">
+		<style>
+			div.generic-statistics {
+				font-size:small;
+				color:gray;
+				border: 1px solid gray;
+				margin:2px 2px 2px 2px;
+				background-color: #6699CC;
+				color:#fff; 
+			}
+			
+		</style>
+	</ui:define>
+
+<ui:define name="content">
+		<form method="get">Type a phrase : 
+		<input type="text" name="phrase" value="#{phrase.phrase}" />
+		<input type="submit" value="search" /></form>
+		
+		<c:forEach var="entry" items="#{phrase.tokens}" >
+			<a href="neighbours.iface?term=#{entry}">#{entry }</a>
+		</c:forEach>
+		
+		 
+<ice:form>
+			<ice:panelGroup>
+				<h3>Neighbourhood</h3>
+
+				<ice:dataTable 
+					id="phrase-neighbours" 
+					var="item" value="#{phrase.phraseNeighbours}" 
+					columnClasses="columnsColumn"
+					rows="20">
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="text" />
+						</f:facet>
+
+						<ice:outputLink value="neighbours.iface?term=#{item.term}" >#{item.term}</ice:outputLink>  
+						(<ice:outputText value="#{termService.gcomplexity[item.term]}"
+								style="display:inline;">
+								<f:convertNumber maxFractionDigits="2" />
+							</ice:outputText>)
+					</ice:column>
+
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="distance" />
+						</f:facet>
+						<ice:outputText value="#{item.weight}">
+							<f:convertNumber maxFractionDigits="3" />
+						</ice:outputText>
+					</ice:column>
+				</ice:dataTable>
+			</ice:panelGroup>
+
+
+     <ice:panelGroup style="float:left;width:420px;">
+            <ice:dataPaginator 
+            	 id="data-scroll"
+                   for="phrase-neighbours"
+                   fastStep="3"
+                   paginator="true"
+                   paginatorMaxPages="3">
+                <f:facet name="first">
+                    <ice:graphicImage id="firstpage_1"
+                                      url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+                                      style="border:none;"
+                                      title="#{msgs['page.dataScrolling.firstpage']}"/>
+                </f:facet>
+                <f:facet name="last">
+                    <ice:graphicImage id="lastpage_1"
+                                      url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+                                      style="border:none;"
+                                      title="#{msgs['page.dataScrolling.lastpage']}"/>
+                </f:facet>
+                <f:facet name="previous">
+                    <ice:graphicImage id="previouspage_1"
+                                      url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+                                      style="border:none;"
+                                      title="#{msgs['page.dataScrolling.previouspage']}"/>
+                </f:facet>
+                <f:facet name="next">
+                    <ice:graphicImage id="nextpage_1"
+                                      url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+                                      style="border:none;"
+                                      title="#{msgs['page.dataScrolling.nextpage']}"/>
+                </f:facet>
+<!--        <ice:outputFormat-->
+<!--                styleClass="standard"-->
+<!--                value="{0} found, displaying {1} car(s), from {2} to {3}. Page {4} / {5}.">-->
+<!--            <f:param value="#{rowsCount}"/>-->
+<!--            <f:param value="#{displayedRowsCount}"/>-->
+<!--            <f:param value="#{firstRowIndex}"/>-->
+<!--            <f:param value="#{lastRowIndex}"/>-->
+<!--            <f:param value="#{pageIndex}"/>-->
+<!--            <f:param value="#{pageCount}"/>-->
+<!--        </ice:outputFormat>-->
+
+            </ice:dataPaginator>
+        </ice:panelGroup>
+</ice:form>
+
+</ui:define>
+	
+</ui:composition>

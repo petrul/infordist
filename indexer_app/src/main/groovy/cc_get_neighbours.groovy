@@ -1,0 +1,2 @@
+import matrix.store.TermMatrixReadOnlyprintln 5
+mtx = new matrix.store.TermMatrixReadOnly(new File('/home/dadi/Desktop/mini-cc-results'))println mtx.terms[0..<10]println mtx.getCombinedComplexity('name', 'one')

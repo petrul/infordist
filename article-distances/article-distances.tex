@@ -1,0 +1,93 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8x]{inputenc}
+
+%opening
+\title{Semantic similarity as distance between programs}
+\author{Adrian Dimulescu}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Abstract
+\end{abstract}
+
+\subsection*{Problem statement}
+
+Semantic similarity is a question often finding its answer in the research related to ontologies. Ontologies propose a
+fixed relation structure between entities. One such relation is the generalization (is-a) which is the basis of large
+taxonomies. We go into a direction which is more continuous, not rigidly fixed into a relation schema. We suppose that
+words and concepts can be similar following aspects that are difficult if not impossible to fix in a schema. 
+
+In a taxonomy, distance can be calculated usually following an edge-counting algorithm version. The problem occurs when
+the ontology structure does not have a clear foreseen relation. Brains are very associative. Things that would never be
+related in wordnet, like ..., can appear related in narratives, tales, dreams.
+
+A semantic space, where words would be surrounded by their neighbours could be an answer. The directions need not be
+labeled (``is-a'', ``has-a'' or whatever else). We could use these semantic neighbourhoods then to build and raffiner
+the meaning of a phrase, doing disambiguisation on the way.
+
+An existing algorithm proposing the realization of a semantic space is Latent Semantic Analysis. LSA makes use of a
+heavy SVD algorithm and was used for corpora of texts containing a number of documents of the order of several tens of
+thousands. On larger corpora, with millions or more of documents, SVD usage becomes prohibitive. More recent versions
+of LSA, around random indexing propose lighter SVD replacements. Still, I haven't been able to get some good results
+out of them on wikipedia.
+
+\subsection*{Objectives (motivation)}
+
+The goal of this paper is to propose the construction of a semantic neighbourhood on a given corpus, based on NGD as
+semantic distance, to show the plausibility of the proposed neighbourhoods, and a metaphor-resolution algorithm.
+
+\section{Introduction}
+
+We feel intuitively that some words are closer to each other than others. ``Horse'' and ``rider'' should be closer in a
+virtual semantic space than, say, ``horse'' and ``electricity''. Why is that? We might think of the co-occurrence in
+nature of the objects, indeed a rider can usually be seen on a horse; further, we might think too of causal
+relationships between the two, as it is the horse that makes it possible for a rider to exist. 
+
+It is then interesting to explore the notion of semantic relatedness.
+
+Concepts are programs. Words as programs.
+
+\section{HAL}
+
+\section{Latent Semantic Analysis}
+
+\section{The Google similarity distance}
+
+An interesting point about NGD is how easy it is to put it into application. You only need to point a browser to a
+public search engine, type the two terms together then separately and calculate the formula. The problem is that
+knowing that terms \textit{horse} and \textit{rider} are at a distance of, say, 0.43 does not, per se, really say much
+about the semantic distance at which they are from each other. The distance becomes relevant when, comparing
+\textit{horse} with \textit{electricity}, a larger distance is obtained, making it possible for a list of ``close''
+neighbours to be obtained. An interesting application of NGD is then to calculate the ``semantic neighbourhood'' of a
+given word, that is, a list of the closest neighbours for each word. 
+
+But on a public search engine, how is that to be achieved? In order to have a reasonable dictionary-sized vocabulary, a
+figure of at least 20,000 words should be thought of. Calculating distances between these words, if the distance is
+symmetrical, requires tens of millions of queries, which is usually forbidden by public search engines. Direct access
+to the search engine internal APIs put apart, one remaining possibility is to use a smaller corpus, use it in order to
+get the needed co-occurrence data.
+
+The English wikipedia XML corpus was used, downloaded late 2008, a 21 GB download of several million pages. The basic
+unit of text was considered a paragraph, not a page, so a co-occurrence is taken into account only the two terms are
+relatively close. This avoids considering two terms close just because one occurs at the beginning of a document, while
+the other one is to be found at the end, in what may be completely unrelated contexts.
+
+Here are some results, for \textit{kingdom} : 
+
+unit (4.77 )	0.424
+british (6.62 )	0.45
+uk (6.88 )	0.496
+britain (8.72 )	0.529
+parliament (8.16 )	0.556
+constitu (8.82 )	0.582
+monarch (10.43 )	0.59
+king (6.86 )	0.591
+ireland (8.06 )	0.593
+privi (12.28 )	0.597
+queen (8.34 )	0.605
+elizabeth (9.4 )
+
+\end{document}

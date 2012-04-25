@@ -1,0 +1,21 @@
+<ui:composition template="WEB-INF/templates/main-template.jspx"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:ui="http://java.sun.com/jsf/facelets"
+             xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:param name="pageTitle" value="Home" />
+
+    <ui:define name="content">
+    
+		See <a href="neighbours.iface?term=kingdom">term neighbours</a> 
+
+		or
+
+		<a href="phrase.iface?phrase=the+band+played+a+waltz">phrase, predicate, metaphor</a> meaning.
+		
+		or type in the <a href="console.iface">console</a>.
+
+    </ui:define>
+
+
+</ui:composition>

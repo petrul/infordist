@@ -1,0 +1,22 @@
+<Context docBase="/infres/ir300/ic2/dimulesc/.m2/repository/pertinence/searcher_app/0.9/searcher_app-0.9.war" path="/searcher_app" 
+      		reloadable="true"
+      		autoDeploy="true" 
+      		>
+      		
+ <Resource 
+      	 	name="jdbc/infordist" 
+      	 	auth="Container" 
+      	 	type="javax.sql.DataSource"
+            maxActive="10" 
+            maxIdle="3" 
+            testWhileIdle="true"
+            validationQuery="select count(*) from terms"
+            timeBetweenEvictionRunsMillis="60000"
+            maxWait="10000"
+            username="dadi" 
+            password="dadi" 
+            driverClassName="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://aristote:3306/infordist?autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8"
+         />
+
+</Context>
