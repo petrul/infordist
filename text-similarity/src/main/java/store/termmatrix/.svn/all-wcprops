@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/termmatrix
+END
+AbstractTermMatrix.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/termmatrix/AbstractTermMatrix.java
+END
+TermMatrixReadOnly.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/termmatrix/TermMatrixReadOnly.java
+END
+TermMatrix.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/termmatrix/TermMatrix.java
+END
+TermMatrixRW.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/termmatrix/TermMatrixRW.java
+END

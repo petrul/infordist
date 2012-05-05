@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile
+END
+Constants.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/Constants.java
+END
+MatTextFileReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/MatTextFileReader.java
+END
+MatTextFileExporter.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/MatTextFileExporter.java
+END
+NumberStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/NumberStream.java
+END
+TextNumberStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/TextNumberStream.java
+END
+MatReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/MatReader.java
+END
+MatExporter.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/petru_dreams/!svn/ver/6/text-similarity/trunk/src/main/java/store/matlabfile/MatExporter.java
+END
