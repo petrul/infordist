@@ -148,9 +148,9 @@ public class GistRetriever {
 
 	
 	public Gist getGist(String term) {
-		Gist cached = this.cache.getGist(term);
-		if (cached != null)
-			return cached;
+		if (this.cache.hasGist(term)) {
+			return this.cache.getGist(term);
+		}
 
 		List<String> gistAsStringArray;
 		try {
@@ -158,15 +158,51 @@ public class GistRetriever {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		
+
+
+		/*
+		 * TODO optimize for memory.
+		 *
+		 * term name appeared 18118785 times in 3589360 docs, has a gist size in contexts of 18118785, gist retrieval took 0:32:39.421
+		Exception in thread "pool-1-thread-2" java.lang.OutOfMemoryError: Java heap space
+			at java.util.Arrays.copyOf(Arrays.java:3332)
+			at java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:124)
+			at java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:448)
+			at java.lang.StringBuilder.append(StringBuilder.java:136)
+			at inform.dist.nld.GistRetriever.getGist(GistRetriever.java:164)
+			at inform.dist.nld.GistRetriever$getGist$1.call(Unknown Source)
+			at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+			at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:115)
+			at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:127)
+			at nld.RetrieveGistsFromPositionalIndex$__main_closure1.doCall(RetrieveGistsFromPositionalIndex.groovy:42)
+			at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+			at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+			at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+			at java.lang.reflect.Method.invoke(Method.java:498)
+			at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:101)
+			at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:323)
+			at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:263)
+			at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1041)
+			at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1099)
+			at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1041)
+			at groovy.lang.Closure.call(Closure.java:405)
+			at groovy.lang.Closure.call(Closure.java:399)
+			at groovy.lang.Closure.run(Closure.java:486)
+			at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+			at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+			at java.lang.Thread.run(Thread.java:745)
+		 */
+
 		StringBuilder sb = new StringBuilder();
 		for (String s : gistAsStringArray) {
 			sb.append(s);
 			sb.append(Constants.GIST_CONTEXT_SEPARATOR);
 		}
 		String result = sb.toString();
-		
-		BinaryGist binaryGist = new BinaryGist(new StringListGist(result), this.codeMapping, 10 * Constants.BZIP2_BLOCK_SIZE);
+
+		// may 2019 commented this out because I prefer for now to work with text
+//		BinaryGist binaryGist = new BinaryGist(new StringListGist(result), this.codeMapping, 10 * Constants.BZIP2_BLOCK_SIZE);
+		Gist binaryGist = new StringListGist(result);
 		
 		this.cache.storeGist(term, binaryGist);
 		return binaryGist;

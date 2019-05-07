@@ -1,0 +1,52 @@
+Download the wikipedia dump xml.
+
+Run WikipediaIndexer on it.
+
+java  wiki.indexer.cli.WikipediaIndexer -x /path/to/dump.xml
+
+indexed 20 million pages.
+
+then apply NGD:
+
+$java inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex
+
+or, to apply NCD (I called it nld, normalized 'lucene' distance), :
+
+$ groovy RetrieveGistsFromPositionalIndex
+
+with the following jvm params:
+    -Xmx8G  \
+    -Dcom.sun.management.jmxremote.port=4444 \
+    -Dcom.sun.management.jmxremote.authenticate=false
+
+it will output something like:
+
+    got 60001 terms, will store them in /Users/petru/gists.bz2...
+    calculating gist for refer(5368835) ...
+    calculating gist for name(3589360) ...
+    calculating gist for also(3149067) ...
+    calculating gist for which(2434352) ...
+    retrieving gist of refer from index...
+    retrieving gist of name from index...
+    retrieving gist of which from index...
+    calculating gist for other(2407251) ...
+    retrieving gist of other from index...
+    term which appeared 8084038 times in 2434352 docs, has a gist size in contexts of 8084038, gist retrieval took 0:27:18.450
+    term other appeared 6367092 times in 2407251 docs, has a gist size in contexts of 6367092, gist retrieval took 0:26:58.600
+
+
+BUGS
+====
+
+[Fatal Error] :60490871:185: JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
+Exception in thread "main" java.lang.RuntimeException: org.xml.sax.SAXParseException; lineNumber: 60490871; columnNumber: 185; JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
+	at wiki.indexer.cli.WikipediaIndexer.run(WikipediaIndexer.java:126)
+	at wiki.indexer.cli.WikipediaIndexer.main(WikipediaIndexer.java:205)
+Caused by: org.xml.sax.SAXParseException; lineNumber: 60490871; columnNumber: 185; JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1243)
+	at wiki.indexer.cli.WikipediaIndexer.run(WikipediaIndexer.java:114)
+
+Fix like this :
+https://stackoverflow.com/questions/42991043/error-xml-sax-saxparseexception-while-parsing-a-xml-file-using-wikixmlj
+
+-DentityExpansionLimit=2147480000 -DtotalEntitySizeLimit=2147480000 -Djdk.xml.totalEntitySizeLimit=2147480000
