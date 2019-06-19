@@ -9,11 +9,11 @@ public class DistanceCalculator {
 	 */
 	static public double getNormalizedDistance(int c1, int c2, int cc) {
 		int cmax = Math.max(c1, c2);
-		return getUnnormalizedDistance(c1, c2, cc) / cmax;
+		return ((double)getUnnormalizedDistance(c1, c2, cc)) / cmax;
 	}
 	
-	static public double getUnnormalizedDistance(int c1, int c2, int cc) {
+	static public int getUnnormalizedDistance(int c1, int c2, int cc) {
 		int cmin = Math.min(c1, c2);
-		return ((double) (cc - cmin));
+		return (cc - cmin);
 	}
 }

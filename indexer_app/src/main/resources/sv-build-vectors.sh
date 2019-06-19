@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # calls semantic vectors code that actually build the freaking vectors from a Lucene index
 
 M2_REPO=~/.m2/repository

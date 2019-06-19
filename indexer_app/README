@@ -50,3 +50,56 @@ Fix like this :
 https://stackoverflow.com/questions/42991043/error-xml-sax-saxparseexception-while-parsing-a-xml-file-using-wikixmlj
 
 -DentityExpansionLimit=2147480000 -DtotalEntitySizeLimit=2147480000 -Djdk.xml.totalEntitySizeLimit=2147480000
+
+
+SPECS
+=====
+
+NCD-Similarity
+
+
+
+API
+===
+
+Three components.
+
+1. storage (a TermMatrix)
+2. a repo ( a directory of bzipped files, more generally an iterator)
+3. a compressor (bzip2, gzip etc)
+
+
+So:
+
+ncd_calculator = new BZip2 NcdCalculator
+
+storage = ... TermMatrix.getInstance(ncdcalculator)
+
+repo = new NCDRepo( calculator, directory, matrix)
+
+ncdrepo.getNeighbours(term)
+
+ncdrepo.addItem(String name, InputStream inputstream)
+ncdrepo.addItem(String name, File file)
+ncdrepo.addItem(String item)
+
+
+ncdrepo.addItems(new DirectoryOfBzipped(...))
+
+ncdrepo.getDistance(term1, term2)
+
+ncdrepo.getDistances(term1)
+ncdrepo.getNearestNeighbours(term1, 20)
+
+ncrepo.computeAllDistances()
+
+
+String s1 = ...
+
+String s2 = ...
+
+
+
+ncdcalculator.computeNCD(s1, s2)
+
+ncdrepo.getNCD(s1, s2)

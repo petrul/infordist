@@ -3,7 +3,7 @@ package matrix.store;
 /**
  * A very needed data stucture. A square matrix indexable by strings and a vector indexable by
  * string. The matrix stores distances-like values between terms; the vector stores a value that
- * corresponds to a term. 
+ * corresponds to the complexity a term.
  * 
  * <p>An example of use is storing complexities. Term complexities are stored in the vector. 
  * Term conditional complexities (K(x|y), combined complexities - K(x,y), or some other distance
