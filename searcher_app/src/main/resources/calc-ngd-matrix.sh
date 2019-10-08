@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 M2_REPO=~/.m2/repository
 CP=
 

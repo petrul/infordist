@@ -37,13 +37,15 @@
 		<managed-bean-name>term</managed-bean-name>
 		<managed-bean-class>inform.dist.web.beans.TermBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
+
+		<managed-property>
+			<property-name>term</property-name>
+			<value>#{param.term}</value>
+		</managed-property>
+
 		<managed-property>
 			<property-name>datasource</property-name>
 			<value>#{ds}</value>
-		</managed-property>
-		<managed-property>
-			<property-name>term</property-name>
-			<value>#{param["term"]}</value>
 		</managed-property>
 		<managed-property>
 			<property-name>termService</property-name>

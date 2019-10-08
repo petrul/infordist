@@ -39,7 +39,11 @@ public class TermBean  {
 	
 	TermMatrixReadOnly datasource;
 	DistanceCalculatorFromFreqMatrix dCalc;
-	
+
+	public TermBean() {
+		LOG.info("constructor of TermBean");
+	}
+
 	public List<Map<String, Object>> getNgdNeighbours() {
 		return this.termService.getNgdNeighbours(term);
 	}
@@ -129,6 +133,7 @@ public class TermBean  {
 	}
 
 	public void setTerm(String term) {
+		LOG.info("setTerm:" + term);
 		byte[] bytes = term.getBytes(Charset.forName("latin1"));
 		String utf8term = new String(bytes, Charset.forName("utf-8"));
 		WikipediaSnowballAnalyzer analyzer = new WikipediaSnowballAnalyzer("English");

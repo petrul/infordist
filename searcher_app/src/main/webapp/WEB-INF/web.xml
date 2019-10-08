@@ -6,7 +6,14 @@
 
 	<context-param>
 		<param-name>app.matrix.location</param-name>
-		<param-value>/home/dadi/Desktop/mini-cc-results</param-value>
+		<!--<param-value>/home/dadi/Desktop/mini-cc-results</param-value>-->
+		<!--<param-value>/home/apps/products/infordist/ngdstats-20k</param-value>-->
+		<param-value>/Users/petru/Desktop/ncd-wikipedia-lucene/ngdstats-20k</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>com.icesoft.faces.standardRequestScope</param-name>
+		<param-value>true</param-value>
 	</context-param>
 
 	<context-param>
