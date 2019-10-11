@@ -12,3 +12,5 @@
 .classpath
 target/
 .DS_*
+.idea
+.gradle
