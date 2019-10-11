@@ -37,7 +37,10 @@ def computeNcdRowForTerm(final String main_term, final StringListGist main_gist,
 	final String inputDir = cli_options.indir
 
 	for (term2 in terms_to_compare) {
-		StopWatch watch = new StopWatch(); watch.start();
+		StopWatch watch = new StopWatch(); watch.start()
+
+
+		println ("starting cc computation for $main_term - $term2 on [${Thread.currentThread().getName()}]...")
 
 		int cc;
 		if (main_term == term2)
@@ -54,7 +57,7 @@ def computeNcdRowForTerm(final String main_term, final StringListGist main_gist,
 
 		matrix.setCombinedComplexity(main_term, term2, cc);
 
-		println ("$main_term - $term2 = $cc, took $watch")
+		println ("finished $main_term - $term2 = $cc on [${Thread.currentThread().getName()}], took ${watch}.")
 	}
 }
 

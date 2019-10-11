@@ -10,7 +10,11 @@ then apply NGD:
 
 $java inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex
 
-or, to apply NCD (I called it nld, normalized 'lucene' distance), :
+This will generate you a term matrix which you can inspect to get NGD-based semantic neighbourhoods.
+
+
+or, to apply NCD (I called it nld, normalized 'lucene' distance), first get a directory full of gists
+(that is windows of meaning for each term)
 
 $ groovy RetrieveGistsFromPositionalIndex
 
@@ -34,6 +38,9 @@ it will output something like:
     term which appeared 8084038 times in 2434352 docs, has a gist size in contexts of 8084038, gist retrieval took 0:27:18.450
     term other appeared 6367092 times in 2407251 docs, has a gist size in contexts of 6367092, gist retrieval took 0:26:58.600
 
+then run
+
+$ groovy ncd -i ~/Desktop/gists.bz2/
 
 BUGS
 ====
