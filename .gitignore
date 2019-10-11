@@ -12,5 +12,10 @@
 .classpath
 target/
 .DS_*
-.idea
+.idea/
+
+**/gradle/
+**/build/
 .gradle
+**/bin/
+**/out/
