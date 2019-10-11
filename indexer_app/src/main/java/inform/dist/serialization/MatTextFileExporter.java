@@ -124,5 +124,10 @@ public class MatTextFileExporter implements MatExporter {
 		this.done();
 	}
 
-	
+	@Override
+	public void flush() {
+		this.printer.flush();
+	}
+
+
 }

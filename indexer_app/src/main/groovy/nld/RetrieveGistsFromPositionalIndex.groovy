@@ -13,8 +13,6 @@ import java.util.concurrent.*;
  * from a positional index, retrieve gists for terms and store them as compressed files
  *
  */
-
-
 class RetrieveGistsFromPositionalIndex {
 
 	int minfreq = 200;

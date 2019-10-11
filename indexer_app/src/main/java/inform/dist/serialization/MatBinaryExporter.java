@@ -149,4 +149,13 @@ public class MatBinaryExporter implements MatExporter {
 		}
 	}
 
+	@Override
+	public void flush() {
+		try {
+			this.output.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

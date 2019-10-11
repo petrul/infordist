@@ -1,0 +1,3 @@
+1.1
+    * actually compute distances between a directory of files using NCD
+    * use gradle

@@ -1,7 +1,7 @@
 package inform.dist.nld.compressor;
 
 import static org.junit.Assert.assertTrue;
-import inform.dist.nld.cache.StringListGist;
+import inform.dist.nld.gist.StringListGist;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 import inform.dist.Constants;
 import inform.dist.nld.compressor.Compressor;
@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Filesystem-based gist directory
+ * Filesystem-based gist directory. this is just a directory that compresses its contents.
  * @author dadi
  *
  */

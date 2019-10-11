@@ -90,6 +90,8 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 			File termTextFile = new File(this.baseDir, TERMS_TXT);
 			this.exporter = new MatTextFileExporter(termTextFile, originalComment);
 			exporter.writeStringArray("terms", terms, "terms");
+			exporter.flush();
+			exporter.close();
 			
 			
 			{

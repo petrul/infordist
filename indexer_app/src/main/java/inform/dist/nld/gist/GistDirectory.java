@@ -1,4 +1,4 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 
 public interface GistDirectory {

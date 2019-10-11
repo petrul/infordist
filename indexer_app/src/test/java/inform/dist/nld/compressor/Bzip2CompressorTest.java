@@ -2,7 +2,7 @@ package inform.dist.nld.compressor;
 
 import static org.junit.Assert.assertEquals;
 import inform.dist.Constants;
-import inform.dist.nld.cache.StringListGist;
+import inform.dist.nld.gist.StringListGist;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;

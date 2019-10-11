@@ -2,7 +2,7 @@ package inform.dist.nld.compressor;
 
 import java.io.InputStream;
 
-import inform.dist.nld.cache.Gist;
+import inform.dist.nld.gist.Gist;
 
 public interface Compressor {
 	

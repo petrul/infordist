@@ -115,7 +115,7 @@ public class WikipediaSnowballAnalyzerTest {
 	/**
 	 * this test takes long.It is a good test and should be run from time to time but it taks too long to execute everytime
 	 */
-	@Test @Ignore
+	@Test
 	public void testTokenStreamStringReader() throws Exception {
 		AssertingTextProcessor processor = new AssertingTextProcessor();
 		WikipediaDumpSaxParser saxParser = new WikipediaDumpSaxParser(processor);

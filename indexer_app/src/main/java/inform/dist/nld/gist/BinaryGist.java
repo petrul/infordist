@@ -1,4 +1,4 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 import inform.dist.Constants;
 
@@ -13,16 +13,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import inform.dist.nld.gist.combining.GistCombiningPolicy;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 
 /**
  * A {@link StringListGist} or a {@link StringGist} contains words as strings. We can 
- * spare some (lots of) bytes, by coding each word as an Short (16-bit = 2 bytes)
+ * spare some (lots of) bytes, by coding each word as a Short (16-bit = 2 bytes)
+ *
+ * haven't really tried this idea.
  * 
  * @author dadi
+ *
  */
-public class BinaryGist implements Gist {
+public class BinaryGist extends AbstractGist {
 	
 	List<List<Short>> codes;
 
@@ -81,11 +85,11 @@ public class BinaryGist implements Gist {
 	}
 
 	@Override
-	public void combine(Gist anotherGist) {
-		this.combine(anotherGist, 1);
+	public Gist combine(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy) {
+		return this.combine(anotherGist, 1);
 	}
 	
-	public void combine(Gist anotherGist, int interweaveBlockSize) {
+	public Gist combine(Gist anotherGist, int interweaveBlockSize) {
 		
 		BinaryGist theOther = (BinaryGist) anotherGist;
 		List<List<Short>> newCodes = new ArrayList<List<Short>>((int) (this.size() + anotherGist.size()));
@@ -123,10 +127,11 @@ public class BinaryGist implements Gist {
 		}
 		
 		this.codes = newCodes;
+		throw new RuntimeException("unimpl");
 	}
 
 	@Override
-	public long size() {
+	public int size() {
 		return this.codes.size();
 	}
 

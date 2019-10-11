@@ -1,4 +1,4 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 import inform.dist.Constants;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @author dadi
  *
  */
-public class StringListGist implements Gist {
+public class StringListGist extends AbstractGist {
 	
 	List<String> gist;
 	
@@ -30,37 +30,9 @@ public class StringListGist implements Gist {
 		this.gist = list;
 	}
 
-	@Override
-	public void combine(Gist anotherGist) {
-		StringListGist gist2 = (StringListGist) anotherGist;
-		List<String> combination = new ArrayList<String>(this.gist.size() + gist2.gist.size());
-//		combination.addAll(this.gist);
-//		combination.addAll(gist2.gist);
-	
-		long len_g1 = this.size();
-		long len_g2 = gist2.size();
-		
-		int cnt_g1 = 0;
-		int cnt_g2 = 0;
-		
-		while (cnt_g1 < len_g1 || cnt_g2 < len_g2) {
-			if (cnt_g1 < len_g1) {
-				String str = this.gist.get(cnt_g1);
-				combination.add(str);
-				cnt_g1++;
-			}
-			if (cnt_g2 < len_g2) {
-				String str = gist2.gist.get(cnt_g2);
-				combination.add(str);
-				cnt_g2++;
-			}
-		}
-		
-		this.gist = combination;
-	}
 
 	@Override
-	public long size() {
+	public int size() {
 		return this.gist.size();
 	}
 
@@ -162,10 +134,10 @@ public class StringListGist implements Gist {
 		int counter = 0;
 		for (String s : this.gist) {
 			sb.append(s).append("\n");
-			if (counter++ > 5) {
-				sb.append("[...]");
-				break;
-			}
+//			if (counter++ > 5) {
+//				sb.append("[...]");
+//				break;
+//			}
 		}
 		return sb.toString();
 	}

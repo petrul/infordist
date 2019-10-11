@@ -2,10 +2,10 @@ package inform.dist.nld;
 
 import static org.junit.Assert.assertEquals;
 import inform.dist.Constants;
-import inform.dist.nld.cache.Gist;
-import inform.dist.nld.cache.GistDirectory;
-import inform.dist.nld.cache.BinaryGist;
-import inform.dist.nld.cache.StringListGist;
+import inform.dist.nld.gist.Gist;
+import inform.dist.nld.gist.GistDirectory;
+import inform.dist.nld.gist.BinaryGist;
+import inform.dist.nld.gist.StringListGist;
 import inform.lucene.IndexUtil;
 
 import java.io.IOException;
@@ -24,9 +24,10 @@ import org.apache.lucene.index.TermPositions;
 import wiki.indexer.TermAndFreq;
 
 /**
- * Gets term gist from a lucene index. A gist is the word context in which a term appears.
+ * Gets term gist from a lucene index. Uses a directory cache. A gist is the word context in which a term appears.
  * 
  * @author dadi
+ * @deprecated the "caching" behaviour should really not be a part of this class. the "cache" is actually an output.
  */
 public class GistRetriever {
 	

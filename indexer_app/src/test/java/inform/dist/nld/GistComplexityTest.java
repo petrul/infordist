@@ -6,9 +6,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import inform.dist.Constants;
 import inform.dist.DistanceCalculator;
-import inform.dist.nld.cache.BinaryGist;
-import inform.dist.nld.cache.AbstractFilesystemGistDirectory;
-import inform.dist.nld.cache.FsBinaryGistDirectory;
+import inform.dist.nld.gist.BinaryGist;
+import inform.dist.nld.gist.AbstractFilesystemGistDirectory;
+import inform.dist.nld.gist.FsBinaryGistDirectory;
 import inform.dist.nld.compressor.Bzip2Compressor;
 
 import java.io.File;
@@ -19,8 +19,11 @@ import java.util.Random;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
+
+@Ignore
 public class GistComplexityTest {
 
 	@Test

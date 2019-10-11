@@ -14,14 +14,7 @@ import java.util.Map;
 
 import matrix.store.NioFileMatrixStore;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -250,7 +243,7 @@ public class LsaExtractor implements Runnable {
 		Options options = buildOptions();
 		try {
 			
-			CommandLineParser parser = new GnuParser();
+			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("help")) {

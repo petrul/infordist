@@ -1,6 +1,0 @@
-package nld
-
-class play {
-
-
-}

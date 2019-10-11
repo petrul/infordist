@@ -1,8 +1,8 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 import inform.dist.Constants;
+import inform.dist.nld.gist.combining.GistCombiningPolicy;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -17,7 +17,7 @@ public abstract class StringGist implements Gist {
 	}
 	
 	@Override
-	public long size() {
+	public int size() {
 		return gist.length();
 	}
 
@@ -33,15 +33,17 @@ public abstract class StringGist implements Gist {
 	}
 
 	@Override
-	public void combine(Gist anotherGist) {
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		anotherGist.writeTo(bytes);
-		try {
-			this.gist = this.gist + Constants.GIST_CONTEXT_SEPARATOR + new String(bytes.toByteArray(), Constants.UTF8_ENCODING);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-		throw new RuntimeException("interweaveBlockSize unimplemented");
+	public Gist combine(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy) {
+		return GistCombiningPolicy.REGISTRY.get(combiningPolicy).combine(this,anotherGist);
+
+//		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//		anotherGist.writeTo(bytes);
+//		try {
+//			this.gist = this.gist + Constants.GIST_CONTEXT_SEPARATOR + new String(bytes.toByteArray(), Constants.UTF8_ENCODING);
+//		} catch (UnsupportedEncodingException e) {
+//			throw new RuntimeException(e);
+//		}
+//		throw new RuntimeException("interweaveBlockSize unimplemented");
 	}
 
 	@Override

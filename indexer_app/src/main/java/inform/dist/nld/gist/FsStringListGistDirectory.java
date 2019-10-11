@@ -1,4 +1,4 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 import inform.dist.Constants;
 import inform.dist.nld.compressor.Compressor;

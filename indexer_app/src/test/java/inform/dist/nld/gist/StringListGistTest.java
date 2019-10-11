@@ -1,4 +1,4 @@
-package inform.dist.nld.cache;
+package inform.dist.nld.gist;
 
 import static org.junit.Assert.assertEquals;
 import inform.dist.Constants;
@@ -22,9 +22,13 @@ public class StringListGistTest {
 		
 		StringListGist g1 = new StringListGist(s1);
 		StringListGist g2 = new StringListGist(s2);
+
+//		LOG.info(g1.toString());
+//		LOG.info(g2.toString());
 		
-		StringListGist both = (StringListGist) g1.clone();
-		both.combine(g2);
+//		StringListGist both = (StringListGist) g1.clone();
+		Gist both = g1.combine(g2);
+//		LOG.info(both.toString());
 //		LOG.info("asd"  + both.getStringList());
 		assertEquals(both.size(), g1.size() + g2.size());
 

@@ -15,4 +15,6 @@ public interface MatExporter {
 	
 	public void close();
 
+	public void flush();
+
 }

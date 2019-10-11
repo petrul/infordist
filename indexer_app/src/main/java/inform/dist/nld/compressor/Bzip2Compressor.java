@@ -1,6 +1,6 @@
 package inform.dist.nld.compressor;
 
-import inform.dist.nld.cache.Gist;
+import inform.dist.nld.gist.Gist;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

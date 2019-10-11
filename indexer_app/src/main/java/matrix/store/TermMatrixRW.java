@@ -27,6 +27,16 @@ public class TermMatrixRW extends AbstractTermMatrix {
 		return new NioFileMatrixStore(file, rows, columns, cacheSize, "rw");
 	}
 
+//	public void fill(int value) {
+//		String[] terms = super.getTerms();
+//		for (String term1 : terms) {
+//			super.setComplexity(term1, value);
+//			for (String term2 : terms) {
+//				super.setCombinedComplexity(term1, term2, value);
+//			}
+//		}
+//	}
+
 	static Logger LOG = Logger.getLogger(TermMatrixRW.class);
 
 }

@@ -6,8 +6,8 @@
 	<groupId>pertinence</groupId>
 	<artifactId>indexer_app</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
-	<name>indexer app</name>
+	<version>1.1-SNAPSHOT</version>
+	<name>NGD/NCD indexer app</name>
 
 	<build>
 		<resources>
@@ -28,8 +28,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 

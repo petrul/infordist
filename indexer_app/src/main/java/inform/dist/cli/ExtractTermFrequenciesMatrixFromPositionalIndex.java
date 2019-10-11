@@ -16,14 +16,7 @@ import java.util.Set;
 
 import matrix.store.TermMatrixRW;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -34,7 +27,7 @@ import wiki.indexer.TermAndFreq;
 import wiki.indexer.storage.SimpleTermCooccurrenceStorage;
 
 /**
- * 
+ * from a positional index retrieves
  */
 public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable {
 
@@ -70,7 +63,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 
 		try {
 			
-			CommandLineParser parser = new GnuParser();
+			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("help")) {
@@ -272,7 +265,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 	private static Options buildOptions() {
 		Options options = new Options();
 
-		Option opt = OptionBuilder
+		Option opt =  OptionBuilder
 				.withDescription("print these help instructions")
 				.withLongOpt("help")
 				.hasArg(false)

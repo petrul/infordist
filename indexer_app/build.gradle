@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+dependencies {
+    compile 'junit:junit:4.5'
+    compile 'log4j:log4j:1.2.17'
+    compile 'commons-io:commons-io:1.4'
+    compile 'commons-lang:commons-lang:2.4'
+    compile 'org.apache.commons:commons-compress:1.18'
+    compile 'commons-cli:commons-cli:1.1'
+    compile 'com.thoughtworks.xstream:xstream:1.3'
+    compile 'colt:colt:1.2.0'
+    compile 'org.apache.lucene:lucene-core:2.4.1'
+    compile 'org.apache.lucene:lucene-analyzers:2.4.1'
+    compile 'org.apache.lucene:lucene-wikipedia:2.4.1'
+    compile 'org.apache.lucene:lucene-snowball:2.4.1'
+    compile 'org.springframework:spring-jdbc:2.5.6'
+    compile 'mysql:mysql-connector-java:5.1.6'
+    compile 'org.codehaus.groovy:groovy-all:2.5.6'
+}
+
+group = 'pertinence'
+version = '1.1-SNAPSHOT'
+description = 'NGD/NCD indexer app'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}

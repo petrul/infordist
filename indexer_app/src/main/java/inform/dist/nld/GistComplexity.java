@@ -1,7 +1,9 @@
 package inform.dist.nld;
 
 import inform.dist.Constants;
-import inform.dist.nld.cache.Gist;
+import inform.dist.nld.gist.AbstractGist;
+import inform.dist.nld.gist.Gist;
+import inform.dist.nld.gist.combining.GistCombiningPolicy;
 import inform.dist.nld.compressor.Compressor;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import org.junit.Assert;
  * to calculate the size of combined gists.
  * 
  * @author dadi
+ * @deprecated  possibly over-architectured code for accessing a directory of zipped files
  *
  */
 public class GistComplexity {
@@ -59,18 +62,16 @@ public class GistComplexity {
 	}
 	
 	public long calculateGistCombinedComplexity(Gist gist1, Gist gist2) {
-		Gist both = gist1.clone();
-		both.combine(gist2);
+//		Gist both = gist1.clone();
+		Gist both = gist1.combine(gist2, GistCombiningPolicy.Policy.INTERLACE_EVEN);
 		return this.compressor.getComplexity(both);
 	}
 	
 	/**
 	 * you may use this if repeatedly calculating combined complexities of the same x to several other words
 	 */
-	public long getCombinedComplexity(Gist gist1, Gist gist2) {
-		Gist bothGists = (Gist) gist1.clone();
-		bothGists.combine(gist2);
-		gist2 = null;
+	public long getCombinedComplexity(AbstractGist gist1, Gist gist2) {
+		Gist bothGists = (Gist) gist1.combine(gist2);
 		
 		long cb = this.compressor.getComplexity(bothGists);
 		return cb;
