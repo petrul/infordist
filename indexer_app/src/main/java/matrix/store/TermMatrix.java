@@ -37,7 +37,7 @@ public interface TermMatrix {
 	
 	/* this is metainformation that you may want to add to your term matrix*/
 //	void setVariable(String name, String value);
-	void setVariable(String name, long value);
+//	void setVariable(String name, long value);
 	
 	long getVariable(String name);
 	

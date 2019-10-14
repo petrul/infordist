@@ -39,7 +39,7 @@ def run(String[] args) {
 	
 	println "on a total of ${calculatedTerms.size()} calculated terms"
 	calculatedTerms.sort()
-	//to = Math.min(100,calculatedTerms.size())
+	//to = Math.min(100,calculatedTerms.nrLines())
 	to = calculatedTerms.size()
 	calculatedTerms[0..<to].each {		
 		println it	

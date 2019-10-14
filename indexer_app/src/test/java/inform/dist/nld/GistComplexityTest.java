@@ -23,7 +23,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-@Ignore
+/**
+ * any valuable part of thi stest should be rewritten for {@link inform.dist.nld.gist.FileGist} mainly.
+ */
+
+@Ignore("GistComplexity is deprecated still tests on computing complexity should be ok. ")
 public class GistComplexityTest {
 
 	@Test
@@ -42,10 +46,10 @@ public class GistComplexityTest {
 			String word2 = RandomStringUtils.randomAlphabetic(8);
 			
 			BinaryGist gist1 = newGist();
-			cache.storeGist(word1, gist1);
+//			cache.storeGist(word1, gist1);
 			
 			BinaryGist gist2 = newGist();
-			cache.storeGist(word2, gist2);
+//			cache.storeGist(word2, gist2);
 			
 			BinaryGist gist1_reconstituted = (BinaryGist) cache.getGist(word1);
 			
@@ -62,13 +66,13 @@ public class GistComplexityTest {
 			LOG.info("cw1 : " + cw1);
 			LOG.info("cw2 : " + cw2);
 			
-			long cc = gc.getCombinedComplexity(gist1, gist2);
+//			long cc = gc.getCombinedComplexity(gist1, gist2);
 			
-			LOG.info("cc : " + cc);
-			LOG.info("nld : " + DistanceCalculator.getNormalizedDistance((int)cw1, (int)cw2, (int)cc));
-			assertTrue(cc > cw1);
-			assertTrue(cc > cw2);
-			assertTrue(cc < cw1 + cw2); // triangle ineq
+//			LOG.info("cc : " + cc);
+//			LOG.info("nld : " + DistanceCalculator.getNormalizedDistance((int)cw1, (int)cw2, (int)cc));
+//			assertTrue(cc > cw1);
+//			assertTrue(cc > cw2);
+//			assertTrue(cc < cw1 + cw2); // triangle ineq
 		}
 		FileUtils.deleteDirectory(f);
 	}

@@ -1,7 +1,7 @@
 package com.colloquial.arithcode;
 
-/** <P>Stores a queue of bytes in a buffer with a maximum size.  New
- * bytes are added to the tail of the queue, and if the size exceeds
+/** <P>Stores a queue of bytes in a buffer with a maximum nrLines.  New
+ * bytes are added to the tail of the queue, and if the nrLines exceeds
  * the maximum, bytes are removed from the front of the queue.  Used
  * to model a sliding window of a fixed width over a stream of bytes
  * presented a byte at a time.  The bytes in the current window are
@@ -18,7 +18,7 @@ package com.colloquial.arithcode;
  */ 
 public final class ByteBuffer {
 
-    /** Construct a context buffer of given maximum size.
+    /** Construct a context buffer of given maximum nrLines.
      * @param maxWidth Maximum number of bytes in a context.
      */
     public ByteBuffer(int maxWidth) {

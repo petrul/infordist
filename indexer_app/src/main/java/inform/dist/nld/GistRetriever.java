@@ -2,10 +2,7 @@ package inform.dist.nld;
 
 import static org.junit.Assert.assertEquals;
 import inform.dist.Constants;
-import inform.dist.nld.gist.Gist;
-import inform.dist.nld.gist.GistDirectory;
-import inform.dist.nld.gist.BinaryGist;
-import inform.dist.nld.gist.StringListGist;
+import inform.dist.nld.gist.*;
 import inform.lucene.IndexUtil;
 
 import java.io.IOException;
@@ -24,7 +21,7 @@ import org.apache.lucene.index.TermPositions;
 import wiki.indexer.TermAndFreq;
 
 /**
- * Gets term gist from a lucene index. Uses a directory cache. A gist is the word context in which a term appears.
+ * Gets term string from a lucene index. Uses a directory cache. A string is the word context in which a term appears.
  * 
  * @author dadi
  * @deprecated the "caching" behaviour should really not be a part of this class. the "cache" is actually an output.
@@ -53,10 +50,10 @@ public class GistRetriever {
 	
 	
 	/**
-	 * the gist is the word neighbourhood in which a word appears
+	 * the string is the word neighbourhood in which a word appears
 	 */
-	public StringListGist getGistAsStringArray(String term) throws IOException {
-		LOG.info("retrieving gist of " + term + " from index...");
+	public StringGist getGistAsStringArray(String term) throws IOException {
+		LOG.info("retrieving string of " + term + " from index...");
 		StopWatch watch = new StopWatch(); watch.start();
 		Term t = new Term(Constants.FIELD_TEXT, term);
 		
@@ -65,7 +62,7 @@ public class GistRetriever {
 		
 		// a list of all gists of all occurrences in all documents (result)
 		List<String> gist = new ArrayList<String>();
-		//StringBuilder gist = new StringBuilder();
+		//StringBuilder string = new StringBuilder();
 		
 		int counter_total_apparitions = 0;
 		int counter_docs = 0;
@@ -114,7 +111,7 @@ public class GistRetriever {
 							
 							if (LOG.isTraceEnabled()) LOG.trace("found neighbour " + terms[i] + "/" + p + " for " + terms[idx] + "/" + mainterm);
 							
-							// we don't want the actual term in its own gist
+							// we don't want the actual term in its own string
 							String stringToRemember = dist == 0 ? "_" : terms[i];
 							//if (dist != 0)
 							neighbourhood.put(dist, stringToRemember);
@@ -133,38 +130,40 @@ public class GistRetriever {
 				for (int i : map.keySet()) {
 					String word = map.get(i);
 					sb.append(word).append(' ');
-//					gist.add(word);
+//					string.add(word);
 				}
 //				sb.append();
-				//gist.append(sb.toString());
+				//string.append(sb.toString());
 				gist.add(sb.toString());
 				counter_total_apparitions ++;
 			}
 		}
 		
-		LOG.info("term " + term + " appeared " + counter_total_apparitions + " times in " + counter_docs + " docs, has a gist size in contexts of " + gist.size() + ", gist retrieval took " + watch);
+		LOG.info("term " + term + " appeared " + counter_total_apparitions + " times in " + counter_docs + " docs, has a string nrLines in contexts of " + gist.size() + ", string retrieval took " + watch);
 		
-		return new StringListGist(gist);
+		return new StringGist(String.join("\n", gist));
 	}
 
 	
 	public Gist getGist(String term) {
-		if (this.cache.hasGist(term)) {
-			return this.cache.getGist(term);
-		}
+		throw new RuntimeException("undefined");
 
-		List<String> gistAsStringArray;
-		try {
-			gistAsStringArray = this.getGistAsStringArray(term).getStringList();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+//		if (this.cache.hasGist(term)) {
+//			return this.cache.getGist(term);
+//		}
+//
+//		List<String> gistAsStringArray;
+//		try {
+//			gistAsStringArray = this.getGistAsStringArray(term).getStringList();
+//		} catch (IOException e) {
+//			throw new RuntimeException(e);
+//		}
 
 
 		/*
 		 * TODO optimize for memory.
 		 *
-		 * term name appeared 18118785 times in 3589360 docs, has a gist size in contexts of 18118785, gist retrieval took 0:32:39.421
+		 * term name appeared 18118785 times in 3589360 docs, has a string nrLines in contexts of 18118785, string retrieval took 0:32:39.421
 		Exception in thread "pool-1-thread-2" java.lang.OutOfMemoryError: Java heap space
 			at java.util.Arrays.copyOf(Arrays.java:3332)
 			at java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:124)
@@ -194,23 +193,23 @@ public class GistRetriever {
 			at java.lang.Thread.run(Thread.java:745)
 		 */
 
-		StringBuilder sb = new StringBuilder();
-		for (String s : gistAsStringArray) {
-			sb.append(s);
-			sb.append(Constants.GIST_CONTEXT_SEPARATOR);
-		}
-		String result = sb.toString();
+//		StringBuilder sb = new StringBuilder();
+//		for (String s : gistAsStringArray) {
+//			sb.append(s);
+//			sb.append(Constants.GIST_CONTEXT_SEPARATOR);
+//		}
+//		String result = sb.toString();
 
 		// may 2019 commented this out because I prefer for now to work with text
 //		BinaryGist binaryGist = new BinaryGist(new StringListGist(result), this.codeMapping, 10 * Constants.BZIP2_BLOCK_SIZE);
-		Gist binaryGist = new StringListGist(result);
+//		Gist binaryGist = new StringListGist(result);
 		
-		this.cache.storeGist(term, binaryGist);
-		return binaryGist;
+//		this.cache.storeGist(term, binaryGist);
+//		return binaryGist;
 	}
 	
 //	/**
-//	 * i had an idea: suppose i take the gist of a term and then i sort the terms so that gzip works better. It didn't work. 
+//	 * i had an idea: suppose i take the string of a term and then i sort the terms so that gzip works better. It didn't work.
 //	 */
 //	public OrderedGist getOrderedGist(String term) {
 //		String result;
@@ -226,16 +225,16 @@ public class GistRetriever {
 //	/**
 //	 * this should be moved in {@link OrderedGist#combine(inform.dist.nld.cache.Gist)}
 //	 */
-//	private String processGistForBetterCompression(List<String> gist) {
+//	private String processGistForBetterCompression(List<String> string) {
 //		
-//		Collections.sort(gist);
+//		Collections.sort(string);
 //		StringBuilder sb = new StringBuilder();
-//		int gistsize = gist.size();
+//		int gistsize = string.nrLines();
 //		for (int i = 0; i < gistsize; i++) {
-//			String elem = gist.get(i);
+//			String elem = string.get(i);
 //			if (i > 0 && i < gistsize - 1) {
-//				String before = gist.get(i - 1);
-//				String after = gist.get(i + 1);
+//				String before = string.get(i - 1);
+//				String after = string.get(i + 1);
 //
 //				if (!before.equals(elem) && !after.equals(elem)) // element is unique, skip it, don't like noise
 //					continue;

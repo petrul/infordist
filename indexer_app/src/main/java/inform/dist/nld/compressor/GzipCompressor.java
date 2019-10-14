@@ -10,10 +10,10 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
-public class GzipCompressor implements Compressor {
+public class GzipCompressor extends AbstractCompressor {
 
 //	@Override
-//	public long getComplexity(String s) {
+//	public long computeComplexity(String s) {
 //		try {
 //			StopWatch watch = new StopWatch();
 //			watch.start();
@@ -24,7 +24,7 @@ public class GzipCompressor implements Compressor {
 //			gzos.close();
 //
 //			long result = counter.getCounter();
-//			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of size " + s.length() + ", result is " + result + " bytes long, took " + watch);
+//			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of nrLines " + s.length() + ", result is " + result + " bytes long, took " + watch);
 //			return result;
 //		} catch (IOException e) {
 //			throw new RuntimeException(e);
@@ -44,7 +44,7 @@ public class GzipCompressor implements Compressor {
 			gzos.close();
 
 			long result = counter.getCounter();
-			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of size " + gist.size() + ", result is " + result + " bytes long, took " + watch);
+			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of nrLines " + gist.nrLines() + ", result is " + result + " bytes long, took " + watch);
 			return result;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -64,7 +64,7 @@ public class GzipCompressor implements Compressor {
 			gzos.close();
 
 			byte[] result = bytes.toByteArray();
-			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of size " + s.size() + ", result is " + result.length + " bytes long, took " + watch);
+			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of nrLines " + s.nrLines() + ", result is " + result.length + " bytes long, took " + watch);
 			return result;
 		} catch (IOException e) {
 			throw new RuntimeException(e);

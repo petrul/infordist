@@ -4,14 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -38,10 +31,7 @@ public class WikipediaIndexer implements Runnable {
 	String indexLocation;
 	boolean useShutDownHook = true;
 	private Integer maxPages = null;
-	
-//	public static enum ChunkBy { PAGE, SENTENCE };
-//	ChunkBy chunkBy = ChunkBy.PAGE;
-	
+
 	public WikipediaIndexer(String wikipediaXmlLocation, String indexLocation) {
 		this.setIndexLocation(indexLocation);
 		this.setWikipediaXmlLocation(wikipediaXmlLocation);
@@ -132,30 +122,52 @@ public class WikipediaIndexer implements Runnable {
 	public static void main(String[] args) {
 
 		Options options = new Options();
-		Option opt = OptionBuilder
-				        .withDescription("print these help instructions")
-				        .withLongOpt("help")
-				        .hasArg(false)
-				        .create("h");
+		Option opt = Option.builder("h")
+				.longOpt("help")
+				.desc("print these help instructions")
+				.hasArg(false)
+				.build();
+//		Option opt = OptionBuilder
+//				        .withDescription("print these help instructions")
+//				        .withLongOpt("help")
+//				        .hasArg(false)
+//				        .create("h");
 		options.addOption(opt);
-		opt = OptionBuilder.withArgName("filename")
-				        .hasArg()
-				        .isRequired()
-				        .withDescription("wikipedia xml dump")
-				        .create("x");
+		opt = Option.builder("x")
+				.argName("filename")
+				.required()
+				.desc("wikipedia xml dump")
+				.build();
+//		opt = OptionBuilder.withArgName("filename")
+//				        .hasArg()
+//				        .isRequired()
+//				        .withDescription("wikipedia xml dump")
+//				        .create("x");
 		options.addOption(opt);
-		opt = OptionBuilder.withArgName("directory")
-				        .hasArg()
-				        .isRequired(false)
-				        .withDescription("index output directory")
-				        .create("o");
+		opt = Option.builder("o")
+				.argName("directory")
+				.hasArg()
+				.required(false)
+				.desc("index output directory")
+				.build();
+//		opt = OptionBuilder.withArgName("directory")
+//				        .hasArg()
+//				        .isRequired(false)
+//				        .withDescription("index output directory")
+//				        .create("o");
 		options.addOption(opt);
-		opt = OptionBuilder
-						.withLongOpt("max-pages")
-				        .hasArg()
-				        .isRequired(false)
-				        .withDescription("maximum wikipedia pages to process")
-				        .create("n");
+		opt = Option.builder("n")
+				.longOpt("max-pages")
+				.hasArg()
+				.required(false)
+				.desc("maximum wikipedia pages to process")
+				.build();
+//		opt = OptionBuilder
+//						.withLongOpt("max-pages")
+//				        .hasArg()
+//				        .isRequired(false)
+//				        .withDescription("maximum wikipedia pages to process")
+//				        .create("n");
 		options.addOption(opt);
 //		opt = OptionBuilder
 //						.withLongOpt("chunk")
@@ -167,7 +179,7 @@ public class WikipediaIndexer implements Runnable {
 		
 		try {
 
-			CommandLineParser parser = new GnuParser();
+			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd = parser.parse( options, args);
 			
 			if (cmd.hasOption("help")) {

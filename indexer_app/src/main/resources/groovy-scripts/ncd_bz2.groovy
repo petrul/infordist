@@ -1,6 +1,6 @@
 /**
  * this computes the NCD using bzip2 between two terms: it receives the terms in command line, it passes them through the analyzer, finds
- * the corresponding file in the gist files dir (or in the index, using GistRetriever) -- then computes the NCD.
+ * the corresponding file in the string files dir (or in the index, using GistRetriever) -- then computes the NCD.
  */
 import inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex
 import org.apache.commons.cli.CommandLine
@@ -70,17 +70,17 @@ def main1(String[] args) {
 	
 		int c_t1 = tm.getComplexity(term1)
 		if (c_t1 == -1) {
-			println "retrieving gist and compressing term $term1..."
+			println "retrieving string and compressing term $term1..."
 			gist = gretr.getGist(term1)
-			c_t1 = gc.getComplexity(term1)
+			c_t1 = gc.computeComplexity(term1)
 			tm.setComplexity(term1, c_t1)
 		}
 		
 		int c_t2 = tm.getComplexity(term2)
 		if (c_t2 == -1) {
-			println "retrieving gist and compressing term $term2..."
+			println "retrieving string and compressing term $term2..."
 			gist = gretr.getGist(term2)
-			c_t2 = gc.getComplexity(term2)
+			c_t2 = gc.computeComplexity(term2)
 			tm.setComplexity(term2, c_t2)
 		}
 		
@@ -221,7 +221,7 @@ private static Options buildOptions() {
 			.withArgName("number")
 			.hasArg()
 			.isRequired(false)
-			.withDescription("size in terms of the text window : two terms are counted as co-occurring if they are in the same window, default 20")
+			.withDescription("nrLines in terms of the text window : two terms are counted as co-occurring if they are in the same window, default 20")
 			.withLongOpt("windowsize")
 			.create('w');
 	options.addOption(opt);

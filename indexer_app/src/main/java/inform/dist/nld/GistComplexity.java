@@ -13,10 +13,13 @@ import java.net.URLEncoder;
 import org.junit.Assert;
 
 /**
- * Given a directory with gzipped gists, use this class to get the size of those gists and 
- * to calculate the size of combined gists.
+ * Given a directory with gzipped gists, use this class to get the nrLines of those gists and
+ * to calculate the nrLines of combined gists.
+ *
+ * It's the {@link Gist#computeComplexity(Compressor)}'s business to compute compelexities.
  * 
  * @author dadi
+ *
  * @deprecated  possibly over-architectured code for accessing a directory of zipped files
  *
  */
@@ -49,11 +52,11 @@ public class GistComplexity {
 	}
 
 	/**
-	 * this is a shortcut: it simply reads the size of the already compressed gist file.
+	 * this is a shortcut: it simply reads the nrLines of the already compressed string file.
 	 */
 	public long getComplexity(String x) {
 		File file = this.getFile(x);
-		if (!file.exists()) throw new IllegalArgumentException("no gist exists for term " + x);
+		if (!file.exists()) throw new IllegalArgumentException("no string exists for term " + x);
 		return file.length();
 	}
 	
@@ -62,18 +65,20 @@ public class GistComplexity {
 	}
 	
 	public long calculateGistCombinedComplexity(Gist gist1, Gist gist2) {
+		throw new RuntimeException("undefined");
 //		Gist both = gist1.clone();
-		Gist both = gist1.combine(gist2, GistCombiningPolicy.Policy.INTERLACE_EVEN);
-		return this.compressor.getComplexity(both);
+//		Gist both = gist1.combine(gist2, GistCombiningPolicy.Policy.INTERLACE_EVEN);
+//		return this.compressor.getComplexity(both);
 	}
 	
 	/**
 	 * you may use this if repeatedly calculating combined complexities of the same x to several other words
 	 */
 	public long getCombinedComplexity(AbstractGist gist1, Gist gist2) {
-		Gist bothGists = (Gist) gist1.combine(gist2);
-		
-		long cb = this.compressor.getComplexity(bothGists);
-		return cb;
+		throw new RuntimeException("undefined");
+//		Gist bothGists = (Gist) gist1.combine(gist2);
+//
+//		long cb = this.compressor.getComplexity(bothGists);
+//		return cb;
 	}
 }

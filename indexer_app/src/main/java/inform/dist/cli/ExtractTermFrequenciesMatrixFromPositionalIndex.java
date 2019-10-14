@@ -162,7 +162,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 				}
 					
 				
-				/* we will cut the crt document into smaller documents, called text windows of size this.windowSize */
+				/* we will cut the crt document into smaller documents, called text windows of nrLines this.windowSize */
 				Map<Integer, Set<String>> textWindows = new HashMap<Integer, Set<String>>();
 				
 				String[] terms = termPosVector.getTerms();
@@ -219,13 +219,15 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 		
 		{
 			//basename = ;
-			TermMatrixRW exporter = this.newExporter(terms, originComment);
+			HashMap<String,Long> variables = new HashMap<>();
+			variables.put("total_docs", nPages);
+
+			TermMatrixRW exporter = this.newExporter(terms, variables, originComment);
 			watch.reset(); watch.start();
 			final UpperSymmetricalZeroDiagMatrix cooccurrenceMatrix = storage.getCooccurrenceMatrix();
 
 			
-			
-			exporter.setVariable("total_docs", nPages);
+
 			//exporter. writeStringArray("terms", terms, "terms");
 			
 			{
@@ -252,72 +254,118 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 	}
 
 
-	private TermMatrixRW newExporter(String[] terms, String originComment) throws IOException {
+	private TermMatrixRW newExporter(String[] terms, HashMap<String,Long> variables, String originComment) throws IOException {
 		String dirName = this.outDir;
 		File dir = new File(dirName);
 		if (!dir.exists())
 				dir.mkdirs();
 
-		return new TermMatrixRW(terms, dir, terms.length, originComment);
+		return new TermMatrixRW(terms, variables, dir, terms.length, originComment);
 	}
 
 	@SuppressWarnings("static-access")
 	private static Options buildOptions() {
 		Options options = new Options();
 
-		Option opt =  OptionBuilder
-				.withDescription("print these help instructions")
-				.withLongOpt("help")
+		Option opt = Option.builder("h")
+				.desc("print these help instructions")
+				.longOpt("help")
 				.hasArg(false)
-				.create("h");
+				.build();
+//		Option opt =  OptionBuilder
+//				.withDescription("print these help instructions")
+//				.withLongOpt("help")
+//				.hasArg(false)
+//				.create("h");
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("directory")
+		opt = Option.builder("i")
+				.desc("lucene index")
+				.longOpt("index")
+				.argName("directory")
+				.required()
 				.hasArg()
-				.isRequired()
-				.withDescription("lucene index")
-				.withLongOpt("index")
-				.create("i");
+				.build();
+//		opt = OptionBuilder
+//				.withArgName("directory")
+//				.hasArg()
+//				.isRequired()
+//				.withDescription("lucene index")
+//				.withLongOpt("index")
+//				.create("i");
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("number")
+		opt = Option.builder("n")
 				.hasArg()
-				.isRequired()
-				.withDescription("number of first terms to get statistics for, in decreasing frequency order")
-				.withLongOpt("nrterms")
-				.create("n");
+				.required()
+				.argName("number")
+				.desc("number of first terms to get statistics for, in decreasing frequency order")
+				.longOpt("nrterms")
+				.build();
+//		opt = OptionBuilder
+//				.withArgName("number")
+//				.hasArg()
+//				.isRequired()
+//				.withDescription("number of first terms to get statistics for, in decreasing frequency order")
+//				.withLongOpt("nrterms")
+//				.create("n");
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("directory")
+		opt = Option.builder("o")
+				.argName("directory")
 				.hasArg()
-				.isRequired(false)
-				.withDescription("directory containing resulting cooccurrences, NGD and UNGD matrices")
-				.withLongOpt("outdir")
-				.create("o");
+				.required(false)
+				.desc("directory containing resulting cooccurrences, NGD and UNGD matrices")
+				.longOpt("outdir")
+				.build();
+//		opt = OptionBuilder
+//				.withArgName("directory")
+//				.hasArg()
+//				.isRequired(false)
+//				.withDescription("directory containing resulting cooccurrences, NGD and UNGD matrices")
+//				.withLongOpt("outdir")
+//				.create("o");
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("number")
-				.hasArg()
-				.isRequired(false)
-				.withDescription("minimum frequency a term must have in order to be taken into account, default 20")
-				.withLongOpt("minfreq")
-				.create("f");
+		opt = Option.builder("f")
+				.argName("number")
+				.required(false)
+				.desc("minimum frequency a term must have in order to be taken into account, default 20")
+				.longOpt("minfreq")
+				.build();
+//		opt = OptionBuilder
+//				.withArgName("number")
+//				.hasArg()
+//				.isRequired(false)
+//				.withDescription("minimum frequency a term must have in order to be taken into account, default 20")
+//				.withLongOpt("minfreq")
+//				.create("f");
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("number")
+		opt = Option.builder("d")
 				.hasArg()
-				.isRequired(false)
-				.withDescription("maximum number of documents to inspect")
-				.withLongOpt("maxdocs")
-				.create('d');
+				.required(false)
+				.argName("number")
+				.desc("maximum number of documents to inspect")
+				.longOpt("maxdocs")
+				.build();
+//		opt = OptionBuilder
+//				.withArgName("number")
+//				.hasArg()
+//				.isRequired(false)
+//				.withDescription("maximum number of documents to inspect")
+//				.withLongOpt("maxdocs")
+//				.create('d');
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("number")
+//		opt = OptionBuilder
+//				.withArgName("number")
+//				.hasArg()
+//				.isRequired(false)
+//				.withDescription("nrLines in terms of the text window : two terms are counted as co-occurring if they are in the same window, default 20")
+//				.withLongOpt("windowsize")
+//				.create('w');
+		opt = Option.builder("w")
+				.longOpt("windowsize")
+				.desc("nrLines in terms of the text window : two terms are counted as co-occurring if they are in the same window, default 20")
+				.required(false)
 				.hasArg()
-				.isRequired(false)
-				.withDescription("size in terms of the text window : two terms are counted as co-occurring if they are in the same window, default 20")
-				.withLongOpt("windowsize")
-				.create('w');
+				.argName("number")
+				.build();
 		options.addOption(opt);
 //		opt = OptionBuilder
 //				.withArgName("text|binary|binary-nio")

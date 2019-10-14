@@ -1,6 +1,8 @@
 package inform.dist.nld.compressor;
 
 import static org.junit.Assert.assertTrue;
+
+import inform.dist.nld.gist.StringGist;
 import inform.dist.nld.gist.StringListGist;
 
 import java.util.ArrayList;
@@ -15,8 +17,8 @@ public class PPMCompressorTest {
 	@Test
 	public void testCompress() {
 		PPMCompressor compressor = new PPMCompressor();
-		StringListGist slg = newStringListGist();
-		assertTrue(slg.size() > 10);
+		StringGist slg = newStringListGist();
+		assertTrue(slg.nrLines() > 10);
 		assertTrue(slg.getSizeInBytes() > 10 * 1000);
 		
 		LOG.info(slg.getSizeInBytes());
@@ -33,7 +35,7 @@ public class PPMCompressorTest {
 //		Assert.assertEquals(slg, recreated_gist);
 	}
 
-	private StringListGist newStringListGist() {
+	private StringGist newStringListGist() {
 		List<String> gist = new ArrayList<String>();
 		for (int i = 0; i < 1000; i++) {
 			StringBuilder sb = new StringBuilder();
@@ -43,7 +45,7 @@ public class PPMCompressorTest {
 			}
 			gist.add(sb.toString());
 		}
-		return new StringListGist(gist);
+		return new StringGist(String.join("\n",gist));
 	}
 
 	static Logger LOG = Logger.getLogger(PPMCompressorTest.class);

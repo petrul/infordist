@@ -18,7 +18,7 @@ public class FrequencyStoringTextProcessor implements TextProcessor {
 	
 	TermCoccurrenceStorage 	storage;
 	
-	char[] tmpParagraphBuffer = new char[10 * 1000]; // paragraphs maximum size
+	char[] tmpParagraphBuffer = new char[10 * 1000]; // paragraphs maximum nrLines
 	
 	/**
 	 * aka total nr of paragraph counter 

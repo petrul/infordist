@@ -34,7 +34,7 @@ class CustomWikipediaTokenizerImpl {
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
 
-  /** initial size of the lookahead buffer */
+  /** initial nrLines of the lookahead buffer */
   private static final int ZZ_BUFFERSIZE = 16384;
 
   /** lexical states */

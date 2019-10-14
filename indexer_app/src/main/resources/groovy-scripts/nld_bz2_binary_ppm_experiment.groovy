@@ -1,3 +1,9 @@
+/**
+ * this is an experiment with binary gists. (I thought I might try a binary string instead of word-based text
+ * gists -- after I read about compression, how it is block-based and such.
+ *
+ * also tried PPM compression.
+ */
 import inform.dist.ngd.WeightedTerm
 import inform.dist.nld.cache.StringListGist
 import org.apache.lucene.analysis.Token
@@ -25,7 +31,7 @@ def main(String[] args) {
 
 	File gistDir = new File("binarygists"); def cache = new FsBinaryGistDirectory(gistDir, bzip2);
 
-	println "using compressor $ppm, and gist directory: $cache"
+	println "using compressor $ppm, and string directory: $cache"
 	GistComplexity gc = new GistComplexity(gistDir, ppm)
 
 	def defaultSubgistSize = 400 * 1000
@@ -34,7 +40,7 @@ def main(String[] args) {
 	Gist gist1 = cache.getGist(term1); assert gist1 != null ;
 	def subgists1 = gist1.getSubgists(defaultSubgistSize).findAll {it.sizeInBytes >= defaultSubgistSize};
 	assert subgists1.size > 0
-	println "term [$term1] has size ${gist1.sizeInBytes}, in ${subgists1.size()} subgists of size $defaultSubgistSize" 
+	println "term [$term1] has nrLines ${gist1.sizeInBytes}, in ${subgists1.nrLines()} subgists of nrLines $defaultSubgistSize"
 	
 	List orderedNeighbours = []
 	List ignoredNeighbours = []
@@ -47,7 +53,7 @@ def main(String[] args) {
 		def gist2 = cache.getGist(term2); assert gist2 != null;
 	
 		if (gist2.sizeInBytes < defaultSubgistSize) {
-			println "!!!gist [$term2] is too small (${gist2.sizeInBytes}), ignoring..."
+			println "!!!string [$term2] is too small (${gist2.sizeInBytes}), ignoring..."
 			ignoredNeighbours << new WeightedTerm(term2, 100.0);
 			continue;
 		}
@@ -56,16 +62,16 @@ def main(String[] args) {
 		def subgists2 = gist2.getSubgists(defaultSubgistSize).findAll{it.sizeInBytes >= defaultSubgistSize}
 		assert subgists2.size > 0
 		
-		println "$term1 : ${subgists1.size()} subgists; $term2 : ${subgists2.size()} subgists;"
+		println "$term1 : ${subgists1.nrLines()} subgists; $term2 : ${subgists2.nrLines()} subgists;"
 
 		def distances = []
-		//def nrCompressions = Math.min(5, Math.max(subgists1.size(), subgists2.size()))
+		//def nrCompressions = Math.min(5, Math.max(subgists1.nrLines(), subgists2.nrLines()))
 		def nrCompressions = 10
 		for (i in 0..<nrCompressions) {
 			def c2_cache = [:]
 			def rnd = new Random()
-			int i1 = rnd.nextInt(subgists1.size())
-			int i2 = rnd.nextInt(subgists2.size())
+			int i1 = rnd.nextInt(subgists1.nrLines())
+			int i2 = rnd.nextInt(subgists2.nrLines())
 			def sg1 = subgists1[i1]
 			def sg2 = subgists2[i2]
 			int c1 = c1_cache[i1] ?: { c = gc.calculateGistComplexity(sg1) ; c1_cache[i1] = c; c }.call();
@@ -106,7 +112,7 @@ def main(String[] args) {
 	}
 	
 	orderedNeighbours.sort()
-	println "term [$term1] has size ${gist1.sizeInBytes}, in ${subgists1.size()} subgists of size $defaultSubgistSize" 
+	println "term [$term1] has nrLines ${gist1.sizeInBytes}, in ${subgists1.nrLines()} subgists of nrLines $defaultSubgistSize"
 	println "[$term1] neighbourhood :"
 	println "======================"
 	orderedNeighbours.each { println "${it.term}, ${term_data[it.term]['dist']}, ${term_data[it.term]['stddev']} " }

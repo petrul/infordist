@@ -12,7 +12,7 @@ import com.colloquial.arithcode.ArithCodeInputStream;
 import com.colloquial.arithcode.ArithCodeOutputStream;
 import com.colloquial.arithcode.PPMModel;
 
-public class PPMCompressor implements Compressor {
+public class PPMCompressor extends AbstractCompressor {
 
 	@Override
 	public byte[] compress(Gist s) {

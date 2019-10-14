@@ -2,6 +2,7 @@ package inform.dist.nld.gist.combining;
 
 import inform.dist.nld.gist.Gist;
 
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,20 +16,20 @@ public abstract class GistCombiningPolicy {
     public enum Policy  {
         CONCATENATE, // two gists are concatenated. for big gists, compression together might not work appropriately since most
                         // compression algorithms work on blocks so block1 might be gist1 and block2 might be gist2.
-        INTERLACE_TOP,  // one line from a gist, another from the other one. for gists of different sizes,
-                        // when the smaller gist ends, the rest of lines of
-                        // the larger gist continue unmixed
+        INTERLACE_TOP,  // one line from a string, another from the other one. for gists of different sizes,
+                        // when the smaller string ends, the rest of lines of
+                        // the larger string continue unmixed
         INTERLACE_EVEN;
-                        // interlaced but evenly. if we have a gist G1 of 200 lines and G2 of 100 lines,
+                        // interlaced but evenly. if we have a string G1 of 200 lines and G2 of 100 lines,
                         // after two lines of G1 will be interlaced one line of G2
 
     }
 
     public static Map<Policy, GistCombiningPolicy> REGISTRY = new HashMap<>();
     static  {
-        REGISTRY.put(Policy.INTERLACE_EVEN, new InterlaceEvenForStringListGistPolicy());
-        REGISTRY.put(Policy.CONCATENATE, new ConcatenateForStringListGistPolicy());
+        REGISTRY.put(Policy.INTERLACE_EVEN, new InterlaceEvenPolicy());
+        REGISTRY.put(Policy.CONCATENATE, new ConcatenatePolicy());
     }
 
-    public abstract Gist combine(Gist g1, Gist g2);
+    public abstract void combine(Gist g1, Gist g2, OutputStream outputStream);
 }

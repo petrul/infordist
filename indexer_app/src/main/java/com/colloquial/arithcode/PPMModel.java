@@ -1,7 +1,7 @@
 package com.colloquial.arithcode;
 
 /** Provides a cumulative, adaptive byte model implementing
- * prediction by partial matching up to a specified maximum context size.
+ * prediction by partial matching up to a specified maximum context nrLines.
  * Uses Method C for estimation.  
  * 
  * Constants that control behavior include the maximum total count before

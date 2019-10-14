@@ -1,38 +1,103 @@
 package inform.dist.nld.gist;
 
 import inform.dist.Constants;
+import inform.dist.nld.compressor.Compressor;
+import inform.dist.nld.compressor.Compressors;
+import inform.dist.nld.gist.combining.GistCombiningPolicy;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * This gist uses a List of Strings in order to represent the succession of contexts. Each context
- * is a String.
+ *
+ * Stores the text as a rows of text lines.
+ *
+ * upd: Is this useful? I'd say this is deprecated
  * @author dadi
  *
  */
-public class StringListGist extends AbstractGist {
+@Deprecated
+public abstract class StringListGist extends AbstractGist {
 	
 	List<String> gist;
+
+
+	// if this string was retrieved from a compressed format (a .bz2 file for ex), this attribute is the compressor which was used to
+	// decompress it.
+	Compressor initialCompressor = null;
+	URL resource;
 	
-	public StringListGist(List<String> list) {
-		this.gist = new ArrayList<String>();
-		this.gist.addAll(list);
-	}
+//	public StringListGist(List<String> list) {
+//		this.string = new ArrayList<String>();
+//		this.string.addAll(list);
+//	}
 	
-	public StringListGist(String string) {
-		String[] strings = string.split(Constants.GIST_CONTEXT_SEPARATOR);
-		List<String> list = Arrays.asList(strings);
-		this.gist = list;
+//	public StringListGist(String string) {
+//		String[] strings = string.split(Constants.GIST_CONTEXT_SEPARATOR);
+//		List<String> list = Arrays.asList(strings);
+//		this.string = list;
+//	}
+
+
+	/**
+	 * use this constructor when the string is stored already compressed
+	 */
+	public StringListGist(InputStream inputStream, Compressor compressor) {
+		this.initFromInputStream(inputStream, compressor);
 	}
+
+	protected void initFromInputStream(InputStream inputStream, Compressor compressor) {
+		byte[] bytes = compressor.uncompress(new BufferedInputStream(inputStream));
+		String s = new String(bytes, StandardCharsets.UTF_8);
+		String[] strings = s.split(Constants.GIST_CONTEXT_SEPARATOR);
+		this.gist = Arrays.asList(strings);
+
+	}
+
+	protected void initFromUrl(URL url, Compressor compressor) {
+		this.resource = url;
+		final String s = url.toExternalForm();
+		String extension = s.substring(s.lastIndexOf("."));
+		if (extension.startsWith("."))
+			extension = extension.substring(1);
+
+		if (compressor == null)
+			this.initialCompressor = Compressors.REGISTRY.get(extension);
+		else
+			this.initialCompressor = compressor;
+
+		try {
+			this.initFromInputStream(url.openStream(), this.initialCompressor);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public StringListGist(URL url, Compressor compressor) {
+		initFromUrl(url, compressor);
+	}
+
+	public StringListGist(URL url) {
+		this(url, null);
+	}
+
+	public StringListGist(File file) {
+		try {
+			initFromUrl(file.toURI().toURL(), null);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 
 
 	@Override
-	public int size() {
+	public int nrLines() {
 		return this.gist.size();
 	}
 
@@ -79,35 +144,45 @@ public class StringListGist extends AbstractGist {
 		}
 	}
 	
-	@Override
-	public Gist clone() {
-		return new StringListGist(this.gist);
-	}
+//	@Override
+//	public Gist clone() {
+//		return new StringListGist(this.string);
+//	}
 	
 	public List<String> getStringList() {
 		return gist;
 	}
 
-	@Override
-	public List<Gist> getSubgists(int maxSizeInBytes) {
-		List<Gist> subgists = new ArrayList<Gist>();
-		List<String> crtSubgist = new ArrayList<String>();
-		int crtCounter = 0;
-		
-		for (String s : this.gist) {
-			if (crtCounter > maxSizeInBytes) { 
-				subgists.add(new StringListGist(crtSubgist));
-				crtSubgist = new ArrayList<String>();
-				crtCounter = 0;
-			}
-			crtSubgist.add(s);
-			crtCounter += s.length() + 1;
-		}
-		
-		if (crtSubgist.size() > 0)
-			subgists.add(new StringListGist(crtSubgist));
+//	@Override
+//	public List<Gist> getSubgists(int maxSizeInBytes) {
+//		List<Gist> subgists = new ArrayList<Gist>();
+//		List<String> crtSubgist = new ArrayList<String>();
+//		int crtCounter = 0;
+//
+//		for (String s : this.string) {
+//			if (crtCounter > maxSizeInBytes) {
+//				subgists.add(new StringListGist(crtSubgist));
+//				crtSubgist = new ArrayList<String>();
+//				crtCounter = 0;
+//			}
+//			crtSubgist.add(s);
+//			crtCounter += s.length() + 1;
+//		}
+//
+//		if (crtSubgist.size() > 0)
+//			subgists.add(new StringListGist(crtSubgist));
+//
+//		return subgists;
+//	}
 
-		return subgists;
+	@Override
+	public InputStream openStreamForReading() {
+		throw new RuntimeException("undefined");
+	}
+
+	@Override
+	public OutputStream openStreamForWriting() {
+		throw new RuntimeException("undefined");
 	}
 
 	@Override
@@ -118,20 +193,16 @@ public class StringListGist extends AbstractGist {
 		}
 		return result;
 	}
-	
-//	public long sizeInBytes() {
-//		long size = 0;
-//		for (String s : this.gist) {
-//			size += s.length() + 1;
-//		}
-//		return size;
-//	}
-	
+
+	public Compressor getInitialCompressor() {
+		return initialCompressor;
+	}
+
 	@Override
 	public String toString() {
 		
 		StringBuilder sb = new StringBuilder();
-		int counter = 0;
+//		int counter = 0;
 		for (String s : this.gist) {
 			sb.append(s).append("\n");
 //			if (counter++ > 5) {

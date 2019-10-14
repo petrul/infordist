@@ -110,7 +110,7 @@ public class CustomWikipediaTokenizerTest {
 
 		/* 'bgcolor' */
 		s = "===National politics===\n"
-				+ "{| align=\"right\" border=\"2\" cellpadding=\"4\" cellspacing=\"0\" style=\"margin: 1em 1em 1em 0; border: 1px #aaa solid; border-collapse: collapse; font-size: 85%;\"\n"
+				+ "{| align=\"right\" border=\"2\" cellpadding=\"4\" cellspacing=\"0\" style=\"margin: 1em 1em 1em 0; border: 1px #aaa solid; border-collapse: collapse; font-nrLines: 85%;\"\n"
 				+ "|+ '''Presidential elections results'''\n" + "|- bgcolor=#D3D3D3\n" + "! Year\n"
 				+ "! [[Republican Party (United States)|Republican]]\n"
 				+ "! [[Democratic Party (United States)|Democratic]]\n" + "! State winner\n" + "|-\n"
@@ -202,8 +202,8 @@ public class CustomWikipediaTokenizerTest {
 		}
 
 		/* unwanted 'background' */
-		s = "{| class=\"wikitable\" style=\"text-align:center;font-size:100%;\"\n"
-				+ "| colspan=\"26\" style=\"font-size:120%;background:#E8EAFA;\"|Monthly normal high and low temperatures for various Alabama cities<small><ref>[http://www.ustravelweather.com/weather-ala\n"
+		s = "{| class=\"wikitable\" style=\"text-align:center;font-nrLines:100%;\"\n"
+				+ "| colspan=\"26\" style=\"font-nrLines:120%;background:#E8EAFA;\"|Monthly normal high and low temperatures for various Alabama cities<small><ref>[http://www.ustravelweather.com/weather-ala\n"
 				+ "bama/ US Travel Weather]</ref></small>\n" + "|-\n"
 				+ "! style=\"background: #D8F8D8; color:#000000\" height=\"17\" colspan=2| Month\n"
 				+ "! style=\"background: #D8F8D8; color:#000000;\" colspan=2| Jan\n"
@@ -234,7 +234,7 @@ public class CustomWikipediaTokenizerTest {
 
 		/* unwanted 'font' */
 		s = "===National politics===\n"
-				+ "{| align=\"right\" border=\"2\" cellpadding=\"4\" cellspacing=\"0\" style=\"margin: 1em 1em 1em 0; border: 1px #aaa solid; border-collapse: collapse; font-size: 85%;\"\n"
+				+ "{| align=\"right\" border=\"2\" cellpadding=\"4\" cellspacing=\"0\" style=\"margin: 1em 1em 1em 0; border: 1px #aaa solid; border-collapse: collapse; font-nrLines: 85%;\"\n"
 				+ "|+ '''Presidential elections results'''";
 
 		tokenStream = new CustomWikipediaTokenizer(new StringReader(s));
@@ -258,7 +258,7 @@ public class CustomWikipediaTokenizerTest {
 			terms.add(tk.term());
 			assertFalse(tk.term().equals("pdf"));
 		}
-//		Assert.assertTrue(terms.size() > 10);
+//		Assert.assertTrue(terms.nrLines() > 10);
 
 		/** there was an unwanted PDFLink */
 		s = "\"Anarchism does not exclude prisons, officials, military, or other symbols of force. "

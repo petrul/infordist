@@ -153,7 +153,7 @@ public class NgdCalculator {
 //	 * alias for {@link #getNgdMatrix(String[])}
 //	 */
 //	public double[][] getNgdMatrix(List<Term> words, double[][] matrix) {
-//		return this.getNgdMatrix((Term[]) words.toArray(new Term[words.size()]), matrix);
+//		return this.getNgdMatrix((Term[]) words.toArray(new Term[words.nrLines()]), matrix);
 //	}
 	
 //	/**
@@ -199,7 +199,7 @@ public class NgdCalculator {
 //			StopWatch sw = new StopWatch();sw.start();
 //			LOG.info("getting list of terms in decreasing frequency order...");
 //			List<TermAndFreq> terms = new IndexUtil(this.indexSearcher.getIndexReader()).getTermsOrderedByFreqDesc();
-//			LOG.info("done, " + terms.size() + " terms retrieved, took" + sw.toString() + ". will calculate pairwise distances now...");
+//			LOG.info("done, " + terms.nrLines() + " terms retrieved, took" + sw.toString() + ". will calculate pairwise distances now...");
 //			
 //			sw.reset(); sw.start();
 //			

@@ -40,24 +40,28 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 	private 	File 	baseDir;
 	private 	int 	nterms;
 	MatTextFileExporter exporter;
-	Map<String, Long> 	variables = new HashMap<String, Long>(); 
+	Map<String, Long> 	variables = new HashMap<>();
 
 	public AbstractTermMatrix() {};
 	
-	public AbstractTermMatrix(String[] terms, File dir, String originalComment) {
-		this(terms, dir, 5, originalComment);
+	public AbstractTermMatrix(String[] terms, Map<String,Long> variables, File dir, String originalComment) {
+		this(terms, variables, dir, 5, originalComment);
 	}
 	
 	/**
 	 * constructor for the creation of a new directory
 	 */
-	public AbstractTermMatrix(String[] terms, File dir, int cacheSize, String originalComment) {
-		init(terms, dir, cacheSize, originalComment);
+	public AbstractTermMatrix(String[] terms, Map<String,Long> variables, File dir, int cacheSize, String originalComment) {
+		init(terms, variables, dir, cacheSize, originalComment);
 	}
 
-	protected void init(String[] terms, File dir, int cacheSize, String originalComment) {
+	protected void init(String[] terms, Map<String,Long> variables, File dir, int cacheSize, String originalComment) {
 		this.baseDir = dir;
 		this.setTerms(terms);
+		if (variables != null)
+			this.variables = variables;
+		else
+			this.variables = new HashMap<>();
 		
 		if (dir.exists() && dir.list().length > 0) { // dir exists and non-empty
 			if (terms != null) {
@@ -89,6 +93,11 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 			
 			File termTextFile = new File(this.baseDir, TERMS_TXT);
 			this.exporter = new MatTextFileExporter(termTextFile, originalComment);
+
+			this.variables.forEach( (key,value) -> {
+				exporter.writeScalar(key, value, null);
+			});
+
 			exporter.writeStringArray("terms", terms, "terms");
 			exporter.flush();
 			exporter.close();
@@ -118,9 +127,7 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 	 * constructor for the creation from an existing directory
 	 */
 	public AbstractTermMatrix(File dir) {
-		this.init(terms, dir, 1, null);
-//		this.initFromExisting(dir, cacheSize);
-//		this.openingStatus = OpeningStatus.EXISTING;
+		this.init(terms, null, dir, 1, null);
 	}
 
 	/**
@@ -131,7 +138,7 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 	protected abstract IntMatrixStore newIntMatrixStore(File file, int rows, int columns, int cacheSize) ;
 	
 	/**
-	 * @param cacheSize if -1, the cache size 
+	 * @param cacheSize if -1, the cache nrLines
 	 */
 	private void initFromExisting(File dir, int cacheSize) {
 		this.baseDir = dir;
@@ -150,7 +157,7 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 		}
 		
 		if (cacheSize < 0) 
-			throw new IllegalArgumentException("cache size must be a positive number of rows");
+			throw new IllegalArgumentException("cache nrLines must be a positive number of rows");
 		
 		{
 			File complexitiesFile = new File(dir, COMPLEXITIES_BINMAT);
@@ -254,10 +261,9 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 		return longScalar.longValue();
 	}
 
-	@Override
-	public void setVariable(String name, long value) {
-		this.exporter.writeScalar(name, value, "");
-	}
+//	protected void setVariable(String name, long value) {
+//		this.exporter.writeScalar(name, value, "");
+//	}
 
 	public File getTermMatFilename() {
 		return new File(this.baseDir, TERMS_TXT);

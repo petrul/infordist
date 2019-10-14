@@ -80,7 +80,7 @@ public interface ArithCodeModel {
      * <code>escaped(symbol)</code> followed by
      * <code>interval(ESCAPE)</code> must eventually lead to a a
      * <code>false</code> return from <code>escaped(symbol)</code>
-     * after a number of calls equal to the maximum context size.
+     * after a number of calls equal to the maximum context nrLines.
      * The integer representation of symbol is as in <code>interval</code>.
      * @param symbol Symbol to test whether it is encoded.
      * @return <code>true</code> if given symbol is not represented in the current context.

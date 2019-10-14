@@ -63,7 +63,7 @@ public class MatBinaryReader implements MatReader {
 			if ("string-array".equals(type)) {
 				try {
 					int i_rows = 1;
-					int i_cols = Integer.parseInt(map.get("size"));
+					int i_cols = Integer.parseInt(map.get("nrLines"));
 					return new BinaryNumberStream(map.get("name"), i_rows, i_cols, this.input);
 				} catch (NumberFormatException e) {
 					throw new IllegalStateException("could not parse rows or columns attribute for object [" + name + "]", e);

@@ -26,7 +26,8 @@ public class FsStringListGistDirectory extends AbstractFilesystemGistDirectory {
 
 	@Override
 	protected Gist newGist(byte[] bytes) {
-		return new StringListGist(new String(bytes, Constants.UTF8_CHARSET));
+//		return new StringListGist(new String(bytes, Constants.UTF8_CHARSET));
+		throw new RuntimeException("undefined");
 	}
 
 }

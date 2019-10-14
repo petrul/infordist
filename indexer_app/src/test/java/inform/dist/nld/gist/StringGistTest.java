@@ -7,9 +7,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
-public class StringListGistTest {
+public class StringGistTest {
 
 	@Test
 	public void testCombine() {
@@ -20,30 +21,28 @@ public class StringListGistTest {
 				"w x y\n";
 		
 		
-		StringListGist g1 = new StringListGist(s1);
-		StringListGist g2 = new StringListGist(s2);
+		StringGist g1 = new StringGist(s1);
+		assertEquals(3, g1.nrLines());
 
-//		LOG.info(g1.toString());
-//		LOG.info(g2.toString());
-		
-//		StringListGist both = (StringListGist) g1.clone();
+		StringGist g2 = new StringGist(s2);
+		assertEquals(2, g2.nrLines());
+
 		Gist both = g1.combine(g2);
-//		LOG.info(both.toString());
-//		LOG.info("asd"  + both.getStringList());
-		assertEquals(both.size(), g1.size() + g2.size());
+		assertEquals(both.nrLines(), g1.nrLines() + g2.nrLines());
 
-		List<Gist> subGists = both.getSubgists(6);
-		assertEquals(3, subGists.size());
-		assertEquals(2, subGists.get(0).size());
-		assertEquals(2, subGists.get(1).size());
-		assertEquals(1, subGists.get(2).size());
+//		List<Gist> subGists = both.getSubgists(6);
+//		assertEquals(3, subGists.size());
+//		assertEquals(2, subGists.get(0).nrLines());
+//		assertEquals(2, subGists.get(1).nrLines());
+//		assertEquals(1, subGists.get(2).nrLines());
 	}
 
 
 	@Test
 	public void testWriteTo() {
 		String s = "z y x\nc b a";
-		StringListGist gist  = new StringListGist(s);
+		StringGist gist  = new StringGist(s);
+		assert gist.nrLines() == 2;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		gist.writeTo(baos);
 		String resultingString = new String(baos.toByteArray(), Constants.UTF8_CHARSET);
@@ -51,5 +50,5 @@ public class StringListGistTest {
 		assertEquals(s, resultingString);
 	}
 	
-	static Logger LOG = Logger.getLogger(StringListGistTest.class);
+	static Logger LOG = Logger.getLogger(StringGistTest.class);
 }

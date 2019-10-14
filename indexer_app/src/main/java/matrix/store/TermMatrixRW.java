@@ -1,6 +1,7 @@
 package matrix.store;
 
 import java.io.File;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -14,12 +15,17 @@ public class TermMatrixRW extends AbstractTermMatrix {
 		super(dir);
 	}
 
-	public TermMatrixRW(String[] terms, File dir, int cacheSize, String originalComment) {
-		super(terms, dir, cacheSize, originalComment);
+
+	public TermMatrixRW(String[] terms, Map<String,Long> variables, File dir, int cacheSize, String originalComment) {
+		super(terms, variables, dir, cacheSize, originalComment);
+	}
+
+	public TermMatrixRW(String[] terms, Map<String,Long> variables, File dir, String originalComment) {
+		super(terms, variables, dir, originalComment);
 	}
 
 	public TermMatrixRW(String[] terms, File dir, String originalComment) {
-		super(terms, dir, originalComment);
+		this(terms, null, dir, originalComment);
 	}
 
 	@Override

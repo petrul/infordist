@@ -2,12 +2,7 @@ package inform.dist.nld.gist;
 
 import inform.dist.Constants;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +13,15 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 
 /**
- * A {@link StringListGist} or a {@link StringGist} contains words as strings. We can 
+ * Unlike a {@link FileGist} or a {@link StringGist} which contains words as strings. We can
  * spare some (lots of) bytes, by coding each word as a Short (16-bit = 2 bytes)
  *
- * haven't really tried this idea.
+ * update 2019 haven't really tried this idea back in 2010.
  * 
  * @author dadi
  *
  */
-public class BinaryGist extends AbstractGist {
+public class BinaryGist {
 	
 	List<List<Short>> codes;
 
@@ -39,9 +34,9 @@ public class BinaryGist extends AbstractGist {
 	 * 
 	 * @param maxBytes the approximate memory limit in bytes of this
 	 */
-	public BinaryGist(StringListGist stringListGist, Map<String, Short> codes, int maxBytes) {
+	public BinaryGist(StringGist stringListGist, Map<String, Short> codes, int maxBytes) {
 		int byteCounter = 0;
-		this.codes = new ArrayList<List<Short>>();
+		this.codes = new ArrayList<>();
 		for (String context : stringListGist.getStringList()) {
 			if (byteCounter > maxBytes) {
 				if (LOG.isDebugEnabled()) LOG.debug("reached limit of " + maxBytes);
@@ -63,8 +58,8 @@ public class BinaryGist extends AbstractGist {
 	}
 	
 	public BinaryGist(byte[] bytes) {
-		List<List<Short>> codes = new ArrayList<List<Short>>();
-		List<Short> crt = new ArrayList<Short>();
+		List<List<Short>> codes = new ArrayList<>();
+		List<Short> crt = new ArrayList<>();
 		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
 		try {
 			while(true) {
@@ -72,7 +67,7 @@ public class BinaryGist extends AbstractGist {
 				crt.add(nextShort);
 				if (nextShort == Short.MIN_VALUE + 1) {// end of context marker
 					codes.add(crt);
-					crt = new ArrayList<Short>();
+					crt = new ArrayList<>();
 				}
 			}
 		} catch (EOFException e) {
@@ -84,21 +79,20 @@ public class BinaryGist extends AbstractGist {
 		this.codes = codes;
 	}
 
-	@Override
-	public Gist combine(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy) {
-		return this.combine(anotherGist, 1);
+	public void combine(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy, OutputStream outputStream) {
+		this.combine(anotherGist, 1, outputStream);
 	}
 	
-	public Gist combine(Gist anotherGist, int interweaveBlockSize) {
+	public void combine(Gist anotherGist, int interweaveBlockSize, OutputStream outputStream) {
 		
 		BinaryGist theOther = (BinaryGist) anotherGist;
-		List<List<Short>> newCodes = new ArrayList<List<Short>>((int) (this.size() + anotherGist.size()));
+		List<List<Short>> newCodes = new ArrayList<List<Short>>((int) (this.nrLines() + anotherGist.nrLines()));
 		
 		int counter_this = 0;
 		int counter_that = 0;
 		
-		long size_this = this.size();
-		long size_that = anotherGist.size();
+		long size_this = this.nrLines();
+		long size_that = anotherGist.nrLines();
 		
 		while (counter_this < size_this || counter_that < size_that) {
 			{
@@ -130,12 +124,10 @@ public class BinaryGist extends AbstractGist {
 		throw new RuntimeException("unimpl");
 	}
 
-	@Override
-	public int size() {
+	public int nrLines() {
 		return this.codes.size();
 	}
 
-	@Override
 	public void writeTo(OutputStream os) {
 		try {
 			DataOutputStream daos = new DataOutputStream(os);
@@ -205,7 +197,7 @@ public class BinaryGist extends AbstractGist {
 	}
 	
 	
-	StringListGist decode(Map<String, Short> mapping) {
+	StringGist decode(Map<String, Short> mapping) {
 		Map<Short, String> revMapping = new HashMap<Short, String>(mapping.size());
 		for (String s : mapping.keySet()) {
 			Short code = mapping.get(s);
@@ -227,10 +219,10 @@ public class BinaryGist extends AbstractGist {
 			rows.add(sb.toString());
 		}
 		
-		return new StringListGist(rows);
+//		return new StringGist(rows);
+		throw new RuntimeException("undefined");
 	}
 	
-	@Override
 	public long getSizeInBytes() {
 		long size = 0;
 		for (List<Short> row : this.codes) {
@@ -238,16 +230,24 @@ public class BinaryGist extends AbstractGist {
 		}
 		return size;
 	}
-	
+
+	public InputStream openStreamForReading() {
+		throw new RuntimeException("undefined");
+	}
+
+	public OutputStream openStreamForWriting() {
+		throw new RuntimeException("undefined");
+	}
+
 	Logger LOG = Logger.getLogger(BinaryGist.class);
 
 	public List<List<Short>> getCodes() {
 		return codes;
 	}
 
-	@Override
-	public List<Gist> getSubgists(int subgistSizeInBytes) {
-		List<Gist> result = new ArrayList<Gist>();
+//	@Override
+	public List<BinaryGist> getSubgists(int subgistSizeInBytes) {
+		List<BinaryGist> result = new ArrayList<BinaryGist>();
 		int crtSize = 0;
 		List<List<Short>> subcodes = new ArrayList<List<Short>>();
 		for (int i = 0; i < this.codes.size(); i++) {

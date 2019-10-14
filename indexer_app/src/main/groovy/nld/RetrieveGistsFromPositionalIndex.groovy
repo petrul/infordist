@@ -29,14 +29,14 @@ class RetrieveGistsFromPositionalIndex {
 		println "got ${terms.size()} terms, will store them in $gistDir...";
 		def compressor = new Bzip2Compressor()
 		//compressor = new GzipCompressor()
-		def cache = new FsBinaryGistDirectory(gistDir, compressor);
+//		def cache = new FsBinaryGistDirectory(gistDir, compressor);
 		GistRetriever calc = new GistRetriever(index, cache)
 		//analyzer = new SnowballAnalyzer('English')
 
 		def executorService = Executors.newFixedThreadPool(nThreads)
 
 		def job = { termandfreq ->
-			println "calculating gist for ${termandfreq} ..."
+			println "calculating string for ${termandfreq} ..."
 //			if (!cache.hasGist(termandfreq.term)) { // useless, check is already done
 				calc.getGist(termandfreq.term)
 //			}

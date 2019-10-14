@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Filesystem-based gist directory. this is just a directory that compresses its contents.
+ * Filesystem-based string directory. this is just a directory that compresses its contents.
  * @author dadi
  *
  */
@@ -47,7 +47,7 @@ public abstract class AbstractFilesystemGistDirectory implements GistDirectory {
 		try {
 			File termFile = this.fileName(term); 
 			if (!termFile.exists())
-				throw new IllegalArgumentException("no gist for term [" + term + "] in directory [" + this.dir + "]");
+				throw new IllegalArgumentException("no string for term [" + term + "] in directory [" + this.dir + "]");
 			byte[] decompress = this.compressor.uncompress(new FileInputStream(termFile));
 			return this.newGist(decompress);
 		} catch (IOException e) {

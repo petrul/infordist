@@ -3,9 +3,10 @@ package matrix.store;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Random;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import matrix.store.AbstractTermMatrix.OpeningStatus;
 
@@ -44,8 +45,10 @@ public class TermMatrixRWTest {
 		for (int i = 0; i < nterms; i++) {
 			terms[i] = RandomStringUtils.randomAlphabetic(10);
 		}
-		
-		TermMatrixRW termMatrix = new TermMatrixRW(terms, f, "original comment");
+
+		HashMap<String,Long> variables = new HashMap<>();
+		variables.put("num_docs", 70L);
+		TermMatrixRW termMatrix = new TermMatrixRW(terms, variables, f, "original comment");
 		
 		int[] crnd = new int[nterms];
 		int[][] ccrnd = new int[nterms][nterms];
@@ -68,7 +71,7 @@ public class TermMatrixRWTest {
 			}
 		}
 		
-		termMatrix.setVariable("num_docs", 70);
+
 		termMatrix.close();
 		
 		Assert.assertEquals(OpeningStatus.NEW, termMatrix.openingStatus);

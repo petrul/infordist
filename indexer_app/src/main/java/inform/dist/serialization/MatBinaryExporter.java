@@ -124,7 +124,7 @@ public class MatBinaryExporter implements MatExporter {
 			HashMap<String, String> header = new HashMap<String, String>();
 			header.put("name", varName);
 			header.put("type", "string-array");
-			header.put("size", "" + strings.length);
+			header.put("nrLines", "" + strings.length);
 			header.put("comment", comment);
 
 			this.writeDataHeader(header);

@@ -4,6 +4,7 @@ import inform.dist.nld.compressor.Compressor;
 
 import java.io.File;
 
+@Deprecated
 public class FsBinaryGistDirectory extends AbstractFilesystemGistDirectory {
 
 
@@ -21,7 +22,8 @@ public class FsBinaryGistDirectory extends AbstractFilesystemGistDirectory {
 
 	@Override
 	protected Gist newGist(byte[] bytes) {
-		return new BinaryGist(bytes);
+		throw new RuntimeException("undefined");
+//		return new BinaryGist(bytes);
 	}
 
 }

@@ -18,11 +18,12 @@ public class TermMatrixReadOnly extends AbstractTermMatrix {
 	}
 
 	public TermMatrixReadOnly(String[] terms, File dir, int cacheSize, String originalComment) {
-		super(terms, dir, cacheSize, originalComment);
+		// 2nd arg is null because were not initializing anything, the variables if any are read from existing
+		super(terms, null, dir, cacheSize, originalComment);
 	}
 
 	public TermMatrixReadOnly(String[] terms, File dir, String originalComment) {
-		super(terms, dir, originalComment);
+		super(terms, null, dir, originalComment);
 	}
 
 	@Override

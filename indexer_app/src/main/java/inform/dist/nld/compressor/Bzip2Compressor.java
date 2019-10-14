@@ -12,23 +12,20 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
-public class Bzip2Compressor implements Compressor {
-
-	//public final static byte[] HEADER = new byte[]{(byte)'B', (byte)'Z'};
+public class Bzip2Compressor extends AbstractCompressor{
 
 	@Override
 	public long getComplexity(Gist s) {
 		try {
 			StopWatch watch = new StopWatch(); watch.start();
 			CountingOutputStream counterStream = new CountingOutputStream();
-//			counterStream.write(HEADER);
 			BZip2CompressorOutputStream bzos = new BZip2CompressorOutputStream(counterStream);
 			s.writeTo(bzos);
 			bzos.flush();
 			bzos.close();
 			
 			long result = counterStream.getCounter();
-			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of size " + s.size() + ", result is " + result  +" bytes long, took " + watch);
+			if (LOG.isDebugEnabled()) LOG.debug("done compressing string of nrLines " + s.nrLines() + ", result is " + result  +" bytes long, took " + watch);
 			
 			return result;
 		} catch (IOException e) {
@@ -41,7 +38,6 @@ public class Bzip2Compressor implements Compressor {
 		try {
 			StopWatch watch = new StopWatch(); watch.start();
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//			bytes.write(HEADER);
 			BZip2CompressorOutputStream bzos = new BZip2CompressorOutputStream(bytes);
 			s.writeTo(bzos);
 			bzos.close();
@@ -49,7 +45,7 @@ public class Bzip2Compressor implements Compressor {
 			byte[] result = bytes.toByteArray();
 
 			if (LOG.isDebugEnabled())  
-				LOG.debug("done compressing string of size " + s.size() + ", result is " + result  +" bytes long, took " + watch);
+				LOG.debug("done compressing string of nrLines " + s.nrLines() + ", result is " + result  +" bytes long, took " + watch);
 			
 			return result;
 		} catch (IOException e) {
@@ -67,12 +63,7 @@ public class Bzip2Compressor implements Compressor {
 
 	@Override
 	public byte[] uncompress(InputStream inputStream) {
-//		byte[] header = new byte[2];
 		try {
-//			inputStream.read(header);
-//			if (! (header[0] == HEADER[0] && header[1] == HEADER[1]))
-//				throw new IllegalStateException("bzip2 file does not start properly, with BZ");
-//			
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			BZip2CompressorInputStream bzip2 = new BZip2CompressorInputStream(new BufferedInputStream(inputStream));
 			int c;
@@ -85,6 +76,5 @@ public class Bzip2Compressor implements Compressor {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 }

@@ -39,7 +39,7 @@ public class LsaExtractor implements Runnable {
 	/* a document is split into text window sizes ; for each window there will be generated a random vector */
 	int windowSize = DEFAULT_WINDOW_SIZE; // nr of terms per window
 	
-	/* the size of a term vector, random vector */
+	/* the nrLines of a term vector, random vector */
 	int termVectorLength = 1800;
 	
 	int nrRandomNonZeroEntries = 8;
@@ -64,7 +64,7 @@ public class LsaExtractor implements Runnable {
 			int totalTerms = term_id_map.size();
 			int totalDocs = idxReader.maxDoc();
 			
-			LOG.info("a total of " + totalDocs + " documents reported by the index. will use a text window size of " + this.windowSize);
+			LOG.info("a total of " + totalDocs + " documents reported by the index. will use a text window nrLines of " + this.windowSize);
 			
 			if (totalTerms < this.nrTerms) {
 				int totalNumberOfDocumentInThisFreakingIndex = 0;
@@ -201,7 +201,7 @@ public class LsaExtractor implements Runnable {
 	 */
 	public static double cosine(long[] x, long[] y) {
 		if (x.length != y.length)
-			throw new IllegalArgumentException("the two vectors should have the same size");
+			throw new IllegalArgumentException("the two vectors should have the same nrLines");
 
 		double scalarProduct = 0.0;
 		double norm_x = 0.0;
@@ -263,7 +263,7 @@ public class LsaExtractor implements Runnable {
 			int windowSize = DEFAULT_WINDOW_SIZE;
 			if (cmd.hasOption("windowsize"))
 				windowSize = Integer.parseInt(cmd.getOptionValue("windowsize"));
-			LOG.info("using a text window size of " + windowSize);
+			LOG.info("using a text window nrLines of " + windowSize);
 			
 			LsaExtractor lsa = new LsaExtractor(cmd.getOptionValue("index"), n, minfreq, windowSize, outfile);
 			
@@ -335,7 +335,7 @@ public class LsaExtractor implements Runnable {
 				.withArgName("number")
 				.hasArg()
 				.isRequired(false)
-				.withDescription("text window size in words, default " + DEFAULT_WINDOW_SIZE)
+				.withDescription("text window nrLines in words, default " + DEFAULT_WINDOW_SIZE)
 				.withLongOpt("windowsize")
 				.create("w");
 		options.addOption(opt);

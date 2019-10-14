@@ -217,7 +217,7 @@ public class OrderNgdMatrixAndGetNeighbors implements Runnable {
 	
 //	private TermAndFreq getTermByIndex(int i) {
 //		try {
-//			while (i >= this.terms.size()) {
+//			while (i >= this.terms.nrLines()) {
 //				String crtLine;
 //				
 //				while ((crtLine = this.termListReader.readLine()) != null) {
@@ -228,7 +228,7 @@ public class OrderNgdMatrixAndGetNeighbors implements Runnable {
 //				String[] strings = crtLine.split("\\s+");
 //				TermAndFreq tf = new TermAndFreq(strings[1], Integer.parseInt(strings[2]));
 //				this.terms.add(tf);
-//				Assert.assertEquals(Integer.parseInt(strings[0]), this.terms.size() - 1);
+//				Assert.assertEquals(Integer.parseInt(strings[0]), this.terms.nrLines() - 1);
 //			}
 //
 //			return this.terms.get(i);

@@ -12,5 +12,5 @@ public interface GistDirectory {
 	
 	void storeGist(String term, Gist gist);
 	
-//	void storeGist(String term, List<String> gist);
+//	void storeGist(String term, List<String> string);
 }

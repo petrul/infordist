@@ -12,7 +12,7 @@ import org.apache.log4j.lf5.util.StreamUtils;
  * Dummy Compressor implementation that does not compress.
  * @author dadi
  */
-public class NoCompressor implements Compressor {
+public class NoCompressor extends AbstractCompressor {
 
 	@Override
 	public byte[] compress(Gist s) {

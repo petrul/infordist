@@ -127,11 +127,11 @@ public final class Test {
      */
     private Test() { }
 
-    /** Runs tests from 1 to give size, increasing size by a factor
-     * of two at each step.  For each size, a test is made of a constant
+    /** Runs tests from 1 to give nrLines, increasing nrLines by a factor
+     * of two at each step.  For each nrLines, a test is made of a constant
      * string consisting of repetitions of a single character, and a test of a random sequence of
      * letters and then a random sequence of bytes.
-     * @param size Maximum size up to which to test.
+     * @param size Maximum nrLines up to which to test.
      * @throws IOException If there is an underlying I/O exception during compression/decompression.
      */
     private static void testSize(int size) throws IOException {

@@ -2,6 +2,7 @@ package inform.dist.nld.compressor;
 
 import static org.junit.Assert.assertEquals;
 import inform.dist.Constants;
+import inform.dist.nld.gist.StringGist;
 import inform.dist.nld.gist.StringListGist;
 
 import java.io.ByteArrayInputStream;
@@ -17,7 +18,7 @@ public class Bzip2CompressorTest {
 	@Test
 	public void testCompress() throws UnsupportedEncodingException {
 		String s = RandomStringUtils.randomAlphabetic(100 * 1000);
-		byte[] compressed = bzip2.compress(new StringListGist(s));
+		byte[] compressed = bzip2.compress(new StringGist(s));
 		byte[] decompress = bzip2.uncompress(new ByteArrayInputStream(compressed));
 		assertEquals(new String(decompress, Constants.UTF8_ENCODING), s);
 	}

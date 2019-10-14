@@ -23,7 +23,7 @@ println ("total number of documents ${searcher.indexReader.maxDoc()}")
 println("got ${termsSet.size()} terms with frequency > $minFreq") ;
 new File("terms-" + RandomStringUtils.randomAlphabetic(5) + ".txt").withWriter("UTF-8") { writer ->
 	writer.write ("#total number of documents ${searcher.indexReader.maxDoc()}\n")
-	writer.write ("#got ${termsSet.size()} terms with frequency > $minFreq\n") ;
+	writer.write ("#got ${termsSet.nrLines()} terms with frequency > $minFreq\n") ;
 	int counter = 0;
 	termsSet.each {
 		writer.write("${counter}\t${it.term}\t${it.freq}\n")
