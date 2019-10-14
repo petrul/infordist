@@ -140,7 +140,7 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 	/**
 	 * @param cacheSize if -1, the cache nrLines
 	 */
-	private void initFromExisting(File dir, int cacheSize) {
+	protected void initFromExisting(File dir, int cacheSize) {
 		this.baseDir = dir;
 		if (!dir.exists())
 			throw new IllegalArgumentException("expected directory [" + dir + "] to exist");
@@ -148,16 +148,18 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 		{
 			MatTextFileReader reader = new MatTextFileReader(new File(dir, TERMS_TXT));
 			String[] terms = reader.getStringArray("terms");
+
 			this.terms = terms;
 			this.nterms = terms.length;
-			this.terms_id = new HashMap<String, Integer>(nterms);
+			this.terms_id = new HashMap<>(nterms);
+
 			for (int i = 0; i < nterms; i++) {
 				this.terms_id.put(terms[i], i);
 			}
 		}
 		
 		if (cacheSize < 0) 
-			throw new IllegalArgumentException("cache nrLines must be a positive number of rows");
+			throw new IllegalArgumentException("cache size must be a positive number of rows");
 		
 		{
 			File complexitiesFile = new File(dir, COMPLEXITIES_BINMAT);
@@ -196,14 +198,13 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 		return this.terms;
 	}
 
-	@Override
-	public void setTerms(String[] terms) {
+	protected void setTerms(String[] terms) {
 		Assert.assertNull(this.terms); // you may only set terms once
-		
+
 		this.terms = terms;
-		
+
 		if (terms == null) return;
-		
+
 		this.nterms = terms.length;
 		this.terms_id = new HashMap<String, Integer>(nterms);
 		for (int i = 0; i < nterms; i++) {

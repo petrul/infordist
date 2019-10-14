@@ -38,9 +38,11 @@ it will output something like:
     term which appeared 8084038 times in 2434352 docs, has a gist size in contexts of 8084038, gist retrieval took 0:27:18.450
     term other appeared 6367092 times in 2407251 docs, has a gist size in contexts of 6367092, gist retrieval took 0:26:58.600
 
-then run
+then run ncd
 
 $ groovy ncd -i ~/Desktop/gists.bz2/
+
+this script may take a very long time to end.
 
 BUGS
 ====

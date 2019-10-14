@@ -1,12 +1,10 @@
 package inform.dist.nld.compressor;
 
-import com.sun.org.apache.regexp.internal.RE;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Compressors  {
+public class Compressors {
     public static Map<String, Compressor> REGISTRY = new HashMap<>();
 
     static {

@@ -10,7 +10,7 @@ def run(String[] args) {
 	String termMatrixLocation = args[0]
 	String term = args[1]
 	
-	TermMatrixReadOnly tm = new TermMatrixReadOnly(new File(termMatrixLocation), 1);
+	TermMatrixReadOnly tm = new TermMatrixReadOnly(new File(termMatrixLocation));
 	terms = tm.terms
 	
 	c_term = tm.getComplexity(term)

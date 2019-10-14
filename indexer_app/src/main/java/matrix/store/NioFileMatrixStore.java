@@ -40,7 +40,8 @@ public class NioFileMatrixStore implements IntMatrixStore {
 
 
 	/**
-	 * @param cacheSize the number of rows to keep available in memory for quick access
+	 * @param cacheSize the number of rows to keep available in memory for quick access.
+	 *                  should be equal to the number of paralles threads working on this matrix (8 on octoprocessor)
 	 */
 	public NioFileMatrixStore(File f, int rows, int columns, int cacheSize,
 			String openMode) {
@@ -98,17 +99,15 @@ public class NioFileMatrixStore implements IntMatrixStore {
 	@Override
 	public void put(int i, int j, int elem) {
 		IntBuffer row = this.getRow(i);
-		;
+
 		row.put(j, elem);
 	}
 
 	@Override
 	public void putRow(int i, int[] elems) {
 		Assert.assertEquals(this.columns, elems.length);
-		long position = this.startingPosition + (long) BYTES_PER_INT * (long) i
-				* (long) this.columns; // 4 bytes per int
-		ByteBuffer byteBuffer = ByteBuffer.allocate(BYTES_PER_INT
-				* elems.length);
+		long position = this.startingPosition + (long) BYTES_PER_INT * (long) i * (long) this.columns; // 4 bytes per int
+		ByteBuffer byteBuffer = ByteBuffer.allocate(BYTES_PER_INT * elems.length);
 		IntBuffer intBuffer = byteBuffer.asIntBuffer();
 		intBuffer.put(elems);
 		try {
@@ -128,6 +127,7 @@ public class NioFileMatrixStore implements IntMatrixStore {
 	 */
 	public int[] copyOfRow(int i) {
 		IntBuffer rowbuff = this.getRow(i);
+		rowbuff.position(0);
 		Assert.assertEquals(this.columns, rowbuff.capacity());
 		int[] row = new int[this.columns];
 		for (int counter = 0; counter < this.columns; counter++)
@@ -145,12 +145,11 @@ public class NioFileMatrixStore implements IntMatrixStore {
 
 	protected IntBuffer loadRowsIntoMemory(int i) {
 		try {
-			long position = this.startingPosition + BYTES_PER_INT * i
-					* this.columns;
+			long position = this.startingPosition + BYTES_PER_INT * i * this.columns;
 			long rowsize = BYTES_PER_INT * this.columns;
 
-			MapMode mapmode = this.openMode.equals("r") ? FileChannel.MapMode.READ_ONLY
-					: FileChannel.MapMode.READ_WRITE;
+			MapMode mapmode = this.openMode.equals("r") ?
+					FileChannel.MapMode.READ_ONLY : FileChannel.MapMode.READ_WRITE;
 			MappedByteBuffer mbb = this.channel.map(mapmode, position, rowsize);
 			IntBuffer result = mbb.asIntBuffer();
 			this.cache.put(i, result);

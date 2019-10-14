@@ -31,7 +31,7 @@ public interface TermMatrix {
 	
 
 	String[] getTerms();
-	void setTerms(String[] terms);
+//	void setTerms(String[] terms);
 	
 	String getTerm(int index);
 	

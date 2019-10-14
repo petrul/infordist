@@ -9,21 +9,12 @@ import java.io.File;
  */
 public class TermMatrixReadOnly extends AbstractTermMatrix {
 
-	/* don't use this */
-	public TermMatrixReadOnly() {
+	public TermMatrixReadOnly(File dir, int cacheSize) {
+		super.initFromExisting(dir, cacheSize);
 	}
-	
+
 	public TermMatrixReadOnly(File dir) {
-		super(dir);
-	}
-
-	public TermMatrixReadOnly(String[] terms, File dir, int cacheSize, String originalComment) {
-		// 2nd arg is null because were not initializing anything, the variables if any are read from existing
-		super(terms, null, dir, cacheSize, originalComment);
-	}
-
-	public TermMatrixReadOnly(String[] terms, File dir, String originalComment) {
-		super(terms, null, dir, originalComment);
+		this(dir, 8);
 	}
 
 	@Override
