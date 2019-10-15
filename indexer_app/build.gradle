@@ -64,6 +64,25 @@ applicationDistribution.into("bin") {
     fileMode = 0755
 }
 
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'myRepo'
+            if(project.version.endsWith('-SNAPSHOT')) {
+                url = "file:///gv0/repo/snapshots"
+            } else {
+                url = "file:///gv0/repo/releases"
+            }
+        }
+    }
+}
+
 repositories {
     mavenLocal()
     maven {
