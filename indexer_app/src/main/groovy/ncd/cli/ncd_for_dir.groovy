@@ -157,12 +157,12 @@ def parseCommandLine() {
 
         cli_options.enforce_recomputation = cmd.getOptionValue("enforce_recompution") ?: false
 
-        cli_options.outdir = cmd.getOptionValue("outdir") ?: "~/ncd-matrix"
+        cli_options.outdir = cmd.getOptionValue("outdir") ?: "ncd-matrix"
         cli_options.outdir = cli_options.outdir.replace('~', System.getProperty("user.home"))
         cli_options.indir  = cmd.getOptionValue("input-dir")
         cli_options.indir  = cli_options.indir.replace('~', System.getProperty("user.home"))
 
-        cli_options.nrthreads  = cmd.getOptionValue("nrthreads") ?: NR_THREADS
+        cli_options.nrthreads  = Integer.parseInt(cmd.getOptionValue("nrthreads")) ?: NR_THREADS
         cli_options.compressor = cmd.getOptionValue("compressor") ?: "bz2"
 
 

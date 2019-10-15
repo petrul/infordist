@@ -88,7 +88,7 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 			}
 		} else {
 			// really create the matrix
-			LOG.info("creating the term matrix at location " + dir + ", it may take a while...");
+			LOG.info("creating the term matrix at location " + dir);
 			dir.mkdirs();
 			
 			File termTextFile = new File(this.baseDir, TERMS_TXT);

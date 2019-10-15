@@ -2,16 +2,15 @@ Download the wikipedia dump xml.
 
 Run WikipediaIndexer on it.
 
-java  wiki.indexer.cli.WikipediaIndexer -x /path/to/dump.xml
+$ java  wiki.indexer.cli.WikipediaIndexer -x /path/to/dump.xml
 
 indexed 20 million pages.
 
 then apply NGD:
 
-$java inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex
+$ java inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex
 
 This will generate you a term matrix which you can inspect to get NGD-based semantic neighbourhoods.
-
 
 or, to apply NCD (I called it nld, normalized 'lucene' distance), first get a directory full of gists
 (that is windows of meaning for each term)
@@ -38,11 +37,11 @@ it will output something like:
     term which appeared 8084038 times in 2434352 docs, has a gist size in contexts of 8084038, gist retrieval took 0:27:18.450
     term other appeared 6367092 times in 2407251 docs, has a gist size in contexts of 6367092, gist retrieval took 0:26:58.600
 
-then run ncd
+then run ncd:
 
-$ groovy ncd -i ~/Desktop/gists.bz2/
+$ groovy ncd_for_dir -i ~/Desktop/gists.bz2/
 
-this script may take a very long time to end.
+the script may take a long time.
 
 BUGS
 ====

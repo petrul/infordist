@@ -33,7 +33,7 @@ public class TermNeighbourhoodExportXml extends HttpServlet {
 		if (!dsFile.exists())
 			throw new IllegalArgumentException("no matrix datasource at location [" + dsFile +"]");
 		LOG.info("datasource matrix is located at [" + dsLocation + "]");
-		this.matrix = new TermMatrixReadOnly(null, dsFile, 1, null);
+		this.matrix = new TermMatrixReadOnly(dsFile, 1);
 		this.termService = new TermService();
 		this.termService.setDatasource(this.matrix);
 	}

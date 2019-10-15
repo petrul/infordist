@@ -11,6 +11,14 @@ startScripts {
     applicationDefaultJvmArgs  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4444", "-Dcom.sun.management.jmxremote.authenticate=false"]
 }
 
+task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
+    mainClassName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
+    description = "from a positional index retrieves the term matrix if co-occurrence data the can be used the get the semantic neighbourhood"
+    applicationName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
+    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    outputDir = file('build/scripts')
+    classpath = startScripts.classpath
+}
 
 task retrieveGistsFromIndex(type: CreateStartScripts) {
     mainClassName = "ncd.cli.RetrieveGistsFromPositionalIndex"
@@ -57,10 +65,12 @@ task termMatrixGetRow(type: CreateStartScripts) {
 applicationDistribution.into("bin") {
     duplicatesStrategy= DuplicatesStrategy.EXCLUDE
     from(retrieveGistsFromIndex)
+    from(extractTermFrequenciesMatrixFromPositionalIndex)
     from(ncdScriptFor2Files)
     from(ncdScriptForDir)
     from(termMatrixGetNeighbours)
     from(termMatrixGetRow)
+
     fileMode = 0755
 }
 

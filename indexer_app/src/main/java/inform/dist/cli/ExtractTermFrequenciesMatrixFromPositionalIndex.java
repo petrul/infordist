@@ -27,7 +27,8 @@ import wiki.indexer.TermAndFreq;
 import wiki.indexer.storage.SimpleTermCooccurrenceStorage;
 
 /**
- * from a positional index retrieves
+ * from a positional index retrieves the term matrix if co-occurrence data the can be used the get the semantic
+ * neighbourhood
  */
 public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable {
 
