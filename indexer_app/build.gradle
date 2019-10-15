@@ -74,25 +74,6 @@ applicationDistribution.into("bin") {
     fileMode = 0755
 }
 
-publishing {
-    publications {
-        myLibrary(MavenPublication) {
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            name = 'myRepo'
-            if(project.version.endsWith('-SNAPSHOT')) {
-                url = "file:///gv0/repo/snapshots"
-            } else {
-                url = "file:///gv0/repo/releases"
-            }
-        }
-    }
-}
-
 repositories {
     mavenLocal()
     maven {
@@ -122,6 +103,27 @@ group = 'pertinence'
 version = '1.1-SNAPSHOT'
 description = 'NGD/NCD indexer app'
 sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'myRepo'
+            if(project.version.endsWith('-SNAPSHOT')) {
+                url = "file:///gv0/repo/snapshots"
+            } else {
+                url = "file:///gv0/repo/releases"
+            }
+        }
+    }
+}
+
+
 
 publishing {
     publications {
