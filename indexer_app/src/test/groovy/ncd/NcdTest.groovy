@@ -1,7 +1,7 @@
 package ncd
 
-import inform.dist.nld.gist.FileGist
-import inform.dist.nld.gist.Gist
+import inform.dist.ncd.gist.FileGist
+import inform.dist.ncd.gist.Gist
 import org.apache.commons.lang.time.StopWatch
 import org.junit.Test
 

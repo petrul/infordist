@@ -13,25 +13,54 @@ startScripts {
 
 
 task retrieveGistsFromIndex(type: CreateStartScripts) {
-    mainClassName = "ncd.RetrieveGistsFromPositionalIndex"
+    mainClassName = "ncd.cli.RetrieveGistsFromPositionalIndex"
+    description = "given a positional index like the one created by wikipedia-indexer, creates a directory full of bzipped gists"
     applicationName = "retrieve-gists-from-positional-index"
     defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
-task ncdScript(type: CreateStartScripts) {
-    mainClassName = "ncd.ncd"
-    applicationName = "ncd"
+task ncdScriptFor2Files(type: CreateStartScripts) {
+    mainClassName = "ncd.cli.ncd_for_two_files"
+    applicationName = "ncd_for_two"
     defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
+task ncdScriptForDir(type: CreateStartScripts) {
+    mainClassName = "ncd.cli.ncd_for_dir"
+    applicationName = "ncd_for_dir"
+    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    outputDir = file('build/scripts')
+    classpath = startScripts.classpath
+}
+
+task termMatrixGetNeighbours(type: CreateStartScripts) {
+    mainClassName = "ncd.cli.term_matrix_get_neighbours"
+    applicationName = "term_matrix_get_neighbours"
+    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    outputDir = file('build/scripts')
+    classpath = startScripts.classpath
+}
+
+task termMatrixGetRow(type: CreateStartScripts) {
+    mainClassName = "ncd.cli.term_matrix_get_row"
+    applicationName = "term_matrix_get_row"
+    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    outputDir = file('build/scripts')
+    classpath = startScripts.classpath
+}
+
+
 applicationDistribution.into("bin") {
     duplicatesStrategy= DuplicatesStrategy.EXCLUDE
     from(retrieveGistsFromIndex)
-    from(ncdScript)
+    from(ncdScriptFor2Files)
+    from(ncdScriptForDir)
+    from(termMatrixGetNeighbours)
+    from(termMatrixGetRow)
     fileMode = 0755
 }
 

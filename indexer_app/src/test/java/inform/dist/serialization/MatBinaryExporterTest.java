@@ -7,7 +7,7 @@ import java.io.File;
 import java.nio.BufferUnderflowException;
 import java.util.Random;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -97,7 +97,7 @@ public class MatBinaryExporterTest {
 				for (int j = 0; j < columns; j++) {
 					Assert.assertEquals(
 							"not equal for i = " + i + " and j = " + j + "", 
-							reread_arr[j], arr[i][j]);
+							reread_arr[j], arr[i][j], 0.0);
 				}
 			}
 			
