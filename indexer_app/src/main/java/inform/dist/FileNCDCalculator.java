@@ -1,7 +1,10 @@
 package inform.dist;
 
 import inform.dist.ncd.compressor.Compressor;
+import inform.dist.ncd.gist.AbstractGist;
 import inform.dist.ncd.gist.FileGist;
+import inform.dist.ncd.gist.Gist;
+import inform.dist.ncd.gist.combining.GistCombiningPolicy;
 
 import java.io.File;
 import java.net.URL;
@@ -11,9 +14,10 @@ import java.net.URL;
  */
 public class FileNCDCalculator {
 
-    private final Compressor compressor;
-    FileGist g1;
-    FileGist g2;
+    private Compressor compressor;
+    GistCombiningPolicy.Policy policy;
+    Gist g1;
+    Gist g2;
 
     long uncd = -1;
     double ncd = -1.0;
@@ -24,25 +28,33 @@ public class FileNCDCalculator {
 
 
     public FileNCDCalculator(URL url1, URL url2, Compressor compressor) {
-        this(new FileGist(url1), new FileGist(url2), compressor);
+        this(url1, url2, compressor,  GistCombiningPolicy.Policy.INTERLACE_EVEN);
+    }
+    public FileNCDCalculator(URL url1, URL url2, Compressor compressor, GistCombiningPolicy.Policy policy) {
+        init(new FileGist(url1), new FileGist(url2), compressor, policy);
     }
 
-    public FileNCDCalculator(File f1, File f2, Compressor compressor) {
-        this(new FileGist(f1), new FileGist(f2), compressor);
+    public FileNCDCalculator(File f1, File f2, Compressor compressor, GistCombiningPolicy.Policy policy) {
+        this(new FileGist(f1), new FileGist(f2), compressor, policy);
 
     }
 
-    public FileNCDCalculator(FileGist g1, FileGist g2, Compressor compressor) {
+    public FileNCDCalculator(AbstractGist g1, Gist g2, Compressor compressor, GistCombiningPolicy.Policy policy) {
+        init(g1, g2, compressor, policy);
+    }
+
+    private void init(AbstractGist g1, Gist g2, Compressor compressor, GistCombiningPolicy.Policy policy) {
         this.g1 = g1;
         this.g2 = g2;
         this.compressor = compressor;
+        this.policy = policy;
     }
-
 
     public void compute() {
         this.c1 = g1.computeComplexity(compressor);
         this.c2 = g2.computeComplexity(compressor);
-        this.cc = g1.combine(g2).computeComplexity(compressor);
+        AbstractGist ag1 = (AbstractGist)g1;
+        this.cc = ag1.combine(g2, this.policy).computeComplexity(compressor);
     }
 
     public long getUnnormalizedDistance() {

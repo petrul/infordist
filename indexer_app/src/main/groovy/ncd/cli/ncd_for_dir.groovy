@@ -30,7 +30,7 @@ NR_THREADS = 8
 
 cli_options = [:]
 
-LOG = Logger.getLogger(ncd_for_dir.class);
+LOG = Logger.getLogger(this.class);
 
 
 def computeNcdRowForTerm(final String main_term, final Gist main_gist, final String[] terms_to_compare, final TermMatrix matrix) {
@@ -40,7 +40,6 @@ def computeNcdRowForTerm(final String main_term, final Gist main_gist, final Str
 
     for (term2 in terms_to_compare) {
         StopWatch watch = new StopWatch(); watch.start()
-
 
         println("starting [$main_term - $term2] on [${Thread.currentThread().getName()}]...")
 
@@ -62,18 +61,24 @@ def computeNcdRowForTerm(final String main_term, final Gist main_gist, final Str
 
 def main1(String[] args) {
 
-    this.parseCommandLine();
+    try {
+        parseCommandLine();
+    } catch (ParseException e) {
+        println e.message
+        printUsage(options)
+        return
+    }
 
     nrThreads = cli_options.nrthreads
     outdir = cli_options.outdir
-    indir = cli_options.indir
+    String indir = cli_options.indir
+    if (new File(indir).exists() && !new File(indir).isDirectory()) {
+        println("input-dir should exist and be a directory: $indir")
+        return
+    }
 
     Bzip2Compressor compressor = new Bzip2Compressor()
-
     println "opening indir ${indir}"
-    if (indir == null || !new File(indir).exists() || !new File(indir).isDirectory()) {
-        throw new IllegalArgumentException("input-dir should exist and be a directory: $indir")
-    }
 
     String[] bz2_files = new File(indir).list()
     bz2_files.each { assert it.endsWith(".bz2") }
@@ -106,7 +111,6 @@ def main1(String[] args) {
 
         println "calculating neighbourhood for term $main_term ..."
         String[] terms_not_yet_done = terms.findAll {
-//            matrix.getTermIndex(it) >= matrix.getTermIndex(main_term) && // this is a triangular matrix
             matrix.getCombinedComplexity(main_term, it) == -1
         }
 
@@ -132,47 +136,40 @@ def main1(String[] args) {
 
 }
 
-
+Options options
 def parseCommandLine() {
-    Options options = buildOptions();
+     options = buildOptions();
 
-    try {
-
-        CommandLineParser parser = new GnuParser();
-        CommandLine cmd = parser.parse(options, args);
-
-        if (cmd.hasOption("help")) {
-            printUsage(options);
-            return;
-        }
+//    try {
 
         System.out.println("****************************************************************************");
         System.out.println("* Semantic tool for computing NCD from a directory of files 			   *");
         System.out.println("****************************************************************************");
         System.out.flush()
 
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        if (cmd.hasOption("help")) {
+            printUsage(options);
+            throw new RuntimeException("help displayed.")
+        }
 
         cli_options.enforce_recomputation = cmd.getOptionValue("enforce_recompution") ?: false
 
         cli_options.outdir = cmd.getOptionValue("outdir") ?: "~/ncd-matrix"
         cli_options.outdir = cli_options.outdir.replace('~', System.getProperty("user.home"))
-        cli_options.indir = cmd.getOptionValue("input-dir") ?: "~/files-dir"
-        cli_options.indir = cli_options.indir.replace('~', System.getProperty("user.home"))
+        cli_options.indir  = cmd.getOptionValue("input-dir")
+        cli_options.indir  = cli_options.indir.replace('~', System.getProperty("user.home"))
 
-        cli_options.nrthreads = cmd.getOptionValue("nrthreads") ?: NR_THREADS
+        cli_options.nrthreads  = cmd.getOptionValue("nrthreads") ?: NR_THREADS
         cli_options.compressor = cmd.getOptionValue("compressor") ?: "bz2"
 
 
-        LOG.info(cli_options)
+        println(cli_options)
 
 
-        LOG.info("will output to directory [" + new File(cli_options.outdir).getAbsolutePath() + "]");
-
-
-    } catch (ParseException e) {
-        System.err.println("Arguments problem. " + e.getMessage());
-        printUsage(options);
-    }
+        println("will output to directory [" + new File(cli_options.outdir).getAbsolutePath() + "]");
 
 }
 
@@ -233,8 +230,7 @@ private static void printUsage(Options options) {
     formatter.printHelp("ncd.groovy indexLocation nocache|cache term1 term2 ...\");", options)
 }
 
-
-this.main1(args)
+main1(args)
 
 
 
