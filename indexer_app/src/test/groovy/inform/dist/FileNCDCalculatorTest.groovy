@@ -44,23 +44,4 @@ class FileNCDCalculatorTest {
         println calc.getNormalizedDistance()
     }
 
-
-    @Test
-    public void getNormalizedDistance() {
-        fail()
-    }
-
-    @Test
-    public void getC1() {
-        fail()
-    }
-
-    @Test
-    public void getC2() {
-        fail()
-    }
-
-    @Test
-    public void getCc() {
-    }
 }
