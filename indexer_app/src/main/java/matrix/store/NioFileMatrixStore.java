@@ -136,11 +136,12 @@ public class NioFileMatrixStore implements IntMatrixStore {
 	}
 
 	protected IntBuffer getRow(int i) {
-		Assert.assertTrue(i < this.rows);
-		if (this.cache.containsKey(i))
-			return ((IntBuffer) this.cache.get(i));
-		return this.loadRowsIntoMemory(i);
-
+		synchronized (this.cache) {
+			Assert.assertTrue(i < this.rows);
+			if (this.cache.containsKey(i))
+				return ((IntBuffer) this.cache.get(i));
+			return this.loadRowsIntoMemory(i);
+		}
 	}
 
 	protected IntBuffer loadRowsIntoMemory(int i) {

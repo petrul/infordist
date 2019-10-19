@@ -27,7 +27,9 @@ public class StringGist extends AbstractGist {
 
 	public StringGist(FileGist fileGist) {
 		try {
-			this.string = IOUtils.toString(fileGist.openStreamForReading());
+			final InputStream inputStream = fileGist.openStreamForReading();
+			this.string = IOUtils.toString(inputStream);
+			inputStream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

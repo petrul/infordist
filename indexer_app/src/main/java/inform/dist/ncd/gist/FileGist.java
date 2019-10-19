@@ -73,7 +73,9 @@ public class FileGist extends AbstractGist {
             this.initialCompressor = compressor;
 
         try {
-            this.initFromInputStream(url.openStream(), this.initialCompressor);
+            final InputStream inputStream = url.openStream();
+            this.initFromInputStream(inputStream, this.initialCompressor);
+            inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -130,8 +132,10 @@ public class FileGist extends AbstractGist {
 
     public void writeTo(OutputStream os) {
         try {
-            IOUtils.copy(this.openStreamForReading(), os);
+            final InputStream inputStream = this.openStreamForReading();
+            IOUtils.copy(inputStream, os);
             os.flush();
+            inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -156,7 +160,9 @@ public class FileGist extends AbstractGist {
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            IOUtils.copy(this.openStreamForReading(), baos);
+            final InputStream inputStream = this.openStreamForReading();
+            IOUtils.copy(inputStream, baos);
+            inputStream.close();
             String s = new String(baos.toByteArray());
             return Arrays.asList(s.split("\n"));
         } catch (IOException e) {
@@ -297,7 +303,10 @@ public class FileGist extends AbstractGist {
                     throw new RuntimeException(e);
                 }
             }
-            return  this.nextLine != null;
+
+            final boolean retValue = this.nextLine != null;
+
+            return retValue;
         }
 
         @Override
