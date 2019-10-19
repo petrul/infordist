@@ -1,7 +1,8 @@
 package ncd.cli
 
-import inform.dist.ncd.GistRetriever
+import inform.dist.ncd.gist.GistRetriever
 import inform.dist.ncd.compressor.Bzip2Compressor
+import inform.dist.ncd.gist.StringGist
 import inform.lucene.IndexUtil
 import org.apache.lucene.index.IndexReader
 
@@ -29,7 +30,7 @@ class RetrieveGistsFromPositionalIndex {
         def compressor = new Bzip2Compressor()
         //compressor = new GzipCompressor()
 //		def cache = new FsBinaryGistDirectory(gistDir, compressor);
-        GistRetriever calc = new GistRetriever(index, cache)
+        GistRetriever calc = new GistRetriever(index)
         //analyzer = new SnowballAnalyzer('English')
 
         def executorService = Executors.newFixedThreadPool(nThreads)
@@ -37,7 +38,8 @@ class RetrieveGistsFromPositionalIndex {
         def job = { termandfreq ->
             println "calculating string for ${termandfreq} ..."
 //			if (!cache.hasGist(termandfreq.term)) { // useless, check is already done
-            calc.getGist(termandfreq.term)
+            StringGist gist = calc.getGist(termandfreq.term)
+            gist.writeTo(new BufferedOutputStream(new FileOutputStream(new File(gistDir, termandfreq.term))))
 //			}
         }
 

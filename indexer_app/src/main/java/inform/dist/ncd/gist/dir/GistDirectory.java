@@ -1,6 +1,9 @@
-package inform.dist.ncd.gist;
+package inform.dist.ncd.gist.dir;
 
 
+import inform.dist.ncd.gist.Gist;
+
+@Deprecated
 public interface GistDirectory {
 	
 	/**

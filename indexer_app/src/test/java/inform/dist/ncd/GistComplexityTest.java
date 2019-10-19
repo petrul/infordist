@@ -6,8 +6,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import inform.dist.Constants;
 import inform.dist.ncd.gist.BinaryGist;
-import inform.dist.ncd.gist.AbstractFilesystemGistDirectory;
-import inform.dist.ncd.gist.FsBinaryGistDirectory;
+import inform.dist.ncd.gist.dir.AbstractFilesystemGistDirectory;
+import inform.dist.ncd.gist.dir.FsBinaryGistDirectory;
 import inform.dist.ncd.compressor.Bzip2Compressor;
 
 import java.io.File;

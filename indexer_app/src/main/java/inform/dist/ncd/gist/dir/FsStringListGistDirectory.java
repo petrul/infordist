@@ -1,6 +1,7 @@
-package inform.dist.ncd.gist;
+package inform.dist.ncd.gist.dir;
 
 import inform.dist.ncd.compressor.Compressor;
+import inform.dist.ncd.gist.Gist;
 
 import java.io.File;
 
@@ -8,6 +9,7 @@ import java.io.File;
  * a directory of textual gists (StringListGist)
  * @author dadi
  */
+@Deprecated
 public class FsStringListGistDirectory extends AbstractFilesystemGistDirectory {
 
 

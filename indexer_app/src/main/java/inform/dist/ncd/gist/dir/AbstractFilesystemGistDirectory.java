@@ -1,4 +1,4 @@
-package inform.dist.ncd.gist;
+package inform.dist.ncd.gist.dir;
 
 import inform.dist.Constants;
 import inform.dist.ncd.compressor.Compressor;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import inform.dist.ncd.gist.Gist;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
  * @author dadi
  *
  */
+@Deprecated
 public abstract class AbstractFilesystemGistDirectory implements GistDirectory {
 
 	private File dir;

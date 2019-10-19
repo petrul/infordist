@@ -3,19 +3,22 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'application'
+    id 'eclipse'
 }
 
+
+String xmxArg = "-Xmx2500m"
 startScripts {
     mainClassName = "wiki.indexer.cli.WikipediaIndexer"
     applicationName = "wikipedia-indexer"
-    applicationDefaultJvmArgs  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4444", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    applicationDefaultJvmArgs  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4444", "-Dcom.sun.management.jmxremote.authenticate=false"]
 }
 
 task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
     mainClassName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
     description = "from a positional index retrieves the term matrix if co-occurrence data the can be used the get the semantic neighbourhood"
     applicationName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
-    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
@@ -24,7 +27,7 @@ task retrieveGistsFromIndex(type: CreateStartScripts) {
     mainClassName = "ncd.cli.RetrieveGistsFromPositionalIndex"
     description = "given a positional index like the one created by wikipedia-indexer, creates a directory full of bzipped gists"
     applicationName = "retrieve-gists-from-positional-index"
-    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
@@ -32,7 +35,7 @@ task retrieveGistsFromIndex(type: CreateStartScripts) {
 task ncdScriptFor2Files(type: CreateStartScripts) {
     mainClassName = "ncd.cli.ncd_for_two_files"
     applicationName = "ncd_for_two"
-    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
@@ -40,7 +43,7 @@ task ncdScriptFor2Files(type: CreateStartScripts) {
 task ncdScriptForDir(type: CreateStartScripts) {
     mainClassName = "ncd.cli.ncd_for_dir"
     applicationName = "ncd_for_dir"
-    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
@@ -48,7 +51,7 @@ task ncdScriptForDir(type: CreateStartScripts) {
 task termMatrixGetNeighbours(type: CreateStartScripts) {
     mainClassName = "ncd.cli.term_matrix_get_neighbours"
     applicationName = "term_matrix_get_neighbours"
-    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
@@ -56,7 +59,7 @@ task termMatrixGetNeighbours(type: CreateStartScripts) {
 task termMatrixGetRow(type: CreateStartScripts) {
     mainClassName = "ncd.cli.term_matrix_get_row"
     applicationName = "term_matrix_get_row"
-    defaultJvmOpts  = ["-Xmx4g", "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
@@ -86,8 +89,10 @@ dependencies {
     compile 'log4j:log4j:1.2.17'
     compile 'commons-io:commons-io:1.4'
     compile 'commons-lang:commons-lang:2.4'
+    compile 'commons-collections:commons-collections:3.2.2'
     compile 'org.apache.commons:commons-compress:1.18'
     compile 'commons-cli:commons-cli:1.1'
+    
     compile 'com.thoughtworks.xstream:xstream:1.4.6'
     compile 'colt:colt:1.2.0'
     compile 'org.apache.lucene:lucene-core:2.4.1'

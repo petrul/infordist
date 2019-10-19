@@ -42,10 +42,10 @@ public interface Gist extends Iterable<String> {
 	 */
 	InputStream openStreamForReading();
 
-	/**
-	 * use this method to write in a stream to this string
-	 */
-	OutputStream openStreamForWriting();
+//	/**
+//	 * use this method to write in a stream to this string
+//	 */
+//	OutputStream openStreamForWriting();
 
 	void writeTo(OutputStream os);
 

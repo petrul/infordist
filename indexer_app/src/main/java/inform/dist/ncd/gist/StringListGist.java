@@ -178,10 +178,10 @@ public abstract class StringListGist extends AbstractGist {
 		throw new RuntimeException("undefined");
 	}
 
-	@Override
-	public OutputStream openStreamForWriting() {
-		throw new RuntimeException("undefined");
-	}
+//	@Override
+//	public OutputStream openStreamForWriting() {
+//		throw new RuntimeException("undefined");
+//	}
 
 	@Override
 	public long getSizeInBytes() {

@@ -1,8 +1,7 @@
-package inform.dist.ncd;
+package inform.dist.ncd.gist;
 
 import static org.junit.Assert.assertEquals;
 import inform.dist.Constants;
-import inform.dist.ncd.gist.*;
 import inform.lucene.IndexUtil;
 
 import java.io.IOException;
@@ -21,39 +20,42 @@ import org.apache.lucene.index.TermPositions;
 import wiki.indexer.TermAndFreq;
 
 /**
- * Gets term string from a lucene index. Uses a directory cache. A string is the word context in which a term appears.
+ * This class knows how to go into a position Lucen index and retrieve all gists for a term. A gist is the set of
+ * contexts ('windows' or neighbourhoods) of terms in which a term occurs.
+ *
+ * So a Gist is set of the word contexts in which a term appears in all documents
  * 
  * @author dadi
- * @deprecated the "caching" behaviour should really not be a part of this class. the "cache" is actually an output.
  */
 public class GistRetriever {
 	
 	IndexReader index;
 	
-	private GistDirectory cache;
+//	private GistDirectory cache;
 	
 	int range = 3;
 
-	protected Map<String, Short> codeMapping;
+//	protected Map<String, Short> codeMapping;
 	
 	
-	public GistRetriever(IndexReader indexReader, GistDirectory cache) {
+	public GistRetriever(IndexReader indexReader) {
 		this.index = indexReader;
-		this.cache = cache;
+//		this.cache = cache;
 		List<TermAndFreq> termsOrderedByFreqDesc = new IndexUtil(indexReader).getTermsOrderedByFreqDesc(100);
 		String[] terms = new String[60001];
 		for (int i = 0; i < 60001; i++) {
 			terms[i] = termsOrderedByFreqDesc.get(i).getTerm();
 		}
-		this.codeMapping = BinaryGist.termCodesMapping(terms);
+//		this.codeMapping = BinaryGist.termCodesMapping(terms);
 	}
 	
 	
 	/**
 	 * the string is the word neighbourhood in which a word appears
+	 * @param maxSize if > 0, than the gist will not depass maxSize, even if there is more material on the index.
 	 */
-	public StringGist getGistAsStringArray(String term) throws IOException {
-		LOG.info("retrieving string of " + term + " from index...");
+	public StringGist getGist(String term, int maxSize) throws IOException {
+		LOG.info("retrieving gist of " + term + " from index...");
 		StopWatch watch = new StopWatch(); watch.start();
 		Term t = new Term(Constants.FIELD_TEXT, term);
 		
@@ -61,7 +63,7 @@ public class GistRetriever {
 		TermPositions iterator = this.index.termPositions(t);
 		
 		// a list of all gists of all occurrences in all documents (result)
-		List<String> gist = new ArrayList<String>();
+		List<String> gist = new ArrayList<>();
 		//StringBuilder string = new StringBuilder();
 		
 		int counter_total_apparitions = 0;
@@ -112,7 +114,8 @@ public class GistRetriever {
 							if (LOG.isTraceEnabled()) LOG.trace("found neighbour " + terms[i] + "/" + p + " for " + terms[idx] + "/" + mainterm);
 							
 							// we don't want the actual term in its own string
-							String stringToRemember = dist == 0 ? "_" : terms[i];
+//							String stringToRemember = dist == 0 ? "_" : terms[i];
+							String stringToRemember = terms[i];
 							//if (dist != 0)
 							neighbourhood.put(dist, stringToRemember);
 							
@@ -145,19 +148,19 @@ public class GistRetriever {
 	}
 
 	
-	public Gist getGist(String term) {
-		throw new RuntimeException("undefined");
-
-//		if (this.cache.hasGist(term)) {
-//			return this.cache.getGist(term);
-//		}
+//	public Gist getGist(String term) {
+//		throw new RuntimeException("undefined");
 //
-//		List<String> gistAsStringArray;
-//		try {
-//			gistAsStringArray = this.getGistAsStringArray(term).getStringList();
-//		} catch (IOException e) {
-//			throw new RuntimeException(e);
-//		}
+////		if (this.cache.hasGist(term)) {
+////			return this.cache.getGist(term);
+////		}
+////
+////		List<String> gistAsStringArray;
+////		try {
+////			gistAsStringArray = this.getGistAsStringArray(term).getStringList();
+////		} catch (IOException e) {
+////			throw new RuntimeException(e);
+////		}
 
 
 		/*
@@ -206,7 +209,7 @@ public class GistRetriever {
 		
 //		this.cache.storeGist(term, binaryGist);
 //		return binaryGist;
-	}
+//	}
 	
 //	/**
 //	 * i had an idea: suppose i take the string of a term and then i sort the terms so that gzip works better. It didn't work.

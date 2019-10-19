@@ -143,7 +143,7 @@ def parseCommandLine() {
 //    try {
 
         System.out.println("****************************************************************************");
-        System.out.println("* Semantic tool for computing NCD from a directory of files 			   *");
+        System.out.println("* Semantic tool for computing NCD from a directory of files                *");
         System.out.println("****************************************************************************");
         System.out.flush()
 
@@ -162,7 +162,11 @@ def parseCommandLine() {
         cli_options.indir  = cmd.getOptionValue("input-dir")
         cli_options.indir  = cli_options.indir.replace('~', System.getProperty("user.home"))
 
-        cli_options.nrthreads  = Integer.parseInt(cmd.getOptionValue("nrthreads")) ?: NR_THREADS
+        cli_options.nrthreads = cmd.getOptionValue("nrthreads")
+        if (cli_options.nrthreads != null)
+            cli_options.nrthreads = Integer.parseInt(cli_options.nrthreads)
+        else
+            cli_options.nrthreads  = NR_THREADS
         cli_options.compressor = cmd.getOptionValue("compressor") ?: "bz2"
 
 
@@ -194,6 +198,7 @@ private static Options buildOptions() {
             .longOpt("nrthreads")
             .desc("number of concurrent parallel threads")
             .argName("number")
+            .type(Integer.class)
             .hasArg()
             .build()
     options.addOption(opt);

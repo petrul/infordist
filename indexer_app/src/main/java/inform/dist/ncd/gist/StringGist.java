@@ -59,10 +59,10 @@ public class StringGist extends AbstractGist {
 		return new ByteArrayInputStream(this.string.getBytes(StandardCharsets.UTF_8));
 	}
 
-	@Override
-	public OutputStream openStreamForWriting() {
-		throw new RuntimeException("undefined");
-	}
+//	@Override
+//	public OutputStream openStreamForWriting() {
+//		throw new RuntimeException("undefined");
+//	}
 
 	@Override
 	public Gist clone() {

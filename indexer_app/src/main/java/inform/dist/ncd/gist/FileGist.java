@@ -1,15 +1,13 @@
 package inform.dist.ncd.gist;
 
 
-import inform.dist.ncd.compressor.Bzip2Compressor;
-import inform.dist.ncd.compressor.Compressor;
-import inform.dist.ncd.compressor.Compressors;
-import inform.dist.ncd.compressor.GzipCompressor;
-import inform.dist.ncd.gist.combining.GistCombiningPolicy;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.io.IOUtils;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -17,6 +15,15 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.io.IOUtils;
+
+import inform.dist.ncd.compressor.Bzip2Compressor;
+import inform.dist.ncd.compressor.Compressor;
+import inform.dist.ncd.compressor.Compressors;
+import inform.dist.ncd.compressor.GzipCompressor;
+import inform.dist.ncd.gist.combining.GistCombiningPolicy;
 
 /**
  * Because {@link Gist#combine(Gist, GistCombiningPolicy.Policy, OutputStream)} combine is the CPU bottleneck of
@@ -184,10 +191,10 @@ public class FileGist extends AbstractGist {
 
     }
 
-    @Override
-    public OutputStream openStreamForWriting() {
-        throw new RuntimeException("undefined");
-    }
+//    @Override
+//    public OutputStream openStreamForWriting() {
+//        throw new RuntimeException("undefined");
+//    }
 
     @Override
     public long getSizeInBytes() {
@@ -221,6 +228,40 @@ public class FileGist extends AbstractGist {
             throw new RuntimeException(e);
         }
     }
+
+//    void truncate(int maxLimit, OutputStream os) {
+//        int counter = 0;
+//
+//        if (maxLimit >= this.getSizeInBytes()) {
+//            try {
+//                IOUtils.copy(this.openStreamForReading(), os);
+//                os.flush();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//            return;
+//        }
+//
+//        LineNumberReader reader = new LineNumberReader(new BufferedReader(new InputStreamReader(this.openStreamForReading())));
+//        while (counter < maxLimit) {
+//            try {
+//                String crtline = reader.readLine();
+//                if (crtline == null)
+//                    break;
+//
+//                counter += crtline.length();
+//                if (counter > maxLimit)
+//                    crtline = crtline.substring(0, counter - maxLimit);
+//
+//                os.write(crtline.getBytes(StandardCharsets.UTF_8));
+//
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//        }
+//    }
 
     @Override
     public String toString() {

@@ -1,10 +1,13 @@
 package inform.dist.ncd.gist.combining;
 
-import inform.dist.ncd.gist.Gist;
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 
-import java.io.*;
-import java.util.Iterator;
+import inform.dist.ncd.gist.Gist;
 
 /**
  * this is the description of combining in INTERLACE_EVEN mode for StringListGists
