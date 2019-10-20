@@ -38,31 +38,10 @@ cli_options = [:]
 LOG = Logger.getLogger(this.class);
 
 
-def getCompressor() {
-    final String selected_opt = cli_options.compressor
-    if (selected_opt == 'bzip2' || selected_opt == 'bz2')
-        return new Bzip2Compressor()
-    else
-        if (selected_opt == 'gzip' || selected_opt == 'gz')
-        return new GzipCompressor()
-    else
-            throw new IllegalArgumentException("don't know what kind of compressor to use for $selected_opt")
-}
-
-def getMergePolicy() {
-    final String selected_opt = cli_options.merge_policy
-    if (selected_opt.toLowerCase() == 'interlace')
-        return GistCombiningPolicy.Policy.INTERLACE_EVEN
-    else
-        if (selected_opt.toLowerCase() == 'concatenate')
-            return GistCombiningPolicy.Policy.CONCATENATE;
-    else
-            throw new IllegalArgumentException("don't know what kind of gist combining policy to use for $selected_opt")
-}
 
 def computeNcdRowForTerm(final String main_term, final AbstractGist main_gist, final String[] terms_to_compare, final TermMatrix matrix) {
 
-    Compressor compressor = this.getCompressor()
+    final Compressor compressor = this.getCompressor()
     final String inputDir = cli_options.indir
     final combiningPolicy = this.getMergePolicy()
 
@@ -71,25 +50,23 @@ def computeNcdRowForTerm(final String main_term, final AbstractGist main_gist, f
 
         println("starting [$main_term - $term2] on [${Thread.currentThread().getName()}]...")
 
-        int cc;
+        int cc
         if (main_term == term2)
             cc = 0
         else {
-            final File t2_file = new File(inputDir, term2 + ".bz2")
+            final File t2_file = new File(inputDir, term2 + compressor.getSpecificExtension())
             final FileGist g = new FileGist(t2_file)
             cc = main_gist.computeCombinedComplexity(g, combiningPolicy, compressor)
         }
 
-        matrix.setCombinedComplexity(main_term, term2, cc);
+        matrix.setCombinedComplexity(main_term, term2, cc)
+//        matrix.setCombinedComplexity(term2, main_term, cc) // should be symmetrical, right?
 
         println("finished [$main_term - $term2] = $cc on [${Thread.currentThread().getName()}], took ${watch}.")
     }
 }
 
-def guessDefaultCompressor(String indir) {
-    String[] files = new File(indir).list()
-    return Compressors.getCompressorForFilename(files[0])
-}
+
 
 def main1(String[] args) {
 
@@ -109,14 +86,16 @@ def main1(String[] args) {
         return
     }
 
-    Compressor storageCompressor = guessDefaultCompressor(indir)
+    Compressor compressor = this.getCompressor() // specified on command-line
+    Compressor storageCompressor = guessDefaultCompressor(indir) // inferred from the extension of the files in the gist dir.
+
     if (storageCompressor.class != this.getCompressor().class)
         throw new IllegalStateException("compressor specified on command-line ${this.getCompressor().class} is different from compressor used by gists ${storageCompressor.class}, cannot continue")
 
     println "opening indir ${indir}"
 
     String[] bz2_files = new File(indir).list()
-    bz2_files.each { assert it.endsWith(".bz2") }
+    bz2_files.each { assert it.endsWith(compressor.getSpecificExtension()) }
     String[] terms = bz2_files.collect { it.substring(0, it.length() - 4) }
     terms.each { assert !it.contains(".") }
 
@@ -133,16 +112,19 @@ def main1(String[] args) {
     def executorService = Executors.newFixedThreadPool(cli_options.nrthreads)
 
     println "setting complexities first..."
-    terms.each {
-        if (matrix.getComplexity(it) == -1) {
-            int len = new File(indir, it + ".bz2").length()
-            matrix.setComplexity(it, len)
-        }
-
-    }
+//    terms.each {
+//
+//    }
 
     for (main_term in terms) {
-        List<Integer> row = matrix.getCombinedComplexityRow(main_term)
+
+        File file = new File(indir, main_term + ".bz2")
+        Gist main_gist = new StringGist(new FileGist(file))
+
+        if (matrix.getComplexity(main_term) == -1) {
+            // don't set the complexity from the original bzip as it may be slightly different from computed using java apache bzip2
+            matrix.setComplexity(main_term, (int)main_gist.computeComplexity(compressor))
+        }
 
         println "calculating neighbourhood for term $main_term ..."
         String[] terms_not_yet_done = terms.findAll {
@@ -152,8 +134,6 @@ def main1(String[] args) {
         if (terms_not_yet_done.length == 0)
             continue
 
-        File file = new File(indir, main_term + ".bz2")
-        Gist main_gist = new StringGist(new FileGist(file))
 
         def ajob = { term, term_gist, term_arr, mtrx ->
             computeNcdRowForTerm(term, term_gist, term_arr, mtrx)
@@ -278,6 +258,33 @@ private static Options buildOptions() {
 private static void printUsage(Options options) {
     HelpFormatter formatter = new HelpFormatter()
     formatter.printHelp("ncd.groovy indexLocation nocache|cache term1 term2 ...\");", options)
+}
+
+def getCompressor() {
+    final String selected_opt = cli_options.compressor
+    if (selected_opt == 'bzip2' || selected_opt == 'bz2')
+        return new Bzip2Compressor()
+    else
+    if (selected_opt == 'gzip' || selected_opt == 'gz')
+        return new GzipCompressor()
+    else
+        throw new IllegalArgumentException("don't know what kind of compressor to use for $selected_opt")
+}
+
+def getMergePolicy() {
+    final String selected_opt = cli_options.merge_policy
+    if (selected_opt.toLowerCase() == 'interlace')
+        return GistCombiningPolicy.Policy.INTERLACE_EVEN
+    else
+    if (selected_opt.toLowerCase() == 'concatenate')
+        return GistCombiningPolicy.Policy.CONCATENATE;
+    else
+        throw new IllegalArgumentException("don't know what kind of gist combining policy to use for $selected_opt")
+}
+
+def guessDefaultCompressor(String indir) {
+    String[] files = new File(indir).list()
+    return Compressors.getCompressorForFilename(files[0])
 }
 
 main1(args)

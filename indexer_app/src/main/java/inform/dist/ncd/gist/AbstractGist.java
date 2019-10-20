@@ -44,6 +44,10 @@ public abstract class AbstractGist implements Gist {
     }
 
     public long computeCombinedComplexity(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy, Compressor compressor) {
+
+//        final StringGist combination = this.combine(anotherGist, combiningPolicy);
+//        return combination.computeComplexity(compressor);
+
         CountingOutputStream counter_os = new CountingOutputStream();
         OutputStream compressedOutputStream = compressor.specificStream(counter_os);
         this.combine(anotherGist, combiningPolicy, compressedOutputStream);

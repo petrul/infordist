@@ -34,8 +34,13 @@ public abstract class AbstractCompressor implements Compressor {
             StopWatch watch = new StopWatch(); watch.start();
 
             OutputStream bzos = this.specificStream(outputStream);
+
             s.writeTo(bzos);
+
             bzos.flush();
+            bzos.close();
+
+            outputStream.flush();
 
             watch.stop();
 
