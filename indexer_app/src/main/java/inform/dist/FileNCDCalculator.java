@@ -27,9 +27,9 @@ public class FileNCDCalculator {
     long cc;
 
 
-    public FileNCDCalculator(URL url1, URL url2, Compressor compressor) {
-        this(url1, url2, compressor,  GistCombiningPolicy.Policy.INTERLACE_EVEN);
-    }
+//    public FileNCDCalculator(URL url1, URL url2, Compressor compressor) {
+//        this(url1, url2, compressor,  GistCombiningPolicy.Policy.INTERLACE_EVEN);
+//    }
     public FileNCDCalculator(URL url1, URL url2, Compressor compressor, GistCombiningPolicy.Policy policy) {
         init(new FileGist(url1), new FileGist(url2), compressor, policy);
     }
@@ -53,7 +53,7 @@ public class FileNCDCalculator {
     public void compute() {
         this.c1 = g1.computeComplexity(compressor);
         this.c2 = g2.computeComplexity(compressor);
-        AbstractGist ag1 = (AbstractGist)g1;
+        AbstractGist ag1 = (AbstractGist) g1;
         this.cc = ag1.combine(g2, this.policy).computeComplexity(compressor);
     }
 

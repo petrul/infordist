@@ -5,6 +5,7 @@ import inform.dist.ncd.gist.Gist;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.log4j.lf5.util.StreamUtils;
 
@@ -14,19 +15,12 @@ import org.apache.log4j.lf5.util.StreamUtils;
  */
 public class NoCompressor extends AbstractCompressor {
 
-	@Override
-	public byte[] compress(Gist s) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-		s.writeTo(baos);
-		return baos.toByteArray();
-	}
-
-	@Override
-	public long getComplexity(Gist s) {
-		CountingOutputStream cos = new CountingOutputStream();
-		s.writeTo(cos);
-		return cos.getCounter();
-	}
+//	@Override
+//	public long getComplexity(Gist s) {
+//		CountingOutputStream cos = new CountingOutputStream();
+//		s.writeTo(cos);
+//		return cos.getCounter();
+//	}
 
 	@Override
 	public String getSpecificExtension() {
@@ -44,4 +38,8 @@ public class NoCompressor extends AbstractCompressor {
 		return baos.toByteArray();
 	}
 
+	@Override
+	public OutputStream specificStream(OutputStream out) {
+		return out;
+	}
 }

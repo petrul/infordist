@@ -64,6 +64,13 @@ task termMatrixGetRow(type: CreateStartScripts) {
     classpath = startScripts.classpath
 }
 
+task termMatrixGetTerms(type: CreateStartScripts) {
+    mainClassName = "ncd.cli.term_matrix_get_terms"
+    applicationName = "term_matrix_get_terms"
+    defaultJvmOpts  = [xmxArg]
+    outputDir = file('build/scripts')
+    classpath = startScripts.classpath
+}
 
 applicationDistribution.into("bin") {
     duplicatesStrategy= DuplicatesStrategy.EXCLUDE
@@ -73,6 +80,7 @@ applicationDistribution.into("bin") {
     from(ncdScriptForDir)
     from(termMatrixGetNeighbours)
     from(termMatrixGetRow)
+    from(termMatrixGetTerms)
 
     fileMode = 0755
 }

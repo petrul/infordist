@@ -243,27 +243,27 @@ public class OrderNgdMatrixAndGetNeighbors implements Runnable {
 	private static Options buildOptions() {
 		Options options = new Options();
 
-		Option opt = OptionBuilder
-				.withDescription("print these help instructions")
-				.withLongOpt("help")
+		Option opt = Option.builder("h")
+				.desc("print these help instructions")
+				.longOpt("help")
 				.hasArg(false)
-				.create("h");
+				.build();
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("filename")
+		opt = Option.builder("m")
+				.argName("filename")
 				.hasArg()
-				.isRequired()
-				.withDescription(".mat file")
-				.withLongOpt("matfile")
-				.create("m");
+				.required()
+				.desc(".mat file")
+				.longOpt("matfile")
+				.build();
 		options.addOption(opt);
-		opt = OptionBuilder
-				.withArgName("string")
+		opt = Option.builder("t")
+				.argName("string")
 				.hasArg()
-				.isRequired()
-				.withDescription("terms (string array) variable in .mat file")
-				.withLongOpt("termsvar")
-				.create("t");
+				.required()
+				.desc("terms (string array) variable in .mat file")
+				.longOpt("termsvar")
+				.build();
 		options.addOption(opt);
 		opt = OptionBuilder
 				.withArgName("string")

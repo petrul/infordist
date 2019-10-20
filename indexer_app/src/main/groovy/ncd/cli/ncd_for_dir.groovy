@@ -10,9 +10,14 @@ package ncd.cli
 
 
 import inform.dist.ncd.compressor.Bzip2Compressor
+import inform.dist.ncd.compressor.Compressor
+import inform.dist.ncd.compressor.Compressors
+import inform.dist.ncd.compressor.GzipCompressor
+import inform.dist.ncd.gist.AbstractGist
 import inform.dist.ncd.gist.FileGist
 import inform.dist.ncd.gist.Gist
 import inform.dist.ncd.gist.StringGist
+import inform.dist.ncd.gist.combining.GistCombiningPolicy
 import matrix.store.TermMatrix
 import matrix.store.TermMatrixRW
 import org.apache.commons.cli.*
@@ -33,10 +38,33 @@ cli_options = [:]
 LOG = Logger.getLogger(this.class);
 
 
-def computeNcdRowForTerm(final String main_term, final Gist main_gist, final String[] terms_to_compare, final TermMatrix matrix) {
+def getCompressor() {
+    final String selected_opt = cli_options.compressor
+    if (selected_opt == 'bzip2' || selected_opt == 'bz2')
+        return new Bzip2Compressor()
+    else
+        if (selected_opt == 'gzip' || selected_opt == 'gz')
+        return new GzipCompressor()
+    else
+            throw new IllegalArgumentException("don't know what kind of compressor to use for $selected_opt")
+}
 
-    Bzip2Compressor bz2 = new Bzip2Compressor();
+def getMergePolicy() {
+    final String selected_opt = cli_options.merge_policy
+    if (selected_opt.toLowerCase() == 'interlace')
+        return GistCombiningPolicy.Policy.INTERLACE_EVEN
+    else
+        if (selected_opt.toLowerCase() == 'concatenate')
+            return GistCombiningPolicy.Policy.CONCATENATE;
+    else
+            throw new IllegalArgumentException("don't know what kind of gist combining policy to use for $selected_opt")
+}
+
+def computeNcdRowForTerm(final String main_term, final AbstractGist main_gist, final String[] terms_to_compare, final TermMatrix matrix) {
+
+    Compressor compressor = this.getCompressor()
     final String inputDir = cli_options.indir
+    final combiningPolicy = this.getMergePolicy()
 
     for (term2 in terms_to_compare) {
         StopWatch watch = new StopWatch(); watch.start()
@@ -48,8 +76,8 @@ def computeNcdRowForTerm(final String main_term, final Gist main_gist, final Str
             cc = 0
         else {
             final File t2_file = new File(inputDir, term2 + ".bz2")
-            FileGist g = new FileGist(t2_file)
-            cc = main_gist.computeCombinedComplexity(g)
+            final FileGist g = new FileGist(t2_file)
+            cc = main_gist.computeCombinedComplexity(g, combiningPolicy, compressor)
         }
 
         matrix.setCombinedComplexity(main_term, term2, cc);
@@ -58,6 +86,10 @@ def computeNcdRowForTerm(final String main_term, final Gist main_gist, final Str
     }
 }
 
+def guessDefaultCompressor(String indir) {
+    String[] files = new File(indir).list()
+    return Compressors.getCompressorForFilename(files[0])
+}
 
 def main1(String[] args) {
 
@@ -77,7 +109,10 @@ def main1(String[] args) {
         return
     }
 
-    Bzip2Compressor compressor = new Bzip2Compressor()
+    Compressor storageCompressor = guessDefaultCompressor(indir)
+    if (storageCompressor.class != this.getCompressor().class)
+        throw new IllegalStateException("compressor specified on command-line ${this.getCompressor().class} is different from compressor used by gists ${storageCompressor.class}, cannot continue")
+
     println "opening indir ${indir}"
 
     String[] bz2_files = new File(indir).list()
@@ -161,6 +196,7 @@ def parseCommandLine() {
         cli_options.outdir = cli_options.outdir.replace('~', System.getProperty("user.home"))
         cli_options.indir  = cmd.getOptionValue("input-dir")
         cli_options.indir  = cli_options.indir.replace('~', System.getProperty("user.home"))
+        cli_options.merge_policy = cmd.getOptionValue("merge-policy") ?: "concatenate"
 
         cli_options.nrthreads = cmd.getOptionValue("nrthreads")
         if (cli_options.nrthreads != null)
@@ -222,6 +258,15 @@ private static Options buildOptions() {
             .longOpt("input-dir")
             .desc("the directory of files (gists)")
             .argName("directory")
+            .hasArg()
+            .required(true)
+            .build()
+    options.addOption(opt);
+
+    opt = Option.builder("m")
+            .longOpt("merge-policy")
+            .desc("the combination policiy of merging gists for compression together. 'interlace' mixes one row from each file, 'concatenate' puts a gist on top of the other")
+            .argName("interlace|concatenate")
             .hasArg()
             .required(true)
             .build()

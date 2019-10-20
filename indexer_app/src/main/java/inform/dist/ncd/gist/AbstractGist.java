@@ -5,6 +5,7 @@ import inform.dist.ncd.compressor.CountingOutputStream;
 import inform.dist.ncd.gist.combining.GistCombiningPolicy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 public abstract class AbstractGist implements Gist {
@@ -42,13 +43,18 @@ public abstract class AbstractGist implements Gist {
         return compressor.getComplexity(this);
     }
 
-    public long computeCombinedComplexity(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy) {
-        CountingOutputStream os = new CountingOutputStream();
-        this.combine(anotherGist, combiningPolicy, os);
-        return os.getCounter();
-    }
+    public long computeCombinedComplexity(Gist anotherGist, GistCombiningPolicy.Policy combiningPolicy, Compressor compressor) {
+        CountingOutputStream counter_os = new CountingOutputStream();
+        OutputStream compressedOutputStream = compressor.specificStream(counter_os);
+        this.combine(anotherGist, combiningPolicy, compressedOutputStream);
+        try {
+            compressedOutputStream.flush();
+            compressedOutputStream.close();
+            counter_os.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-    public long computeCombinedComplexity(Gist anotherGist) {
-        return this.computeCombinedComplexity(anotherGist, GistCombiningPolicy.Policy.INTERLACE_EVEN);
+        return counter_os.getCounter();
     }
 }
