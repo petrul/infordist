@@ -63,10 +63,6 @@ public class FileGist extends AbstractGist {
         this.resource = url;
         final String s = url.toExternalForm();
 
-//        String extension = s.substring(s.lastIndexOf("."));
-//        if (extension.startsWith("."))
-//            extension = extension.substring(1);
-
         if (compressor == null)
             this.initialCompressor = Compressors.getCompressorForFilename(s);
         else

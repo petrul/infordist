@@ -96,7 +96,7 @@ def main1(String[] args) {
 
     String[] bz2_files = new File(indir).list()
     bz2_files.each { assert it.endsWith(compressor.getSpecificExtension()) }
-    String[] terms = bz2_files.collect { it.substring(0, it.length() - 4) }
+    String[] terms = bz2_files.collect { it.substring(0, it.lastIndexOf(".")) }
     terms.each { assert !it.contains(".") }
 
     println "${terms.length} terms"
@@ -118,7 +118,7 @@ def main1(String[] args) {
 
     for (main_term in terms) {
 
-        File file = new File(indir, main_term + ".bz2")
+        File file = new File(indir, main_term + compressor.specificExtension)
         Gist main_gist = new StringGist(new FileGist(file))
 
         if (matrix.getComplexity(main_term) == -1) {
