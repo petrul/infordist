@@ -113,6 +113,9 @@
         </ice:panelGroup>
 </ice:form>
 
+<br/><br/>
+(c) Petru Dimulescu, <a href="https://github.com/petrul/infordist">github</a>, twitter.com/ptrdim
+
 </ui:define>
 	
 </ui:composition>
