@@ -130,11 +130,7 @@ public class TermService {
 		ArrayList<Map<String, Object>> result = new ArrayList<>();
 		Integer thisTermsAbsFreq = this.getTermAbsFreq(term);
 
-		int counter = 0;
-
 		for (String t : cc_list.keySet()) {
-			if (counter++ >= size)
-				break;
 
 			HashMap<String, Object> map = new HashMap<String, Object>(2);
 			map.put("text", t);
@@ -149,7 +145,7 @@ public class TermService {
 		
 		sortArray(result);
 		
-		return result;
+		return result.subList(0, size);
 	}
 	
 	static public void sortArray(ArrayList<Map<String, Object>> result) {
