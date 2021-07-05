@@ -71,6 +71,7 @@ public class CustomWikipediaTokenizer extends Tokenizer {
 			BOLD_ITALICS, HEADING, SUB_HEADING, EXTERNAL_LINK_URL };
 
 	/** @deprecated Please use {@link #TOKEN_TYPES} instead */
+	@Deprecated
 	public static final String[] tokenImage = TOKEN_TYPES;
 
 	public static final int TOKENS_ONLY = 0;

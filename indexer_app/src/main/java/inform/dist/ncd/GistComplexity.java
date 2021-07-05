@@ -22,6 +22,7 @@ import org.junit.Assert;
  * @deprecated  possibly over-architectured code for accessing a directory of zipped files
  *
  */
+@Deprecated
 public class GistComplexity {
 	
 	File dir;

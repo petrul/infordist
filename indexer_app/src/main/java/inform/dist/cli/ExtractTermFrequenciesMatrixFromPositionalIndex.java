@@ -64,7 +64,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 
 		try {
 			
-			CommandLineParser parser = new DefaultParser();
+			CommandLineParser parser = new GnuParser();
 			CommandLine cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("help")) {
