@@ -22,9 +22,9 @@ public class NgdNeighboursService {
         this.termService = termService;
     }
 
-    public List<Map<String, Object>> getNgdNeighbours(String term) {
+    public List<Map<String, Object>> getNgdNeighbours(String term, int size) {
         String analyzedTerm = this.analyze(term);
-        return this.termService.getNgdNeighbours(analyzedTerm);
+        return this.termService.getNgdNeighbours(analyzedTerm, size);
     }
 
     String analyze(String term) {

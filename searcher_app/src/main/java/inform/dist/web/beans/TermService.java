@@ -119,15 +119,23 @@ public class TermService {
 		
 		return result;
 	}
-	
-	
+
 	public List<Map<String, Object>> getNgdNeighbours(String term) {
+		return this.getNgdNeighbours(term, 50);
+	}
+
+	public List<Map<String, Object>> getNgdNeighbours(String term, int size) {
 		
 		Map<String, Integer> cc_list = this.getCombinedComplexities(term);
 		ArrayList<Map<String, Object>> result = new ArrayList<>();
 		Integer thisTermsAbsFreq = this.getTermAbsFreq(term);
-		
+
+		int counter = 0;
+
 		for (String t : cc_list.keySet()) {
+			if (counter++ >= size)
+				break;
+
 			HashMap<String, Object> map = new HashMap<String, Object>(2);
 			map.put("text", t);
 			Integer cc = cc_list.get(t);

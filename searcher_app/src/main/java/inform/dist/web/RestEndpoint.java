@@ -18,10 +18,20 @@ public class RestEndpoint extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String term = req.getParameter("term");
+        if (term == null)
+            throw new IllegalArgumentException("must provide 'term' param");
+
+        int size = 40;
+        try {
+            final String strsize = req.getParameter("size");
+            size = Integer.parseInt(strsize);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
 
         ApplicationContext applicationContext = ApplicationContext.getInstance(req.getServletContext());
         final NgdNeighboursService ngdNeighboursService = applicationContext.getNgdNeighboursService();
-        final List<Map<String, Object>> ngdNeighbours = ngdNeighboursService.getNgdNeighbours(term);
+        final List<Map<String, Object>> ngdNeighbours = ngdNeighboursService.getNgdNeighbours(term, size);
 
         resp.addHeader("Content-Type", "application/json");
         
