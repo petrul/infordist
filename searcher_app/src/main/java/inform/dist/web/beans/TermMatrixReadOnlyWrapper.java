@@ -1,12 +1,10 @@
 package inform.dist.web.beans;
 
-import java.io.File;
-
-import javax.faces.context.FacesContext;
-
+import matrix.store.TermMatrixReadOnly;
 import org.apache.log4j.Logger;
 
-import matrix.store.TermMatrixReadOnly;
+import javax.faces.context.FacesContext;
+import java.io.File;
 
 /**
  * Wrapper for {@link TermMatrixReadOnly} as stupid JSF cannot inject
@@ -17,8 +15,8 @@ import matrix.store.TermMatrixReadOnly;
  */
 public class TermMatrixReadOnlyWrapper extends TermMatrixReadOnly {
 	public TermMatrixReadOnlyWrapper() {
-		super(new File(FacesContext.getCurrentInstance().getExternalContext().getInitParameter("app.matrix.location")), 2);
-		String dsLocation = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("app.matrix.location");
+		super(new File(FacesContext.getCurrentInstance().getExternalContext().getInitParameter("infordist.matrix.location")), 2);
+		String dsLocation = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("infordist.matrix.location");
 		File dsFile = new File(dsLocation);
 		if (!dsFile.exists())
 			throw new IllegalArgumentException("no matrix datasource at location [" + dsFile +"]");

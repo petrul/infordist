@@ -19,7 +19,7 @@ public class RestEndpoint extends HttpServlet {
 
         String term = req.getParameter("term");
 
-        ApplicationContext applicationContext = ApplicationContext.getInstance();
+        ApplicationContext applicationContext = ApplicationContext.getInstance(req.getServletContext());
         final NgdNeighboursService ngdNeighboursService = applicationContext.getNgdNeighboursService();
         final List<Map<String, Object>> ngdNeighbours = ngdNeighboursService.getNgdNeighbours(term);
 

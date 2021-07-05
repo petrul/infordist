@@ -6,6 +6,7 @@ import matrix.store.TermMatrixReadOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
 import java.io.File;
 
 // springy app context
@@ -18,21 +19,29 @@ public class ApplicationContext {
     DistanceCalculatorFromFreqMatrix distCalculator;
     NgdNeighboursService ngdNeighboursService;
 
-    static public ApplicationContext getInstance() {
+    static public ApplicationContext getInstance(ServletContext servletContext) {
         synchronized (ApplicationContext.class) {
             if (INSTANCE == null)
-                INSTANCE = new ApplicationContext();
+                INSTANCE = new ApplicationContext(servletContext);
             return INSTANCE;
         }
     }
 
-    private ApplicationContext() {
+    public static String searchForMatrixLocation(ServletContext servletContext) {
         String matrixLocation = System.getProperty("infordist.matrix.location");
         if (matrixLocation == null) {
             matrixLocation = System.getenv("INFORDIST_MATRIX_LOCATION");
-            if (matrixLocation == null)
-                throw new IllegalArgumentException("run java -Dinfordist.matrix.location=/my/term/matrix or define the INFORDIST_MATRIX_LOCATION env variable");
+            if (matrixLocation == null) {
+                matrixLocation = servletContext.getInitParameter("infordist.matrix.location");
+                if (matrixLocation == null)
+                    throw new IllegalArgumentException("run java -Dinfordist.matrix.location=/my/term/matrix or define the INFORDIST_MATRIX_LOCATION env variable or define infordist.matrix.location init param in web.xml");
+            }
         }
+        return matrixLocation;
+    }
+
+    private ApplicationContext(ServletContext servletContext) {
+        final String matrixLocation = searchForMatrixLocation(servletContext);
         File dsFile = new File(matrixLocation);
         if (!dsFile.exists())
             throw new IllegalArgumentException("no matrix datasource at location [" + dsFile +"]");
