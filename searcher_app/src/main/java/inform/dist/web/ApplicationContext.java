@@ -28,13 +28,13 @@ public class ApplicationContext {
     }
 
     public static String searchForMatrixLocation(ServletContext servletContext) {
-        String matrixLocation = System.getProperty("infordist.matrix.location");
+        String matrixLocation = System.getenv("INFORDIST_MATRIX_LOCATION");
         if (matrixLocation == null) {
-            matrixLocation = System.getenv("INFORDIST_MATRIX_LOCATION");
+            matrixLocation = System.getProperty("infordist.matrix.location");
             if (matrixLocation == null) {
                 matrixLocation = servletContext.getInitParameter("infordist.matrix.location");
                 if (matrixLocation == null)
-                    throw new IllegalArgumentException("run java -Dinfordist.matrix.location=/my/term/matrix or define the INFORDIST_MATRIX_LOCATION env variable or define infordist.matrix.location init param in web.xml");
+                    throw new IllegalArgumentException("define the INFORDIST_MATRIX_LOCATION env variable or run java -Dinfordist.matrix.location=/my/term/matrix or define infordist.matrix.location init param in web.xml");
             }
         }
         return matrixLocation;
