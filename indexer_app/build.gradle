@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'application'
     id 'eclipse'
-    id 'maven'
+    // id 'maven'
 }
 
 
@@ -88,9 +88,7 @@ applicationDistribution.into("bin") {
 
 repositories {
     mavenLocal()
-    maven {
-        url = 'http://repo.maven.apache.org/maven2'
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -110,13 +108,13 @@ dependencies {
     implementation 'org.apache.lucene:lucene-snowball:2.4.1'
     implementation 'org.springframework:spring-jdbc:2.5.6'
     implementation 'mysql:mysql-connector-java:5.1.6'
-    implementation 'org.codehaus.groovy:groovy-all:2.5.6'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
 }
 
 group = 'pertinence'
 version = '1.1-SNAPSHOT'
 description = 'NGD/NCD indexer app'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 publishing {
     publications {

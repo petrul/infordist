@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import java.io.File;
 
-// springy app context
+// spring-y app context
 public class ApplicationContext {
 
     protected static ApplicationContext INSTANCE = null;

@@ -36,6 +36,7 @@ import wiki.indexer.storage.SimpleTermCooccurrenceStorage;
  * and finally the NGD matrix.
  * @deprecated use {@link ExtractTermFrequenciesMatrixFromPositionalIndex}
  */
+@Deprecated
 public class CalculateNgdMatrixDirectlyFromWikipediaXml implements Runnable {
 
 	private String 	termListFilename;

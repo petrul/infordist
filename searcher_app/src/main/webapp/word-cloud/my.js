@@ -19,6 +19,7 @@ function getNeighbours() {
     console.log('getting neighbours for', term)
 
     const url = `https://scriptorium.hopto.org/searcher_app/api/endpoint?term=${term}&size=100`
+    console.log(url)
     $.getJSON(url, function( data ) {
         console.log('got', data)
         var items = [];

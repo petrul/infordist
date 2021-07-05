@@ -35,6 +35,7 @@ public class RestEndpoint extends HttpServlet {
 
         resp.addHeader("Content-Type", "application/json");
         resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
         ObjectMapper jackson = new ObjectMapper();
         jackson.writeValue(resp.getOutputStream(), ngdNeighbours);
