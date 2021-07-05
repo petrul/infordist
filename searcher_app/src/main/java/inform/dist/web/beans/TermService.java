@@ -1,20 +1,13 @@
 package inform.dist.web.beans;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import inform.dist.ngd.NgdCalculator;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import matrix.store.TermMatrixReadOnly;
-
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.*;
 
 public class TermService {
 	
@@ -90,6 +83,13 @@ public class TermService {
 //		this.totalDocs = this.jdbc.queryForInt("select value from vars where name = 'total_docs'");
 //	}
 
+
+	public TermService() {}
+
+	public TermService(TermMatrixReadOnly datasource) {
+		this.setDatasource(datasource);
+	}
+
 	public void setDatasource(TermMatrixReadOnly ds) {
 		this.datasource = ds;
 		int nrterms = ds.getTerms().length;// this.jdbc.queryForInt("select count(*) from terms");
@@ -124,9 +124,7 @@ public class TermService {
 	public List<Map<String, Object>> getNgdNeighbours(String term) {
 		
 		Map<String, Integer> cc_list = this.getCombinedComplexities(term);
-		
-		ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		
+		ArrayList<Map<String, Object>> result = new ArrayList<>();
 		Integer thisTermsAbsFreq = this.getTermAbsFreq(term);
 		
 		for (String t : cc_list.keySet()) {
