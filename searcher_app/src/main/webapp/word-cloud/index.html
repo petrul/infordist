@@ -4,12 +4,12 @@
     <title id="title">my jQCloud Example</title>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 
-    <link rel="stylesheet" type="text/css" href="../jqcloud/jqcloud.css" />
-    <link rel="stylesheet" type="text/css" href="../my.css" />
+    <link rel="stylesheet" type="text/css" href="jqcloud/jqcloud.css" />
+    <link rel="stylesheet" type="text/css" href="my.css" />
 
-    <script type="text/javascript" src="../jquery.js"></script>
-    <script type="text/javascript" src="../jqcloud/jqcloud-1.0.4.js"></script>
-    <script type="text/javascript" src="../my.js"></script>
+    <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="jqcloud/jqcloud-1.0.4.js"></script>
+    <script type="text/javascript" src="my.js"></script>
     <script type="text/javascript">
       // var word_list = [
       //   {text: "Lorem", weight: 13, link: "https://github.com/DukeLeNoir/jQCloud"},
@@ -56,7 +56,7 @@
       //   {text: "Sed", weight: 1}
       // ];
       // console.log('heading', document.getElementById('heading')) //.text = 'pulea';
-      console.log(3)
+      // console.log(3)
 
       var term = getParam('term')
 
@@ -70,7 +70,10 @@
 
     <div id="container">
 
-      <h1 id="head1">jQCloud Example</h1>
+      <h1>
+        <span id="head1">jQCloud Example</span>
+        <input id="input" type="text" />
+      </h1>
 
       <!-- <div id="div1">div1</div> -->
       <div id="neighbourhood">
@@ -81,9 +84,24 @@
 
   
     <script type="text/javascript">
-      const title = `Semantic neighbourhood for [${term}]`
-      $('#title').text(title);
+      const title = `Semantic neighbourhood for `
+      $('#title').text(title + ' ' + term);
       $('#head1').html(title);
+      $('#input').val(term);
+
+      // $('#input').on('click', e => {
+      //   console.log(e);
+      //   alert(e);
+      // })
+
+      $('#input').keyup(function(event) {
+        // console.log('event', event);
+        if(event.which == 13) {
+          console.log("entered " + $('#input').val());
+          window.location.href = 'index.html?term=' + $('#input').val()
+        }    
+      });
+
     </script>
     
   </body>

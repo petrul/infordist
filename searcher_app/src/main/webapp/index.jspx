@@ -15,7 +15,17 @@
 		
 		or type in the <a href="console.iface">console</a>.
 
-<br/><br/>
+<p>
+
+  <a 
+    href="http://localhost:8080/searcher_app/word-cloud/index.html?term=kingdom">
+    See the word cloud 
+  </a>
+
+</p>
+
+
+<hr/>
 (c) Petru Dimulescu, <a href="https://github.com/petrul/infordist">github</a>, twitter.com/ptrdim
 
     </ui:define>

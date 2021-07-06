@@ -11,10 +11,7 @@ function getParam(paramName) {
     }
 }
 
-
-function getNeighbours() {
-
-    console.log(4)
+async function getNeighbours() {
 
     term = getParam('term')
     if (!term) {
@@ -25,27 +22,37 @@ function getNeighbours() {
     const url = `https://scriptorium.hopto.org/searcher_app/api/endpoint?term=${term}&size=100`
     console.log(url)
 
-    $.ajax({
-        url: url,
-        type: 'GET',
-        crossDomain: true,
-        success: function(resp) {
-            console.log(resp);
+    result = [];
+
+    let ajaxPromise = new Promise( (res, rej) => {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            crossDomain: true,
+            success: data => res(data),
+            error: err => rej(err)
+        });
+    });
+
+    const data = await ajaxPromise
+    
+    // console.log('data', data);
+    result = data.map(it => {
+        return {
+            text: it.text,
+            weight: 1.0 / it.dist,
+            link: 'index.html?term=' + it.text,
+            html: {
+                title: `Click for ${it.text}'s semantic neighbourhood`, 
+                class: "custom-class"
+            }
         }
     })
-
-//    $.getJSON(url, function( data ) {
-//        console.log('got', data)
-//        var items = [];
-//        $.each( data, function( key, val ) {
-//          items.push( "<li id='" + key + "'>" + val + "</li>" );
-//        });
-//
-//        $( "<ul/>", {
-//          "class": "my-new-list",
-//          html: items.join( "" )
-//        }).appendTo( "body" );
-//      });
+    // console.log('xformed data' , result)
+    return result;
 }
 
-getNeighbours()
+// getNeighbours().then(data => {
+//     console.log('data', data);
+// })
+
