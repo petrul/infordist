@@ -11,7 +11,11 @@ function getParam(paramName) {
     }
 }
 
+
 function getNeighbours() {
+
+    console.log(4)
+
     term = getParam('term')
     if (!term) {
         term = 'kingdom' // default
@@ -20,18 +24,28 @@ function getNeighbours() {
 
     const url = `https://scriptorium.hopto.org/searcher_app/api/endpoint?term=${term}&size=100`
     console.log(url)
-    $.getJSON(url, function( data ) {
-        console.log('got', data)
-        var items = [];
-        $.each( data, function( key, val ) {
-          items.push( "<li id='" + key + "'>" + val + "</li>" );
-        });
-       
-        $( "<ul/>", {
-          "class": "my-new-list",
-          html: items.join( "" )
-        }).appendTo( "body" );
-      });
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        crossDomain: true,
+        success: function(resp) {
+            console.log(resp);
+        }
+    })
+
+//    $.getJSON(url, function( data ) {
+//        console.log('got', data)
+//        var items = [];
+//        $.each( data, function( key, val ) {
+//          items.push( "<li id='" + key + "'>" + val + "</li>" );
+//        });
+//
+//        $( "<ul/>", {
+//          "class": "my-new-list",
+//          html: items.join( "" )
+//        }).appendTo( "body" );
+//      });
 }
 
 getNeighbours()

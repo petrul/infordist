@@ -33,9 +33,10 @@ public class RestEndpoint extends HttpServlet {
         final NgdNeighboursService ngdNeighboursService = applicationContext.getNgdNeighboursService();
         final List<Map<String, Object>> ngdNeighbours = ngdNeighboursService.getNgdNeighbours(term, size);
 
-        resp.addHeader("Content-Type", "application/json");
         resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        resp.addHeader("Content-Type", "application/json");
+        
+        // resp.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
         ObjectMapper jackson = new ObjectMapper();
         jackson.writeValue(resp.getOutputStream(), ngdNeighbours);

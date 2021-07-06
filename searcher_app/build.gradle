@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.apache.lucene:lucene-spellchecker:2.4.1'
     implementation 'org.apache.lucene:lucene-snowball:2.4.1'
     implementation 'pertinence:indexer_app:1.1-SNAPSHOT'
-    implementation 'org.codehaus.groovy:groovy-all:1.6.5'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
     implementation 'javax.faces:jsf-api:1.2_09-b01'
     implementation 'javax.faces:jsf-impl:1.2-20'
     implementation 'javax.servlet:jstl:1.2'
@@ -86,4 +86,5 @@ task fatJar(type: Jar) {
 
 gretty {
 //     servletContainer = 'tomcat9'
+    httpPort = 8080
 }
