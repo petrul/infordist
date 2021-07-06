@@ -19,7 +19,8 @@ async function getNeighbours() {
     }
     console.log('getting neighbours for', term)
 
-    const url = `https://scriptorium.hopto.org/searcher_app/api/endpoint?term=${term}&size=100`
+    // const url = `https://scriptorium.hopto.org/searcher_app/api/endpoint?term=${term}&size=100`
+    const url = `../api/endpoint?term=${term}&size=100`
     console.log(url)
 
     result = [];
