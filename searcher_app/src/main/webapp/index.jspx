@@ -18,7 +18,7 @@
 <p>
 
   <a 
-    href="http://localhost:8080/searcher_app/word-cloud/index.html?term=kingdom">
+    href="word-cloud/index.html?term=kingdom">
     See the word cloud 
   </a>
 
