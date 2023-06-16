@@ -12,7 +12,13 @@ String xmxArg = "-Xmx2500m"
 startScripts {
     mainClassName = "wiki.indexer.cli.WikipediaIndexer"
     applicationName = "wikipedia-indexer"
-    applicationDefaultJvmArgs  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4444", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    applicationDefaultJvmArgs  = [xmxArg,
+                                  "-Dcom.sun.management.jmxremote.port=4444",
+                                  "-Dcom.sun.management.jmxremote.authenticate=false",
+                                  "-DentityExpansionLimit=2147480000",
+                                  "-DtotalEntitySizeLimit=2147480000",
+                                  "-Djdk.xml.totalEntitySizeLimit=2147480000"
+                                ]
 }
 
 task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
