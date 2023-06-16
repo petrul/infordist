@@ -3,8 +3,10 @@ package wiki.indexer.cli;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -13,6 +15,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.store.AlreadyClosedException;
+import org.apache.tools.ant.taskdefs.BUnzip2;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -101,8 +104,11 @@ public class WikipediaIndexer implements Runnable {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(saxParser);
 			try {
-				xmlReader.parse(new InputSource(
-					new BufferedInputStream(new FileInputStream(new File(wikipediaXmlLocation)))));
+				InputStream is = new FileInputStream(new File(wikipediaXmlLocation));
+				if (wikipediaXmlLocation.endsWith(".bz2")) {
+					is = new BZip2CompressorInputStream(is);
+				}
+				xmlReader.parse(new InputSource(new BufferedInputStream(is)));
 			} catch (MaxPagesReachedException e) {
 				LOG.info("reached max pages threshold " + e.getNrPages() + ", will stop indexing");
 			}
