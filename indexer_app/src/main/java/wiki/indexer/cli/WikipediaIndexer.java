@@ -142,6 +142,7 @@ public class WikipediaIndexer implements Runnable {
 		opt = Option.builder("x")
 				.argName("filename")
 				.required()
+				.hasArg()
 				.desc("wikipedia xml dump")
 				.build();
 //		opt = OptionBuilder.withArgName("filename")
