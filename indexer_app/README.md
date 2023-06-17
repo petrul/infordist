@@ -1,29 +1,56 @@
-Download the wikipedia dump xml.
+# Steps to compute similarity metics between English vocabulary words.
 
-Run WikipediaIndexer on it.
+### Download the wikipedia XML dump:
 
-$ java  wiki.indexer.cli.WikipediaIndexer -x /path/to/dump.xml
+```
+$ wget -c http://mirror.accum.se/mirror/wikimedia.org/dumps/enwiki/20230601/enwiki-20230601-pages-articles.xml.bz2
+$ bunzip2 enwiki-20230601-pages-articles.xml.bz2
+```
 
-indexed 20 million pages.
+### Build the software  
 
-then apply NGD:
+$ ./gradle build  
 
-$ java inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex
+Locate the distribution package in build/lib/indexer_app-VERSION.zip, get it, unzip it. It has a bin/ 
+subdirectory with some useful tools in it. Most of them have a useful -h option which prints available CLI
+switches.
 
-This will generate you a term matrix which you can inspect to get NGD-based semantic neighbourhoods.
+### Run WikipediaIndexer
 
-or, to apply NCD (I called it nld, normalized 'lucene' distance), first get a directory full of gists
+```
+$ cd indexer_app-1.1-SNAPSHOT/bin
+$ ./wikipedia-indexer -x enwiki-20230601-pages-articles.xml
+```
+
+The run may take a while, the end is marked by printing something like: 
+
+```indexed 20 million pages.```
+
+### Apply NGD:
+
+```bash
+$ ./ExtractTermFrequenciesMatrixFromPositionalIndex
+``` 
+
+One of the options is -n which specifies for how many words of the English vocabulary 
+you want the computation to be done. Use something between 30000 - 50000 knowing that the more 
+words you need the more time and memory will be needed for the computation to finish. 
+
+This command will generate you a term matrix which you can inspect to get NGD-based similarity 
+semantic neighbourhoods.
+
+### NCD
+
+To apply NCD (I called it nld, normalized 'lucene' distance), first get a directory full of gists
 (that is windows of meaning for each term)
 
-$ groovy RetrieveGistsFromPositionalIndex
-
-with the following jvm params:
-    -Xmx8G  \
-    -Dcom.sun.management.jmxremote.port=4444 \
-    -Dcom.sun.management.jmxremote.authenticate=false
+```
+$ ./RetrieveGistsFromPositionalIndex
+```
 
 it will output something like:
 
+```
     got 60001 terms, will store them in /Users/petru/gists.bz2...
     calculating gist for refer(5368835) ...
     calculating gist for name(3589360) ...
@@ -36,6 +63,7 @@ it will output something like:
     retrieving gist of other from index...
     term which appeared 8084038 times in 2434352 docs, has a gist size in contexts of 8084038, gist retrieval took 0:27:18.450
     term other appeared 6367092 times in 2407251 docs, has a gist size in contexts of 6367092, gist retrieval took 0:26:58.600
+```
 
 then run ncd:
 
@@ -43,9 +71,10 @@ $ groovy ncd_for_dir -i ~/Desktop/gists.bz2/
 
 the script may take a long time.
 
-BUGS
-====
+### BUGS
+If you get 
 
+```
 [Fatal Error] :60490871:185: JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
 Exception in thread "main" java.lang.RuntimeException: org.xml.sax.SAXParseException; lineNumber: 60490871; columnNumber: 185; JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
 	at wiki.indexer.cli.WikipediaIndexer.run(WikipediaIndexer.java:126)
@@ -53,22 +82,18 @@ Exception in thread "main" java.lang.RuntimeException: org.xml.sax.SAXParseExcep
 Caused by: org.xml.sax.SAXParseException; lineNumber: 60490871; columnNumber: 185; JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
 	at java.xml/com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1243)
 	at wiki.indexer.cli.WikipediaIndexer.run(WikipediaIndexer.java:114)
-
-Fix like this :
+```
+Fix it like this :
 https://stackoverflow.com/questions/42991043/error-xml-sax-saxparseexception-while-parsing-a-xml-file-using-wikixmlj
 
 -DentityExpansionLimit=2147480000 -DtotalEntitySizeLimit=2147480000 -Djdk.xml.totalEntitySizeLimit=2147480000
 
 
-SPECS
-=====
+# SPECS
 
 NCD-Similarity
 
-
-
-API
-===
+## API
 
 Three components.
 
@@ -78,7 +103,7 @@ Three components.
 
 
 So:
-
+```
 ncd_calculator = new BZip2 NcdCalculator
 
 storage = ... TermMatrix.getInstance(ncdcalculator)
@@ -107,7 +132,7 @@ String s1 = ...
 String s2 = ...
 
 
-
 ncdcalculator.computeNCD(s1, s2)
 
 ncdrepo.getNCD(s1, s2)
+```
