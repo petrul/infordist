@@ -1,0 +1,10 @@
+FROM eclipse-temurin:19-jre
+COPY build/libs/infordist_searcher_app*-application.jar /infordist_searcher_app.jar
+
+#ENV NGD_MATRIX_LOCATION undefined
+
+VOLUME /ngd_matrix_location
+VOLUME /logs
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/infordist_searcher_app.jar"]
