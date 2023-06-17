@@ -1,12 +1,24 @@
 plugins {
     id 'java'
+    id 'groovy'
+    id 'idea'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'maven-publish'
-    id 'war'
-    id 'application'
-//    id 'com.github.johnrengelman.shadow' version '7.0.0'
-    // id 'tomcat'
-    id "org.gretty" version "3.0.5"
-    // id 'com.bmuschko.tomcat'
+}
+
+group = 'pertinence'
+version = '1.3-SNAPSHOT'
+description = 'Infordist searcher app'
+
+java {
+    sourceCompatibility = '19'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
@@ -19,9 +31,13 @@ repositories {
 }
 
 dependencies {
-    
-    implementation 'junit:junit:4.5'
-    implementation 'log4j:log4j:1.2.15'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+
+//    implementation 'junit:junit:4.5'
+//    implementation 'log4j:log4j:1.2.15'
 
 //    implementation  group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31'
 //    implementation  group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.31'
@@ -36,8 +52,10 @@ dependencies {
     implementation 'org.apache.lucene:lucene-wikipedia:2.4.1'
     implementation 'org.apache.lucene:lucene-spellchecker:2.4.1'
     implementation 'org.apache.lucene:lucene-snowball:2.4.1'
-    implementation 'pertinence:indexer_app:1.1-SNAPSHOT'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    implementation('pertinence:indexer_app:1.1-SNAPSHOT') { exclude group: 'org.codehaus.groovy' }
+
+    implementation 'org.apache.groovy:groovy-all:4.0.12'
+
     implementation 'javax.faces:jsf-api:1.2_09-b01'
     implementation 'javax.faces:jsf-impl:1.2-20'
     implementation 'javax.servlet:jstl:1.2'
@@ -47,21 +65,23 @@ dependencies {
     implementation 'org.icefaces:icefaces-facelets:1.8.2'
     implementation 'com.sun.facelets:jsf-facelets:1.1.11'
 
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
 
-     providedCompile 'javax.servlet:servlet-api:2.5'
+//    providedCompile 'javax.servlet:servlet-api:2.5'
+//
+//    implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '11.0.5'
+//    implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '11.0.5'
+//    implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '11.0.5'
 
-     implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '11.0.5'
-     implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '11.0.5'
-     implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '11.0.5'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-group = 'pertinence'
-version = '1.2-SNAPSHOT'
-description = 'searcher app'
-sourceCompatibility = '11'
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
 
 publishing {
     publications {
@@ -71,20 +91,60 @@ publishing {
     }
 }
 
-task fatJar(type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'ro.scriptorium.fatjar.Application'
+
+// docker
+
+def runShellCommand(String cmd) {
+    p "will run \$ $cmd"
+    final proc = cmd.execute()
+    p "stdout follows: "
+    p "==============="
+    p proc.text
+    proc.waitFor()
+
+    final exitValue = proc.exitValue()
+    p "exit value: $exitValue"
+    if (exitValue != 0) {
+        throw new GroovyRuntimeException("cmd $cmd finished with non-zero exit value $exitValue")
     }
-    baseName = 'all-in-one-jar'
-    from { configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
 }
 
-//application {
-//    mainClass = ''
-//}
+final imagelabel="editii/infordist_searcher_app:$version"
+tasks.register("docker") {
+    dependsOn 'build'
+    doLast {
+        runShellCommand("pwd")
+        final cmd = """docker build \
+            -f docker/dockerfile            \
+            -t $imagelabel ."""
+        runShellCommand(cmd)
+    }
+}
 
-gretty {
-//     servletContainer = 'tomcat9'
-    httpPort = 8080
+final registry = "mini.local:5000"
+tasks.register("docker-publish") {
+    dependsOn("docker")
+    doLast {
+        runShellCommand("pwd")
+        final remoteimagelabel = "$registry/$imagelabel"
+        def cmd = "docker tag $imagelabel $remoteimagelabel"
+
+        runShellCommand(cmd)
+
+        cmd = "docker push $remoteimagelabel"
+
+        runShellCommand(cmd)
+    }
+}
+
+def p(args) { println(args) }
+
+// this for bug in gradle 8 on starting main from idea
+gradle.taskGraph.whenReady {
+    tasks.withType(JavaExec) {
+        if (name.endsWith(".main()")) {
+            println("Setting executable to java launcher for ${name}")
+            it.setExecutable(javaLauncher.get().executablePath.asFile.absolutePath)
+        }
+    }
 }

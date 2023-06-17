@@ -4,8 +4,6 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import inform.dist.ngd.NgdCalculator;
 import matrix.store.TermMatrixReadOnly;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
 
 import java.util.*;
 
@@ -58,15 +56,15 @@ public class TermService {
 	}
 
 	public Integer getTermAbsFreq(String term) {
-		try {
+//		try {
 			if (term == null)
 				return null;
 			//return this.jdbc.queryForInt("select absfreq from terms where term collate 'utf8_bin' = ?", new Object[] {term});
 			return this.termsAndFreqs.get(term);
-		} catch (DataAccessException e) {
-			LOG.error(e,e);
-			return -1;
-		}
+//		} catch (DataAccessException e) {
+//			LOG.error(e,e);
+//			return -1;
+//		}
 	}
 	
 //	@SuppressWarnings("unchecked")
@@ -201,6 +199,6 @@ public class TermService {
 
 //	}
 	
-	static Logger LOG = Logger.getLogger(TermService.class);
+//	static Logger LOG = Logger.getLogger(TermService.class);
 
 }

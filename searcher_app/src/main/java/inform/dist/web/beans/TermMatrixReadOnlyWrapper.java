@@ -1,7 +1,7 @@
 package inform.dist.web.beans;
 
+import lombok.extern.log4j.Log4j2;
 import matrix.store.TermMatrixReadOnly;
-import org.apache.log4j.Logger;
 
 import javax.faces.context.FacesContext;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.io.File;
  * @author dadi
  * 
  */
+@Log4j2
 public class TermMatrixReadOnlyWrapper extends TermMatrixReadOnly {
 	public TermMatrixReadOnlyWrapper() {
 		super(new File(FacesContext.getCurrentInstance().getExternalContext().getInitParameter("infordist.matrix.location")), 2);
@@ -20,8 +21,7 @@ public class TermMatrixReadOnlyWrapper extends TermMatrixReadOnly {
 		File dsFile = new File(dsLocation);
 		if (!dsFile.exists())
 			throw new IllegalArgumentException("no matrix datasource at location [" + dsFile +"]");
-		LOG.info("datasource matrix is located at [" + dsLocation + "]");
+		log.info("datasource matrix is located at [" + dsLocation + "]");
 	}
-	
-	static Logger LOG = Logger.getLogger(TermMatrixReadOnlyWrapper.class);
+
 }

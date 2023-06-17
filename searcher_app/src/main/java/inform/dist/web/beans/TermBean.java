@@ -15,9 +15,9 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import lombok.extern.log4j.Log4j2;
 import matrix.store.TermMatrixReadOnly;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 
@@ -29,6 +29,7 @@ import wiki.indexer.WikipediaSnowballAnalyzer;
  * @author dadi
  *
  */
+@Log4j2
 public class TermBean  {
 	
 	String term;
@@ -41,7 +42,7 @@ public class TermBean  {
 	DistanceCalculatorFromFreqMatrix dCalc;
 
 	public TermBean() {
-		LOG.info("constructor of TermBean");
+		log.info("constructor of TermBean");
 	}
 
 	public List<Map<String, Object>> getNgdNeighbours() {
@@ -49,7 +50,7 @@ public class TermBean  {
 	}
 	
 	
-	public List<Map<String, Object>> getUngdNeighbours() {
+	public List<Map<String, Object>> getUngdNeighbousrs() {
 
 		Map<String, Integer> cc_list = termService.getCombinedComplexities(this.term);
 		
@@ -133,7 +134,7 @@ public class TermBean  {
 	}
 
 	public void setTerm(String term) {
-		LOG.info("setTerm:" + term);
+		log.info("setTerm:" + term);
 		byte[] bytes = term.getBytes(Charset.forName("latin1"));
 		String utf8term = new String(bytes, Charset.forName("utf-8"));
 		WikipediaSnowballAnalyzer analyzer = new WikipediaSnowballAnalyzer("English");
@@ -158,5 +159,4 @@ public class TermBean  {
 		return preferences;
 	}
 	
-	static Logger LOG = Logger.getLogger(TermBean.class);
 }

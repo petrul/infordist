@@ -47,5 +47,5 @@ public class NgdNeighboursService {
         return res;
     }
 
-    static Logger LOG = LoggerFactory.getLogger(ApplicationContext.class);
+    static Logger LOG = LoggerFactory.getLogger(AppConf.class);
 }

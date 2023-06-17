@@ -1,21 +1,28 @@
 package inform.dist.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class RestEndpoint extends HttpServlet {
+@RestController
+@RequestMapping("/api")
+@CrossOrigin
+public class RestEndpoint {
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @Autowired
+    NgdNeighboursService ngdNeighboursService;
+
+    @GetMapping("/endpoint")
+    protected List<Map<String, Object>> doGet(HttpServletRequest req, HttpServletResponse resp) {
 
         String term = req.getParameter("term");
         if (term == null)
@@ -29,8 +36,8 @@ public class RestEndpoint extends HttpServlet {
             LOG.error(e.getMessage(), e);
         }
 
-        ApplicationContext applicationContext = ApplicationContext.getInstance(req.getServletContext());
-        final NgdNeighboursService ngdNeighboursService = applicationContext.getNgdNeighboursService();
+//        AppConf applicationContext = AppConf.getInstance(req.getServletContext());
+//        final NgdNeighboursService ngdNeighboursService = applicationContext.getNgdNeighboursService();
         final List<Map<String, Object>> ngdNeighbours = ngdNeighboursService.getNgdNeighbours(term, size);
 
         resp.addHeader("Access-Control-Allow-Origin", "*");
@@ -38,8 +45,9 @@ public class RestEndpoint extends HttpServlet {
         
         // resp.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-        ObjectMapper jackson = new ObjectMapper();
-        jackson.writeValue(resp.getOutputStream(), ngdNeighbours);
+        return ngdNeighbours;
+//        ObjectMapper jackson = new ObjectMapper();
+//        jackson.writeValue(resp.getOutputStream(), ngdNeighbours);
     }
 
     static Logger LOG = LoggerFactory.getLogger(RestEndpoint.class);

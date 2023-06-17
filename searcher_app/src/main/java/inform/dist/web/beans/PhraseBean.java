@@ -16,15 +16,17 @@ import java.util.TreeSet;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import matrix.store.TermMatrixReadOnly;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 
 import wiki.indexer.WikipediaSnowballAnalyzer;
 
+@Log4j2
 public class PhraseBean {
 	String phrase;
 	List<String> tokens = new ArrayList<String>();
@@ -62,7 +64,7 @@ public class PhraseBean {
 		if (cache.containsKey(this.phrase)) {
 			return (List<WeightedTerm>) cache.get(this.phrase);
 		}
-		LOG.info(super.toString() + " calculating sense of phrase " + this.phrase);
+		log.info(super.toString() + " calculating sense of phrase " + this.phrase);
 		Set<String> allNeighbours = new HashSet<String>(1000);
 		
 		Map<String, List<Map<String, Object>>> tokensAndTheirNeighbours = new HashMap<String, List<Map<String,Object>>>();
@@ -70,7 +72,7 @@ public class PhraseBean {
 			List<Map<String,Object>> neighbours = this.termService.getNgdNeighbours(token);
 			try { neighbours = neighbours.subList(0, 1000); } catch (IndexOutOfBoundsException e) {}
 			if (neighbours == null || neighbours.size() == 0) {
-				LOG.warn("no neighbours for [" + token + "]");
+				log.warn("no neighbours for [" + token + "]");
 				FacesContext.getCurrentInstance().addMessage("hello", 
 						new FacesMessage("big big problem"));
 				continue;
@@ -79,7 +81,7 @@ public class PhraseBean {
 			for (Map<String,Object> elem : neighbours) {
 				allNeighbours.add((String) elem.get("text"));
 			}
-			LOG.info("got neighbours for [" + token + "]");
+			log.info("got neighbours for [" + token + "]");
 		}
 		
 		Set<WeightedTerm> resultSet = new TreeSet<WeightedTerm>();
@@ -140,5 +142,5 @@ public class PhraseBean {
 		this.termService = termService;
 	}
 	
-	static Logger LOG = Logger.getLogger(PhraseBean.class);
+//	static Logger LOG = Logger.getLogger(PhraseBean.class);
 }

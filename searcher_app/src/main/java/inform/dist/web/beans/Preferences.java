@@ -1,16 +1,15 @@
 package inform.dist.web.beans;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-
+@Log4j2
 public class Preferences extends HashMap<String, Object> {
 	public Preferences() {
 		this.put("term-rows", 20);
-		LOG.info("initialized " + this);
+		log.info("initialized " + this);
 	}
 	private static final long serialVersionUID = 1L;
 
-	
-	static Logger LOG = Logger.getLogger(Preferences.class);
 }
