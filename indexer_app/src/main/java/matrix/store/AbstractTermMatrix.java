@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import inform.dist.util.Util;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 
@@ -220,8 +221,16 @@ public abstract class AbstractTermMatrix implements TermMatrix {
 	
 	@Override
 	public void setCombinedComplexity(String term1, String term2, int value) {
-		int i = this.terms_id.get(term1);
-		int j = this.terms_id.get(term2);
+		final Integer i = this.terms_id.get(term1);
+		final Integer j = this.terms_id.get(term2);
+
+		Util.azzert(i != null && i >= 0,
+				String.format("expected index associated with [%s] to be > 0, instead it is [%d]",
+						term1, i));
+
+		Util.azzert(j != null && j >= 0,
+				String.format("expected index associated with [%s] to be > 0, instead it is [%d]",
+						term2, j));
 
 		this.ccStore.put(i, j, value);
 	}

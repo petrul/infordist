@@ -15,7 +15,8 @@ public class AppConf {
 
     @Bean
     public TermMatrixReadOnly getTermMatrix(@Value("${ngd.matrix.location}") String ngdMatrixLocation) {
-        return new TermMatrixReadOnly(new File(ngdMatrixLocation));
+        String tildeResolved = Util.replaceTilde(ngdMatrixLocation);
+        return new TermMatrixReadOnly(new File(tildeResolved));
     }
 
     @Bean

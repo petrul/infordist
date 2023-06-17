@@ -1,4 +1,4 @@
-# Steps to compute similarity metics between English vocabulary words.
+# Steps to compute similarity metrics between English vocabulary words.
 
 ### Download the wikipedia XML dump:
 
@@ -12,8 +12,8 @@ $ bunzip2 enwiki-20230601-pages-articles.xml.bz2
 $ ./gradle build  
 
 Locate the distribution package in build/lib/indexer_app-VERSION.zip, get it, unzip it. It has a bin/ 
-subdirectory with some useful tools in it. Most of them have a useful -h option which prints available CLI
-switches.
+subdirectory with some useful tools in it. Most of them have a help -h switch which prints out available CLI
+options.
 
 ### Run WikipediaIndexer
 

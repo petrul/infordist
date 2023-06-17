@@ -4,9 +4,80 @@ plugins {
     id 'maven-publish'
     id 'application'
     id 'eclipse'
-    // id 'maven'
 }
 
+group = 'pertinence'
+version = '1.1-SNAPSHOT'
+description = 'NGD/NCD indexer app'
+java {
+    sourceCompatibility = '19'
+}
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'junit:junit:4.5'
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'commons-io:commons-io:1.4'
+    implementation 'commons-lang:commons-lang:2.4'
+    implementation 'commons-collections:commons-collections:3.2.2'
+    implementation 'org.apache.commons:commons-compress:1.19'
+    implementation 'commons-cli:commons-cli:1.5.0'
+
+    implementation 'com.thoughtworks.xstream:xstream:1.4.6'
+    implementation 'colt:colt:1.2.0'
+    implementation 'org.apache.lucene:lucene-core:2.4.1'
+    implementation 'org.apache.lucene:lucene-analyzers:2.4.1'
+    implementation 'org.apache.lucene:lucene-wikipedia:2.4.1'
+    implementation 'org.apache.lucene:lucene-snowball:2.4.1'
+    implementation 'org.springframework:spring-jdbc:2.5.6'
+    implementation 'mysql:mysql-connector-java:5.1.6'
+//    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    implementation 'org.apache.groovy:groovy-all:4.0.12'
+}
+
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'myRepo'
+            if(project.version.endsWith('-SNAPSHOT')) {
+                url = "file:///gv0/repo/snapshots"
+            } else {
+                url = "file:///gv0/repo/releases"
+            }
+        }
+    }
+}
+
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+// this for bug in gradle 8 on starting main from idea
+gradle.taskGraph.whenReady {
+    tasks.withType(JavaExec) {
+        if (name.endsWith(".main()")) {
+            println("Setting executable to java launcher for ${name}")
+            it.setExecutable(javaLauncher.get().executablePath.asFile.absolutePath)
+        }
+    }
+}
 
 String xmxArg = "-Xmx2500m"
 startScripts {
@@ -18,7 +89,7 @@ startScripts {
                                   "-DentityExpansionLimit=2147480000",
                                   "-DtotalEntitySizeLimit=2147480000",
                                   "-Djdk.xml.totalEntitySizeLimit=2147480000"
-                                ]
+    ]
 }
 
 task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
@@ -90,74 +161,4 @@ applicationDistribution.into("bin") {
     from(termMatrixGetTerms)
 
     fileMode = 0755
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'junit:junit:4.5'
-    implementation 'log4j:log4j:1.2.17'
-    implementation 'commons-io:commons-io:1.4'
-    implementation 'commons-lang:commons-lang:2.4'
-    implementation 'commons-collections:commons-collections:3.2.2'
-    implementation 'org.apache.commons:commons-compress:1.19'
-    implementation 'commons-cli:commons-cli:1.5.0'
-
-    implementation 'com.thoughtworks.xstream:xstream:1.4.6'
-    implementation 'colt:colt:1.2.0'
-    implementation 'org.apache.lucene:lucene-core:2.4.1'
-    implementation 'org.apache.lucene:lucene-analyzers:2.4.1'
-    implementation 'org.apache.lucene:lucene-wikipedia:2.4.1'
-    implementation 'org.apache.lucene:lucene-snowball:2.4.1'
-    implementation 'org.springframework:spring-jdbc:2.5.6'
-    implementation 'mysql:mysql-connector-java:5.1.6'
-//    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
-    implementation 'org.apache.groovy:groovy-all:4.0.12'
-}
-
-group = 'pertinence'
-version = '1.1-SNAPSHOT'
-description = 'NGD/NCD indexer app'
-sourceCompatibility = '17'
-
-publishing {
-    publications {
-        myLibrary(MavenPublication) {
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            name = 'myRepo'
-            if(project.version.endsWith('-SNAPSHOT')) {
-                url = "file:///gv0/repo/snapshots"
-            } else {
-                url = "file:///gv0/repo/releases"
-            }
-        }
-    }
-}
-
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
-// this for bug in gradle 8 on starting main from idea
-gradle.taskGraph.whenReady {
-    tasks.withType(JavaExec) {
-        if (name.endsWith(".main()")) {
-            println("Setting executable to java launcher for ${name}")
-            it.setExecutable(javaLauncher.get().executablePath.asFile.absolutePath)
-        }
-    }
 }

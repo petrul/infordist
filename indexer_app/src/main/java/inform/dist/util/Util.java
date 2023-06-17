@@ -41,4 +41,8 @@ public class Util {
 //		return idTermMap;
 //	}
 
+	public static void azzert(boolean condition, String message) {
+		if (! condition)
+			throw new RuntimeException(message);
+	}
 }

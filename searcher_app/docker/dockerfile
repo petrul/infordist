@@ -3,7 +3,7 @@ COPY build/libs/infordist_searcher_app*-application.jar /infordist_searcher_app.
 
 #ENV NGD_MATRIX_LOCATION undefined
 
-VOLUME /ngd_matrix_location
+VOLUME /ngd-matrix
 VOLUME /logs
 
 EXPOSE 8080
