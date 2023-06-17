@@ -92,6 +92,37 @@ publishing {
 }
 
 
+// the ionic client
+task runAppIonicBuild {
+    final String dir = "src/main/webapp/ionic-client"
+//    final subpath="app"
+    doLast {
+        exec {
+            workingDir "./$dir"
+            executable 'npm'
+            args 'install'
+        }
+        exec {
+            workingDir "./$dir"
+            executable 'ionic'
+            args 'build', "--prod",  "--", "--base-href=/"
+        }
+        copy {
+            from "./$dir/www/"
+            into "$buildDir/resources/main/static/"
+        }
+    }
+}
+
+task ionic  {
+    dependsOn runAppIonicBuild
+}
+
+//tasks.processResources.dependsOn << runAdminIonicBuild
+tasks.bootRun.dependsOn << ionic
+tasks.jar.dependsOn << ionic
+tasks.bootJar.dependsOn << ionic
+
 // docker
 
 def runShellCommand(String cmd) {
