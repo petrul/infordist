@@ -22,7 +22,7 @@ startScripts {
 }
 
 task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
-    mainClassName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
+    mainClassName = "inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex"
     description = "from a positional index retrieves the term matrix if co-occurrence data the can be used the get the semantic neighbourhood"
     applicationName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
     defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
