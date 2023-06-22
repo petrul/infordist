@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'pertinence'
-version = '1.1-SNAPSHOT'
+version = '1.1rc1'
 description = 'NGD/NCD indexer app'
 java {
     sourceCompatibility = '19'
@@ -36,7 +36,6 @@ dependencies {
     implementation 'org.apache.lucene:lucene-snowball:2.4.1'
     implementation 'org.springframework:spring-jdbc:2.5.6'
     implementation 'mysql:mysql-connector-java:5.1.6'
-//    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
     implementation 'org.apache.groovy:groovy-all:4.0.12'
 }
 

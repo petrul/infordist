@@ -146,8 +146,15 @@ public class NioFileMatrixStore implements IntMatrixStore {
 
 	protected IntBuffer loadRowsIntoMemory(int i) {
 		try {
-			final long position = this.startingPosition + BYTES_PER_INT * i * this.columns;
-			final long rowsize = BYTES_PER_INT * this.columns;
+			final long position = this.startingPosition
+					+ (long) BYTES_PER_INT
+					* (long) i
+					* (long) this.columns;
+			final long rowsize = (long) BYTES_PER_INT
+					* (long) this.columns;
+
+			Assert.assertTrue(position >= 0);
+			Assert.assertTrue(rowsize >= 0);
 
 			MapMode mapmode = this.openMode.equals("r") ?
 					FileChannel.MapMode.READ_ONLY : FileChannel.MapMode.READ_WRITE;

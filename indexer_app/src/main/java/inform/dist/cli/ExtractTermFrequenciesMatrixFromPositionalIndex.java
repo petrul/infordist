@@ -164,7 +164,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
 
 
                 /* we will cut the crt document into smaller documents, called text windows of nrLines this.windowSize */
-                Map<Integer, Set<String>> textWindows = new HashMap<Integer, Set<String>>();
+                Map<Integer, Set<String>> textWindows = new HashMap<>();
 
                 String[] terms = termPosVector.getTerms();
                 for (int t = 0; t < terms.length; t++) {
@@ -249,7 +249,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
                         if ("Negative position".equals(e.getMessage())) {
                             // we have a bug at at matrix.store.NioFileMatrixStore.loadRowsIntoMemory(NioFileMatrixStore.java:154)
                             // ignore it for now until it's fixed, only print stacktrace
-                            LOG.warn(e.getMessage(), e);
+                            LOG.debug(e.getMessage(), e);
                         } else {
                             throw e;
                         }

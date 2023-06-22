@@ -28,16 +28,23 @@ The run may take a while, the end is marked by printing something like:
 
 ### Apply NGD:
 
+One of the options is -n which specifies for how many words of the English vocabulary
+you want the computation to be done. Use something between 30000 - 50000 knowing that the more
+words you need the more time and memory will be needed for the computation to finish.
+
+Run, for example, like this:
+
 ```bash
-$ ./ExtractTermFrequenciesMatrixFromPositionalIndex
+$ ./ExtractTermFrequenciesMatrixFromPositionalIndex -n 40000 -i index-enwiki -o ngd-40k 
 ``` 
-
-One of the options is -n which specifies for how many words of the English vocabulary 
-you want the computation to be done. Use something between 30000 - 50000 knowing that the more 
-words you need the more time and memory will be needed for the computation to finish. 
-
-This command will generate you a term matrix which you can inspect to get NGD-based similarity 
+This command will generate you a term matrix which you can inspect to get NGD-based similarity
 semantic neighbourhoods.
+
+The options mean:
+
+* -n 40000 : take into account no more than 40k words of the English vocabulary
+* -i index-enwiki: the positional indexed realized by the previous step
+* -o the location of the output binary cooccurrence matrix.
 
 ### NCD
 
