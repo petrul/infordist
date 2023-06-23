@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'pertinence'
-version = '1.3'
+version = '1.3.1rc1'
 description = 'Infordist searcher app'
 
 java {
@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.apache.lucene:lucene-wikipedia:2.4.1'
     implementation 'org.apache.lucene:lucene-spellchecker:2.4.1'
     implementation 'org.apache.lucene:lucene-snowball:2.4.1'
-    implementation('pertinence:indexer_app:1.1-SNAPSHOT') { exclude group: 'org.codehaus.groovy' }
+    implementation('pertinence:indexer_app:1.1') { exclude group: 'org.codehaus.groovy' }
 
     implementation 'org.apache.groovy:groovy-all:4.0.12'
 
