@@ -4,5 +4,8 @@ COPY build/libs/infordist_searcher_app*-application.jar /infordist_searcher_app.
 VOLUME /ngd-matrix
 VOLUME /logs
 
+RUN useradd dockerapp -u 10001
+USER 10001
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/infordist_searcher_app.jar"]
+ENTRYPOINT ["java", "-Xmx1g", "-jar", "/infordist_searcher_app.jar"]
