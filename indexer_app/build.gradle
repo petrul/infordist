@@ -86,7 +86,8 @@ application {
     applicationDefaultJvmArgs  = [xmxArg,
                                   "-DentityExpansionLimit=2147480000",
                                   "-DtotalEntitySizeLimit=2147480000",
-                                  "-Djdk.xml.totalEntitySizeLimit=2147480000"
+                                  "-Djdk.xml.totalEntitySizeLimit=2147480000",
+                                  "-Djdk.xml.maxGeneralEntitySizeLimit=2147480000"
     ]
 }
 startScripts {
