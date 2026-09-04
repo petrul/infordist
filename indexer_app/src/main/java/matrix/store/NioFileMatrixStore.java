@@ -106,7 +106,7 @@ public class NioFileMatrixStore implements IntMatrixStore {
 	@Override
 	public void putRow(int i, int[] elems) {
 		Assert.assertEquals(this.columns, elems.length);
-		long position = this.startingPosition + (long) BYTES_PER_INT * (long) i * (long) this.columns; // 4 bytes per int
+		long position = computePosition(this.startingPosition, BYTES_PER_INT, i, this.columns);
 		ByteBuffer byteBuffer = ByteBuffer.allocate(BYTES_PER_INT * elems.length);
 		IntBuffer intBuffer = byteBuffer.asIntBuffer();
 		intBuffer.put(elems);
@@ -144,14 +144,30 @@ public class NioFileMatrixStore implements IntMatrixStore {
 		}
 	}
 
+	/**
+	 * The byte offset of row i's first element. Pulled out as its own
+
+	 * (package-testable) method after a real bug: with i and columns both
+	 * plain ints, i * columns alone can overflow a 32-bit int well within
+	 * realistic matrix sizes (e.g. a 55000-term matrix overflows for most
+	 * rows, not just extreme ones), wrapping to a negative value that then
+	 * made FileChannel.map/write throw IllegalArgumentException("Negative
+	 * position") -- fixed by casting every operand to long before any
+	 * multiplication happens, not just widening the final result.
+	 */
+	static long computePosition(long startingPosition, int bytesPerInt, int i, int columns) {
+		return startingPosition + (long) bytesPerInt * (long) i * (long) columns;
+	}
+
+	/** The byte size of one row -- same overflow risk/fix as computePosition. */
+	static long computeRowSize(int bytesPerInt, int columns) {
+		return (long) bytesPerInt * (long) columns;
+	}
+
 	protected IntBuffer loadRowsIntoMemory(int i) {
 		try {
-			final long position = this.startingPosition
-					+ (long) BYTES_PER_INT
-					* (long) i
-					* (long) this.columns;
-			final long rowsize = (long) BYTES_PER_INT
-					* (long) this.columns;
+			final long position = computePosition(this.startingPosition, BYTES_PER_INT, i, this.columns);
+			final long rowsize = computeRowSize(BYTES_PER_INT, this.columns);
 
 			Assert.assertTrue(position >= 0);
 			Assert.assertTrue(rowsize >= 0);

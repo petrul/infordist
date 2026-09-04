@@ -72,5 +72,26 @@ public class UpperSymmetricalZeroDiagMatrixTest {
 		
 	}
 
+	@Test
+	public void testComputeArraySizeDoesNotOverflowForLargeN() {
+		// n=55000: n*(n-1) = 3,024,945,000, which overflows a 32-bit int
+		// (wraps to a negative value) before ever reaching the /2 --
+		// reproduces the exact NegativeArraySizeException(-635011148) seen
+		// with a real 55000-term run. Tested via the pure size-computation
+		// method rather than actually constructing the matrix, since the
+		// correct result here is ~1.5 billion ints (~6GB) -- too large to
+		// safely allocate in a unit test.
+		long expected = 55000L * 54999L / 2L;
+		assertEquals(expected, UpperSymmetricalZeroDiagMatrix.computeArraySize(55000));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testComputeArraySizeRejectsNTooLargeForAnyJavaArray() {
+		// n large enough that even n*(n-1)/2 itself exceeds Integer.MAX_VALUE
+		// -- no int[] can ever hold this many elements, so this must fail
+		// loudly instead of silently truncating/wrapping.
+		UpperSymmetricalZeroDiagMatrix.computeArraySize(100_000);
+	}
+
 	static Logger LOG = Logger.getLogger(UpperSymmetricalZeroDiagMatrixTest.class);
 }

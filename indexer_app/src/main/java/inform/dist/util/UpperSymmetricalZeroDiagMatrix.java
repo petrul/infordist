@@ -15,8 +15,25 @@ public class UpperSymmetricalZeroDiagMatrix {
 	
 	public UpperSymmetricalZeroDiagMatrix(int n) {
 		this.n = n;
-		int arraySize = n * (n - 1) / 2;
-		this.array = new int[arraySize];
+		this.array = new int[computeArraySize(n)];
+	}
+
+	/**
+	 * n * (n - 1) overflows a 32-bit int for n >= ~46341 (e.g. n=55000 wraps
+	 * to a negative product, then the constructor used to fail with
+	 * NegativeArraySizeException) -- computed here in long first, only
+	 * narrowed back to int once confirmed to still fit in a Java array.
+	 * Package-private (rather than folded directly into the constructor) so
+	 * it's testable without actually allocating a multi-gigabyte array.
+	 */
+	static int computeArraySize(int n) {
+		long arraySizeLong = (long) n * (n - 1) / 2;
+		if (arraySizeLong > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException(
+				"n=" + n + " is too large: n*(n-1)/2 = " + arraySizeLong +
+				" exceeds the maximum array size (" + Integer.MAX_VALUE + ")");
+		}
+		return (int) arraySizeLong;
 	}
 	
 	public int get(int x, int y) {

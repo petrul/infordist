@@ -80,7 +80,14 @@ gradle.taskGraph.whenReady {
     }
 }
 
-String xmxArg = "-Xmx2500m"
+// A 55000-term co-occurrence matrix (SimpleTermCooccurrenceStorage's
+// in-memory accumulator, see UpperSymmetricalZeroDiagMatrix) needs
+// n*(n-1)/2*4 bytes ~= 6GB just for that one array, before any JVM/GC
+// overhead -- 2500m was fine for smaller runs but OOMs immediately on a
+// real 55k-term extraction. This is a shared ceiling across every CLI
+// tool below, not a reservation, so raising it doesn't cost anything for
+// the lighter-weight tools that never need this much.
+String xmxArg = "-Xmx10g"
 application {
     mainClass = "wiki.indexer.cli.WikipediaIndexer"
     applicationDefaultJvmArgs  = [xmxArg,
@@ -98,7 +105,9 @@ task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
     mainClass = "inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex"
     description = "from a positional index retrieves the term matrix if co-occurrence data the can be used the get the semantic neighbourhood"
     applicationName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
-    defaultJvmOpts  = ["-Xmx5500m"]
+    // 5500m OOM'd on a real 55000-term run: the co-occurrence accumulator
+    // alone needs n*(n-1)/2*4 bytes ~= 6.05GB (see xmxArg's comment above).
+    defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }

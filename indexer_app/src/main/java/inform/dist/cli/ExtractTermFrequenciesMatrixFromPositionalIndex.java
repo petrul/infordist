@@ -242,18 +242,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
             for (int i = 0; i < terms.length; i++) {
                 final String crtTerm_i = terms[i];
                 for (int j = 0; j < terms.length; j++) {
-                    try {
-                        exporter.setCombinedComplexity(crtTerm_i, terms[j], cooccurrenceMatrix.get(i, j));
-                    } catch (IllegalArgumentException e) {
-                        LOG.warn(String.format("known bug for i=%d, j=%d, crtTerm=[%s]", i, j, crtTerm_i));
-                        if ("Negative position".equals(e.getMessage())) {
-                            // we have a bug at at matrix.store.NioFileMatrixStore.loadRowsIntoMemory(NioFileMatrixStore.java:154)
-                            // ignore it for now until it's fixed, only print stacktrace
-                            LOG.debug(e.getMessage(), e);
-                        } else {
-                            throw e;
-                        }
-                    }
+                    exporter.setCombinedComplexity(crtTerm_i, terms[j], cooccurrenceMatrix.get(i, j));
                 }
             }
 
@@ -272,7 +261,19 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
         if (!dir.exists())
             dir.mkdirs();
 
-        return new TermMatrixRW(terms, variables, dir, terms.length, originComment);
+        // This was `terms.length` -- for a real run that's the row cache
+        // (NioFileMatrixStore's LRUMap) sized equal to the *entire* matrix,
+        // meaning nothing ever gets evicted: storeResults() below touches
+        // every row exactly once, so every row's MappedByteBuffer stays
+        // referenced (and therefore resident) for the whole export,
+        // effectively pinning the full disk-backed matrix in memory (e.g.
+        // ~12GB for a 55000-term matrix) and defeating the entire point of
+        // using mmap here. NioFileMatrixStore's own javadoc says what this
+        // should actually be: the number of threads concurrently touching
+        // the matrix (single-threaded here, so a small constant is enough
+        // to avoid needlessly re-mapping the same row twice in a row).
+        int cacheSize = 8;
+        return new TermMatrixRW(terms, variables, dir, cacheSize, originComment);
     }
 
     @SuppressWarnings("static-access")
