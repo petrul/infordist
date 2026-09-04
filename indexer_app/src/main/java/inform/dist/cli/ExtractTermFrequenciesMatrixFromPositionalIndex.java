@@ -337,6 +337,7 @@ public class ExtractTermFrequenciesMatrixFromPositionalIndex implements Runnable
         options.addOption(opt);
         opt = Option.builder("f")
                 .argName("number")
+                .hasArg()
                 .required(false)
                 .desc("minimum frequency a term must have in order to be taken into account, default 20")
                 .longOpt("minfreq")

@@ -34,6 +34,7 @@ public class WikipediaIndexer implements Runnable {
 	String indexLocation;
 	boolean useShutDownHook = true;
 	private Integer maxPages = null;
+	private String language = "English";
 
 	public WikipediaIndexer(String wikipediaXmlLocation, String indexLocation) {
 		this.setIndexLocation(indexLocation);
@@ -63,7 +64,7 @@ public class WikipediaIndexer implements Runnable {
 			
 			final IndexWriter indexWriter = new IndexWriter(
 					indexLocation, 
-					new WikipediaSnowballAnalyzer("English"),
+					new WikipediaSnowballAnalyzer(language),
 					MaxFieldLength.UNLIMITED);
 
 			if (this.useShutDownHook)
@@ -163,6 +164,14 @@ public class WikipediaIndexer implements Runnable {
 //				        .withDescription("index output directory")
 //				        .create("o");
 		options.addOption(opt);
+		opt = Option.builder("l")
+				.longOpt("language")
+				.argName("language")
+				.hasArg()
+				.required(false)
+				.desc("analysis language: English/en (default) or Romanian/ro")
+				.build();
+		options.addOption(opt);
 		opt = Option.builder("n")
 				.longOpt("max-pages")
 				.hasArg()
@@ -202,6 +211,8 @@ public class WikipediaIndexer implements Runnable {
 				out = "index-" + RandomStringUtils.randomAlphabetic(3);
 			
 			WikipediaIndexer wi = new WikipediaIndexer(dump, out);
+			if (cmd.hasOption("language"))
+				wi.setLanguage(cmd.getOptionValue("language"));
 			
 			{
 				if (cmd.hasOption("max-pages")) {
@@ -257,6 +268,15 @@ public class WikipediaIndexer implements Runnable {
 
 	public void setUseShutDownHook(boolean useShutDownHook) {
 		this.useShutDownHook = useShutDownHook;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		// Validate aliases immediately instead of failing after deleting the output directory.
+		this.language = WikipediaSnowballAnalyzer.normalizeLanguage(language);
 	}
 
 //	public void setChunkBy(ChunkBy chunkBy) {

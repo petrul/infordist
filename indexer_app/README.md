@@ -1,145 +1,126 @@
-# Steps to compute similarity metrics between English vocabulary words.
+# Infordist indexer
 
-### Download the wikipedia XML dump:
+`indexer_app` turns Wikipedia XML dumps into data for distributional-semantic
+experiments. It can:
 
+- parse MediaWiki XML dumps without loading the full dump into memory;
+- read either plain XML or bzip2-compressed (`.xml.bz2`) dumps;
+- build a Lucene positional index with per-document term vectors;
+- analyze English or Romanian Wikipedia text with language-specific Lucene
+  Snowball stemming and stop words;
+- derive term-frequency/co-occurrence matrices for Normalized Google Distance
+  (NGD)-style semantic neighborhoods;
+- extract compressed context "gists" and compare them with Normalized
+  Compression Distance (NCD).
+
+The codebase is an older research project and intentionally retains Lucene
+2.4 index formats and APIs. The build itself uses Java 25 and Gradle 9.7.1.
+
+## Pipeline
+
+```text
+Wikipedia XML/XML.bz2
+        |
+        v
+language-aware Lucene positional index
+        |                         |
+        v                         v
+term co-occurrence matrix     compressed context gists
+        |                         |
+        v                         v
+NGD neighborhoods            NCD comparisons
 ```
-$ wget -c http://mirror.accum.se/mirror/wikimedia.org/dumps/enwiki/20230601/enwiki-20230601-pages-articles.xml.bz2
-$ bunzip2 enwiki-20230601-pages-articles.xml.bz2
-```
 
-### Build the software  
+The Wikipedia indexer stores one Lucene document per page. The page title is
+stored as its identifier; page text is tokenized, filtered, lower-cased,
+stemmed, and stored as a positional term vector. URLs and numeric tokens are
+discarded by the custom Wikipedia tokenizer/filter chain.
 
-$ ./gradle build  
+## Requirements and build
 
-Locate the distribution package in build/lib/indexer_app-VERSION.zip, get it, unzip it. It has a bin/ 
-subdirectory with some useful tools in it. Most of them have a help -h switch which prints out available CLI
-options.
-
-### Run WikipediaIndexer
-
-```
-$ cd indexer_app-1.1-SNAPSHOT/bin
-$ ./wikipedia-indexer -x enwiki-20230601-pages-articles.xml
-```
-
-The run may take a while, the end is marked by printing something like: 
-
-```indexed 20 million pages.```
-
-### Apply NGD:
-
-One of the options is -n which specifies for how many words of the English vocabulary
-you want the computation to be done. Use something between 30000 - 50000 knowing that the more
-words you need the more time and memory will be needed for the computation to finish.
-
-Run, for example, like this:
+- JDK 25
+- no system Gradle installation is required; use the checked-in wrapper
 
 ```bash
-$ ./ExtractTermFrequenciesMatrixFromPositionalIndex -n 40000 -i index-enwiki -o ngd-40k 
-``` 
-This command will generate you a term matrix which you can inspect to get NGD-based similarity
-semantic neighbourhoods.
-
-The options mean:
-
-* -n 40000 : take into account no more than 40k words of the English vocabulary
-* -i index-enwiki: the positional indexed realized by the previous step
-* -o the location of the output binary cooccurrence matrix.
-
-### NCD
-
-To apply NCD (I called it nld, normalized 'lucene' distance), first get a directory full of gists
-(that is windows of meaning for each term)
-
-```
-$ ./RetrieveGistsFromPositionalIndex
+cd indexer_app
+./gradlew clean test installDist
 ```
 
-it will output something like:
+The runnable distribution is created in `build/install/indexer_app/`. Its
+`bin/` directory contains `wikipedia-indexer` and the matrix/NCD helper tools.
 
+## Index Wikipedia
+
+`wikipedia-indexer` accepts:
+
+- `-x <file>`: required Wikipedia XML or `.bz2` dump;
+- `-o <directory>`: output index directory (a random name is used otherwise);
+- `-l, --language <language>`: `English`/`en` (default) or `Romanian`/`ro`;
+- `-n, --max-pages <count>`: stop after this many pages, useful for smoke tests.
+
+The output directory is replaced if it already exists, so choose it carefully.
+
+English Wikipedia:
+
+```bash
+build/install/indexer_app/bin/wikipedia-indexer \
+  -x /data/enwiki-pages-articles.xml.bz2 \
+  -o index-enwiki
 ```
-    got 60001 terms, will store them in /Users/petru/gists.bz2...
-    calculating gist for refer(5368835) ...
-    calculating gist for name(3589360) ...
-    calculating gist for also(3149067) ...
-    calculating gist for which(2434352) ...
-    retrieving gist of refer from index...
-    retrieving gist of name from index...
-    retrieving gist of which from index...
-    calculating gist for other(2407251) ...
-    retrieving gist of other from index...
-    term which appeared 8084038 times in 2434352 docs, has a gist size in contexts of 8084038, gist retrieval took 0:27:18.450
-    term other appeared 6367092 times in 2407251 docs, has a gist size in contexts of 6367092, gist retrieval took 0:26:58.600
+
+Romanian Wikipedia from the local Conventum download:
+
+```bash
+build/install/indexer_app/bin/wikipedia-indexer \
+  -x /home/petru/work/conventum/rowiki-2026-08-01-p1p3396124.xml.bz2 \
+  -o index-rowiki \
+  --language ro
 ```
 
-then run ncd:
+Before a full run, index a small sample:
 
-$ groovy ncd_for_dir -i ~/Desktop/gists.bz2/
-
-the script may take a long time.
-
-### BUGS
-If you get 
-
+```bash
+build/install/indexer_app/bin/wikipedia-indexer \
+  -x /home/petru/work/conventum/rowiki-2026-08-01-p1p3396124.xml.bz2 \
+  -o /tmp/index-rowiki-smoke \
+  --language ro \
+  --max-pages 1000
 ```
-[Fatal Error] :60490871:185: JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
-Exception in thread "main" java.lang.RuntimeException: org.xml.sax.SAXParseException; lineNumber: 60490871; columnNumber: 185; JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
-	at wiki.indexer.cli.WikipediaIndexer.run(WikipediaIndexer.java:126)
-	at wiki.indexer.cli.WikipediaIndexer.main(WikipediaIndexer.java:205)
-Caused by: org.xml.sax.SAXParseException; lineNumber: 60490871; columnNumber: 185; JAXP00010004: The accumulated size of entities is "50,000,001" that exceeded the "50,000,000" limit set by "FEATURE_SECURE_PROCESSING".
-	at java.xml/com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1243)
-	at wiki.indexer.cli.WikipediaIndexer.run(WikipediaIndexer.java:114)
+
+## Build an NGD/co-occurrence matrix
+
+`ExtractTermFrequenciesMatrixFromPositionalIndex` reads the positional index,
+keeps the most frequent vocabulary terms, and counts co-occurrences in token
+windows. For example:
+
+```bash
+build/install/indexer_app/bin/ExtractTermFrequenciesMatrixFromPositionalIndex \
+  -i index-rowiki \
+  -n 40000 \
+  -o ngd-rowiki-40k
 ```
-Fix it like this :
-https://stackoverflow.com/questions/42991043/error-xml-sax-saxparseexception-while-parsing-a-xml-file-using-wikixmlj
 
--DentityExpansionLimit=2147480000 -DtotalEntitySizeLimit=2147480000 -Djdk.xml.totalEntitySizeLimit=2147480000
+The most important options are:
 
+- `-i`: input Lucene index;
+- `-n`: maximum vocabulary size (30,000-50,000 is typical but expensive);
+- `-o`: output matrix directory;
+- `-f`: minimum term frequency;
+- `-d`: maximum number of documents to inspect;
+- `-w`: token-window size.
 
-# SPECS
+Use the generated `term_matrix_get_terms`, `term_matrix_get_row`, and
+`term_matrix_get_neighbours` scripts to inspect matrix contents and semantic
+neighbors.
 
-NCD-Similarity
+## NCD tools
 
-## API
+`retrieve-gists-from-positional-index` extracts a compressed context for each
+frequent term from an existing positional index. `ncd_for_two` compares two
+files, while `ncd_for_dir` computes pairwise normalized compression distances
+for a directory of inputs. Run any generated command with `-h` where available
+to see its exact options.
 
-Three components.
-
-1. storage (a TermMatrix)
-2. a repo ( a directory of bzipped files, more generally an iterator)
-3. a compressor (bzip2, gzip etc)
-
-
-So:
-```
-ncd_calculator = new BZip2 NcdCalculator
-
-storage = ... TermMatrix.getInstance(ncdcalculator)
-
-repo = new NCDRepo( calculator, directory, matrix)
-
-ncdrepo.getNeighbours(term)
-
-ncdrepo.addItem(String name, InputStream inputstream)
-ncdrepo.addItem(String name, File file)
-ncdrepo.addItem(String item)
-
-
-ncdrepo.addItems(new DirectoryOfBzipped(...))
-
-ncdrepo.getDistance(term1, term2)
-
-ncdrepo.getDistances(term1)
-ncdrepo.getNearestNeighbours(term1, 20)
-
-ncrepo.computeAllDistances()
-
-
-String s1 = ...
-
-String s2 = ...
-
-
-ncdcalculator.computeNCD(s1, s2)
-
-ncdrepo.getNCD(s1, s2)
-```
+These calculations are CPU-, memory-, and disk-intensive on a full Wikipedia
+dump. Start with `--max-pages`, a smaller vocabulary, or a document limit to
+confirm the pipeline and estimate resource use.

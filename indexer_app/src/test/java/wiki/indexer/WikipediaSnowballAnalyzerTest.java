@@ -7,6 +7,8 @@ import java.io.CharArrayReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Token;
@@ -34,6 +36,26 @@ public class WikipediaSnowballAnalyzerTest {
 			assertFalse(tk.type().equals(CustomWikipediaTokenizer.EXTERNAL_LINK_URL));
 			// LOG.info("current token " + tk.term() + " , " + tk.type());
 		}
+	}
+
+	@Test
+	public void testRomanianAnalysisUsesStopWordsAndStemmer() throws Exception {
+		WikipediaSnowballAnalyzer romanianAnalyzer = new WikipediaSnowballAnalyzer("ro");
+		TokenStream tokenStream = romanianAnalyzer.tokenStream("text", new StringReader("Și cărțile românilor sunt frumoase"));
+		List<String> terms = new ArrayList<String>();
+		Token token = new Token();
+		while (tokenStream.next(token) != null)
+			terms.add(token.term());
+
+		Assert.assertFalse(terms.contains("și"));
+		Assert.assertFalse(terms.contains("sunt"));
+		Assert.assertFalse(terms.contains("cărțile"));
+		Assert.assertTrue(terms.contains("român"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUnsupportedLanguageIsRejected() {
+		new WikipediaSnowballAnalyzer("Klingon");
 	}
 
 	@Test

@@ -10,7 +10,9 @@ group = 'pertinence'
 version = '1.1'
 description = 'NGD/NCD indexer app'
 java {
-    sourceCompatibility = '19'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 
@@ -36,7 +38,7 @@ dependencies {
     implementation 'org.apache.lucene:lucene-snowball:2.4.1'
     implementation 'org.springframework:spring-jdbc:2.5.6'
     implementation 'mysql:mysql-connector-java:5.1.6'
-    implementation 'org.apache.groovy:groovy-all:4.0.12'
+    implementation 'org.apache.groovy:groovy-all:5.0.2'
 }
 
 publishing {
@@ -79,85 +81,90 @@ gradle.taskGraph.whenReady {
 }
 
 String xmxArg = "-Xmx2500m"
-startScripts {
-    mainClassName = "wiki.indexer.cli.WikipediaIndexer"
-    applicationName = "wikipedia-indexer"
+application {
+    mainClass = "wiki.indexer.cli.WikipediaIndexer"
     applicationDefaultJvmArgs  = [xmxArg,
-                                  "-Dcom.sun.management.jmxremote.port=4444",
-                                  "-Dcom.sun.management.jmxremote.authenticate=false",
                                   "-DentityExpansionLimit=2147480000",
                                   "-DtotalEntitySizeLimit=2147480000",
                                   "-Djdk.xml.totalEntitySizeLimit=2147480000"
     ]
 }
+startScripts {
+    applicationName = "wikipedia-indexer"
+}
 
 task extractTermFrequenciesMatrixFromPositionalIndex(type: CreateStartScripts) {
-    mainClassName = "inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex"
+    mainClass = "inform.dist.cli.ExtractTermFrequenciesMatrixFromPositionalIndex"
     description = "from a positional index retrieves the term matrix if co-occurrence data the can be used the get the semantic neighbourhood"
     applicationName = "ExtractTermFrequenciesMatrixFromPositionalIndex"
-    defaultJvmOpts  = ["-Xmx5500m", "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = ["-Xmx5500m"]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
 task retrieveGistsFromIndex(type: CreateStartScripts) {
-    mainClassName = "ncd.cli.RetrieveGistsFromPositionalIndex"
+    mainClass = "ncd.cli.RetrieveGistsFromPositionalIndex"
     description = "given a positional index like the one created by wikipedia-indexer, creates a directory full of bzipped gists"
     applicationName = "retrieve-gists-from-positional-index"
-    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4445", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
 task ncdScriptFor2Files(type: CreateStartScripts) {
-    mainClassName = "ncd.cli.ncd_for_two_files"
+    mainClass = "ncd.cli.ncd_for_two_files"
     applicationName = "ncd_for_two"
-    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
 task ncdScriptForDir(type: CreateStartScripts) {
-    mainClassName = "ncd.cli.ncd_for_dir"
+    mainClass = "ncd.cli.ncd_for_dir"
     applicationName = "ncd_for_dir"
-    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
 task termMatrixGetNeighbours(type: CreateStartScripts) {
-    mainClassName = "ncd.cli.term_matrix_get_neighbours"
+    mainClass = "ncd.cli.term_matrix_get_neighbours"
     applicationName = "term_matrix_get_neighbours"
-    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
 task termMatrixGetRow(type: CreateStartScripts) {
-    mainClassName = "ncd.cli.term_matrix_get_row"
+    mainClass = "ncd.cli.term_matrix_get_row"
     applicationName = "term_matrix_get_row"
-    defaultJvmOpts  = [xmxArg, "-Dcom.sun.management.jmxremote.port=4446", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
 task termMatrixGetTerms(type: CreateStartScripts) {
-    mainClassName = "ncd.cli.term_matrix_get_terms"
+    mainClass = "ncd.cli.term_matrix_get_terms"
     applicationName = "term_matrix_get_terms"
     defaultJvmOpts  = [xmxArg]
     outputDir = file('build/scripts')
     classpath = startScripts.classpath
 }
 
-applicationDistribution.into("bin") {
-    duplicatesStrategy= DuplicatesStrategy.EXCLUDE
-    from(retrieveGistsFromIndex)
-    from(extractTermFrequenciesMatrixFromPositionalIndex)
-    from(ncdScriptFor2Files)
-    from(ncdScriptForDir)
-    from(termMatrixGetNeighbours)
-    from(termMatrixGetRow)
-    from(termMatrixGetTerms)
+distributions {
+    main {
+        contents {
+            into("bin") {
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                from(retrieveGistsFromIndex)
+                from(extractTermFrequenciesMatrixFromPositionalIndex)
+                from(ncdScriptFor2Files)
+                from(ncdScriptForDir)
+                from(termMatrixGetNeighbours)
+                from(termMatrixGetRow)
+                from(termMatrixGetTerms)
 
-    fileMode = 0755
+            }
+        }
+    }
 }

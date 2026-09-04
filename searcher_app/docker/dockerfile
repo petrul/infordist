@@ -2,7 +2,7 @@ FROM eclipse-temurin:19-jre
 COPY build/libs/infordist_searcher_app*-application.jar /infordist_searcher_app.jar
 
 VOLUME /ngd-matrix
-VOLUME /logs
+#VOLUME /logs
 
 RUN useradd dockerapp -u 10001
 USER 10001

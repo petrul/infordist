@@ -1,5 +1,7 @@
 package wiki.indexer;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
@@ -22,6 +24,13 @@ public class WikipediaIndexerTest {
 		wikipediaIndexer.run();
 		
 		FileUtils.deleteDirectory(new File(idxDirName));
+	}
+
+	@Test
+	public void testRomanianLanguageAlias() {
+		WikipediaIndexer wikipediaIndexer = new WikipediaIndexer("dump.xml", "index");
+		wikipediaIndexer.setLanguage("ro");
+		assertEquals("Romanian", wikipediaIndexer.getLanguage());
 	}
 
 }
