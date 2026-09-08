@@ -17,3 +17,12 @@ target/
 .gradle
 **/bin/
 **/out/
+
+# Generated indexer output (multi-GB, not source) #
+indexer_app/index-rowiki/
+indexer_app/ngd-rowiki-45k/
+indexer_app/ngd-rowiki-5k/
+
+# Python #
+.venv/
+__pycache__/

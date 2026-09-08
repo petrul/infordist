@@ -1,0 +1,23 @@
+[project]
+name = "infordist-pca"
+version = "0.0.1dev0"
+description = "Embeddings from NGD matrices"
+readme = "README.md"
+authors = [
+    { name = "Petru", email = "petru@scriptorium.ro" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "numpy>=2.5.2",
+    "torch>=2.14.0",
+    "uvicorn>=0.52.4",
+]
+
+[project.scripts]
+infordist-pca = "infordist_pca:main"
+infordist-pca-server = "infordist_pca.server:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

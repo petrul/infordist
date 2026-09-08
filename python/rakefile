@@ -1,0 +1,29 @@
+# rakefile - dev/prod launcher for the embeddings REST server
+# (infordist_pca.server) -- rake start[dev] runs against the small 5k
+# test matrix with auto-reload; add a "prod" branch here once a real
+# (45k+) pca dir exists somewhere stable to point at.
+
+# ngd-rowiki-5k is the local, always-available test fixture: a real (if
+# small) PCA output actually produced by indexer_app, kept around
+# specifically for this kind of quick dev/manual testing.
+DEV_PCA_DIR = File.expand_path("../indexer_app/ngd-rowiki-5k/pca", __dir__)
+DEV_PORT = ENV["PORT"] || "8001"
+
+desc "Start the embeddings server: rake start[dev] (5k test matrix, auto-reload)"
+task :start, [:env] do |t, args|
+  env = args[:env] || "dev"
+
+  case env
+  when "dev"
+    unless File.exist?(File.join(DEV_PCA_DIR, "components.npy"))
+      abort "no PCA output at #{DEV_PCA_DIR} -- run `uv run infordist-pca <matrix-dir>` first"
+    end
+    puts "starting dev server on http://0.0.0.0:#{DEV_PORT} against #{DEV_PCA_DIR}"
+    ENV["INFORDIST_PCA_DIR"] = DEV_PCA_DIR
+    sh "uv run uvicorn infordist_pca.server:app --reload --host 0.0.0.0 --port #{DEV_PORT}"
+  else
+    abort "unknown env '#{env}' -- only 'dev' is set up so far (rake start[dev])"
+  end
+end
+
+task default: :start
